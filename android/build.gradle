@@ -27,4 +27,9 @@ android {
     defaultConfig {
         minSdkVersion 16
     }
+
+    dependencies {
+        //noinspection GradleDynamicVersion
+        implementation 'com.batch.android:batch-sdk:1.17.+'
+    }
 }
