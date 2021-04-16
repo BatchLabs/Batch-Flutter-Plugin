@@ -1,9 +1,5 @@
-import 'package:batch_flutter_example/batch_store/root_tab_page.dart';
 import 'package:flutter/material.dart';
-import 'dart:async';
 
-import 'package:flutter/services.dart';
-import 'package:batch_flutter/batch_flutter.dart';
 import 'package:provider/provider.dart';
 
 import 'batch_store/data/model/app_state_model.dart';
