@@ -16,6 +16,13 @@
             </intent-filter>
         </activity>
 
+        <!-- Used in ManifestReaderTest -->
+        <meta-data android:name="tests_string"
+            android:value="stringvalue" />
+
+        <meta-data android:name="tests_bool"
+            android:value="true" />
+
     </application>
 
 </manifest>
