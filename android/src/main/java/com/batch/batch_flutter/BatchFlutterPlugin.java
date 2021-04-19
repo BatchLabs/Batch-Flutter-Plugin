@@ -1,5 +1,7 @@
 package com.batch.batch_flutter;
 
+import android.content.Context;
+
 import androidx.annotation.NonNull;
 
 import io.flutter.embedding.engine.plugins.FlutterPlugin;
@@ -13,6 +15,9 @@ import io.flutter.plugin.common.PluginRegistry.Registrar;
 
 /** BatchFlutterPlugin */
 public class BatchFlutterPlugin implements FlutterPlugin, MethodCallHandler, ActivityAware {
+
+  private final static PluginConfiguration configuration = new PluginConfiguration();
+
   /// The MethodChannel that will the communication between Flutter and native Android
   ///
   /// This local reference serves to register the plugin with the Flutter Engine and unregister it
@@ -21,17 +26,16 @@ public class BatchFlutterPlugin implements FlutterPlugin, MethodCallHandler, Act
 
   @Override
   public void onAttachedToEngine(@NonNull FlutterPluginBinding flutterPluginBinding) {
+    // Automatically read configuration from manifest
+    configuration.initFromManifest(flutterPluginBinding.getApplicationContext());
+
     channel = new MethodChannel(flutterPluginBinding.getBinaryMessenger(), "batch_flutter");
     channel.setMethodCallHandler(this);
   }
 
   @Override
   public void onMethodCall(@NonNull MethodCall call, @NonNull Result result) {
-    if (call.method.equals("getPlatformVersion")) {
-      result.success("Android " + android.os.Build.VERSION.RELEASE);
-    } else {
-      result.notImplemented();
-    }
+    result.notImplemented();
   }
 
   @Override
@@ -61,5 +65,18 @@ public class BatchFlutterPlugin implements FlutterPlugin, MethodCallHandler, Act
 
   }
 
+  //endregion
+
+  //region Public API
+  public static PluginConfiguration getConfiguration(@NonNull Context context) {
+    //noinspection ConstantConditions
+    if (context == null) {
+      throw new IllegalArgumentException("Cannot call getConfiguration with a null context");
+    }
+    // Ensure that we read the default values from the manifest before any custom one is set
+    // as this can be called before "onAttachedToEngine"
+    configuration.initFromManifest(context);
+    return configuration;
+  }
   //endregion
 }

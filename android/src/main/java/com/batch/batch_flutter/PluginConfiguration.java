@@ -1,18 +1,24 @@
 package com.batch.batch_flutter;
 
+import android.content.Context;
+import android.text.TextUtils;
+
+import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 
 import com.batch.android.Config;
 
 /**
- * Manages static Batch configuration for the flutter plugin.
+ * Manages Batch configuration for the flutter plugin.
  * Configuration will be read from the manifest, but can be overridden at app launch.
  */
-class PluginConfiguration {
+public class PluginConfiguration {
 
-    private static String APIKEY_MANIFEST_KEY = "com.batch.flutter.apikey";
-    private static String GAID_MANIFEST_KEY = "com.batch.flutter.use_gaid";
-    private static String ADVANCED_INFO_MANIFEST_KEY = "com.batch.flutter.use_advanced_device_information";
+    private static final String APIKEY_MANIFEST_KEY = "com.batch.flutter.apikey";
+    private static final String GAID_MANIFEST_KEY = "com.batch.flutter.use_gaid";
+    private static final String ADVANCED_INFO_MANIFEST_KEY = "com.batch.flutter.use_advanced_device_information";
+
+    private boolean didReadManifest = false;
 
     @Nullable
     private String apiKey;
@@ -21,14 +27,66 @@ class PluginConfiguration {
 
     private boolean canUseAdvancedDeviceInformation = true;
 
-    private void readFromManifest() {
+    synchronized void initFromManifest(@NonNull Context context) {
+        //noinspection ConstantConditions
+        if (context == null) {
+            return;
+        }
+        if (didReadManifest) {
+            return;
+        }
+        didReadManifest = true;
 
+        final ManifestReader manifestReader = new ManifestReader(context);
+        apiKey = manifestReader.readString(APIKEY_MANIFEST_KEY, null);
+        canUseAdvertisingID = manifestReader.readBoolean(GAID_MANIFEST_KEY, true);
+        canUseAdvancedDeviceInformation = manifestReader.readBoolean(ADVANCED_INFO_MANIFEST_KEY, true);
     }
 
+    boolean hasAPIKey() {
+        return !TextUtils.isEmpty(apiKey);
+    }
+
+    @Nullable
     Config makeBatchConfig() {
-        Config batchConfig = new Config("");
+        if (!hasAPIKey()) {
+            return null;
+        }
+        Config batchConfig = new Config(apiKey);
         batchConfig.setCanUseAdvancedDeviceInformation(canUseAdvancedDeviceInformation);
         batchConfig.setCanUseAdvertisingID(canUseAdvertisingID);
         return batchConfig;
     }
+
+    //region Public API
+
+    @Nullable
+    public String getApiKey() {
+        return apiKey;
+    }
+
+    public PluginConfiguration setAPIKey(@Nullable String apiKey) {
+        this.apiKey = apiKey;
+        return this;
+    }
+
+    public boolean canUseAdvertisingID() {
+        return canUseAdvertisingID;
+    }
+
+    public PluginConfiguration setCanUseAdvertisingID(boolean canUseAdvertisingID) {
+        this.canUseAdvertisingID = canUseAdvertisingID;
+        return this;
+    }
+
+    public boolean canUseAdvancedDeviceInformation() {
+        return canUseAdvancedDeviceInformation;
+    }
+
+    public PluginConfiguration setCanUseAdvancedDeviceInformation(boolean canUseAdvancedDeviceInformation) {
+        this.canUseAdvancedDeviceInformation = canUseAdvancedDeviceInformation;
+        return this;
+    }
+
+    //endregion
 }
