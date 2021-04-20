@@ -1,6 +1,7 @@
 package com.batch.batch_flutter;
 
 import java.util.ArrayDeque;
+import java.util.concurrent.Executor;
 
 /**
  * A simple Promise-like implementation that is not thread-safe.
@@ -13,6 +14,7 @@ public class Promise<T> {
     private Status status = Status.PENDING;
     private T resolvedValue = null;
     private Exception rejectException = null;
+    private Executor executor = new CurrentThreadExecutor();
 
     private final ArrayDeque<ThenRunnable<T>> thenQueue = new ArrayDeque<>(1);
     private final ArrayDeque<CatchRunnable> catchQueue = new ArrayDeque<>(1);
@@ -64,7 +66,7 @@ public class Promise<T> {
         ThenRunnable<T> thenRunnable;
         while (!thenQueue.isEmpty()) {
             thenRunnable = thenQueue.removeLast();
-            thenRunnable.run(value);
+            postThenRunnable(thenRunnable, value);
         }
     }
 
@@ -79,7 +81,7 @@ public class Promise<T> {
         CatchRunnable catchRunnable;
         while (!catchQueue.isEmpty()) {
             catchRunnable = catchQueue.removeLast();
-            catchRunnable.run(exception);
+            postCatchRunnable(catchRunnable, exception);
         }
     }
 
@@ -89,7 +91,7 @@ public class Promise<T> {
                 thenQueue.push(thenRunnable);
                 break;
             case RESOLVED:
-                thenRunnable.run(resolvedValue);
+                postThenRunnable(thenRunnable, resolvedValue);
                 break;
         }
 
@@ -102,7 +104,7 @@ public class Promise<T> {
                 catchQueue.push(catchRunnable);
                 break;
             case REJECTED:
-                catchRunnable.run(rejectException);
+                postCatchRunnable(catchRunnable, rejectException);
                 break;
         }
 
@@ -111,6 +113,22 @@ public class Promise<T> {
 
     public Status getStatus() {
         return status;
+    }
+
+    private void postThenRunnable(ThenRunnable<T> thenRunnable, T value) {
+        executor.execute(() -> thenRunnable.run(value));
+    }
+
+    private void postCatchRunnable(CatchRunnable catchRunnable, Exception exception) {
+        executor.execute(() -> catchRunnable.run(exception));
+    }
+
+    /**
+     * Set the executor then/catch runnables should be posted on
+     */
+    public synchronized Promise<T> setExecutor(Executor executor) {
+        this.executor = executor;
+        return this;
     }
 
     /**
@@ -140,5 +158,11 @@ public class Promise<T> {
         PENDING,
         RESOLVED,
         REJECTED
+    }
+
+    private class CurrentThreadExecutor implements Executor {
+        public void execute(Runnable r) {
+            r.run();
+        }
     }
 }
