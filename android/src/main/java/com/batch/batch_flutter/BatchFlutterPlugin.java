@@ -70,6 +70,13 @@ public class BatchFlutterPlugin implements FlutterPlugin, MethodCallHandler, Act
 
     @Override
     public void onMethodCall(@NonNull MethodCall call, @NonNull Result result) {
+        if (!didSetup) {
+            result.error(BatchBridgePublicErrorCode.MISSING_SETUP.code,
+                    "batch_flutter's BatchFlutterPlugin.setup() has not been called.",
+                    null);
+            return;
+        }
+
         Activity activity = currentActivity.get();
         if (activity == null) {
             //TODO: Log
