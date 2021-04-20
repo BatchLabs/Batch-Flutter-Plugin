@@ -5,7 +5,7 @@
 .pub/
 
 build/
-
+/.gradle
 
 # Miscellaneous
 *.class
