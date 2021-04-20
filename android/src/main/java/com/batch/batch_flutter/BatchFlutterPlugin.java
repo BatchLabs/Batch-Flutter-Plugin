@@ -23,6 +23,14 @@ public class BatchFlutterPlugin implements FlutterPlugin, MethodCallHandler, Act
   /// when the Flutter Engine is detached from the Activity
   private MethodChannel channel;
 
+  private static final String PLUGIN_VERSION_SYSTEM_PROPERTY = "batch.plugin.version";
+
+  private static final String PLUGIN_VERSION = "Flutter/0.0.1";
+
+  static {
+    System.setProperty(PLUGIN_VERSION_SYSTEM_PROPERTY, PLUGIN_VERSION);
+  }
+
   @Override
   public void onAttachedToEngine(@NonNull FlutterPluginBinding flutterPluginBinding) {
     // Automatically read configuration from manifest
