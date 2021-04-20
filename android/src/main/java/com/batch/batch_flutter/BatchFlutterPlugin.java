@@ -1,8 +1,16 @@
 package com.batch.batch_flutter;
 
+import android.app.Activity;
+import android.app.Application;
 import android.content.Context;
+import android.content.Intent;
 
 import androidx.annotation.NonNull;
+
+import com.batch.android.Batch;
+import com.batch.android.Config;
+
+import java.lang.ref.WeakReference;
 
 import io.flutter.embedding.engine.plugins.FlutterPlugin;
 import io.flutter.embedding.engine.plugins.activity.ActivityAware;
@@ -11,79 +19,168 @@ import io.flutter.plugin.common.MethodCall;
 import io.flutter.plugin.common.MethodChannel;
 import io.flutter.plugin.common.MethodChannel.MethodCallHandler;
 import io.flutter.plugin.common.MethodChannel.Result;
+import io.flutter.plugin.common.PluginRegistry;
 
-/** BatchFlutterPlugin */
-public class BatchFlutterPlugin implements FlutterPlugin, MethodCallHandler, ActivityAware {
+/**
+ * BatchFlutterPlugin
+ */
+public class BatchFlutterPlugin implements FlutterPlugin, MethodCallHandler, ActivityAware, PluginRegistry.NewIntentListener {
 
-  private final static BatchPluginConfiguration configuration = new BatchPluginConfiguration();
+    private static final String PLUGIN_VERSION_SYSTEM_PROPERTY = "batch.plugin.version";
 
-  /// The MethodChannel that will the communication between Flutter and native Android
-  ///
-  /// This local reference serves to register the plugin with the Flutter Engine and unregister it
-  /// when the Flutter Engine is detached from the Activity
-  private MethodChannel channel;
+    private static final String PLUGIN_VERSION = "Flutter/0.0.1";
 
-  private static final String PLUGIN_VERSION_SYSTEM_PROPERTY = "batch.plugin.version";
+    private final static BatchPluginConfiguration configuration = new BatchPluginConfiguration();
 
-  private static final String PLUGIN_VERSION = "Flutter/0.0.1";
+    private static boolean didSetup = false;
 
-  static {
-    System.setProperty(PLUGIN_VERSION_SYSTEM_PROPERTY, PLUGIN_VERSION);
-  }
+    private static boolean manageActivityLifecycle = true;
 
-  @Override
-  public void onAttachedToEngine(@NonNull FlutterPluginBinding flutterPluginBinding) {
-    // Automatically read configuration from manifest
-    configuration.initFromManifest(flutterPluginBinding.getApplicationContext());
+    /// The MethodChannel that will the communication between Flutter and native Android
+    ///
+    /// This local reference serves to register the plugin with the Flutter Engine and unregister it
+    /// when the Flutter Engine is detached from the Activity
+    private MethodChannel channel;
 
-    channel = new MethodChannel(flutterPluginBinding.getBinaryMessenger(), "batch_flutter");
-    channel.setMethodCallHandler(this);
-  }
+    /// Current Activity
+    private WeakReference<Activity> currentActivity = new WeakReference<>(null);
 
-  @Override
-  public void onMethodCall(@NonNull MethodCall call, @NonNull Result result) {
-    result.notImplemented();
-  }
-
-  @Override
-  public void onDetachedFromEngine(@NonNull FlutterPluginBinding binding) {
-    channel.setMethodCallHandler(null);
-  }
-
-  //region Activity awareness
-
-  @Override
-  public void onAttachedToActivity(@NonNull ActivityPluginBinding binding) {
-
-  }
-
-  @Override
-  public void onDetachedFromActivityForConfigChanges() {
-
-  }
-
-  @Override
-  public void onReattachedToActivityForConfigChanges(@NonNull ActivityPluginBinding binding) {
-
-  }
-
-  @Override
-  public void onDetachedFromActivity() {
-
-  }
-
-  //endregion
-
-  //region Public API
-  public static BatchPluginConfiguration getConfiguration(@NonNull Context context) {
-    //noinspection ConstantConditions
-    if (context == null) {
-      throw new IllegalArgumentException("Cannot call getConfiguration with a null context");
+    static {
+        System.setProperty(PLUGIN_VERSION_SYSTEM_PROPERTY, PLUGIN_VERSION);
     }
-    // Ensure that we read the default values from the manifest before any custom one is set
-    // as this can be called before "onAttachedToEngine"
-    configuration.initFromManifest(context);
-    return configuration;
-  }
-  //endregion
+
+    @Override
+    public void onAttachedToEngine(@NonNull FlutterPluginBinding flutterPluginBinding) {
+        // Automatically read configuration from manifest
+        configuration.initFromManifest(flutterPluginBinding.getApplicationContext());
+
+        channel = new MethodChannel(flutterPluginBinding.getBinaryMessenger(), "batch_flutter");
+        channel.setMethodCallHandler(this);
+    }
+
+    @Override
+    public void onMethodCall(@NonNull MethodCall call, @NonNull Result result) {
+        result.notImplemented();
+    }
+
+    @Override
+    public void onDetachedFromEngine(@NonNull FlutterPluginBinding binding) {
+        channel.setMethodCallHandler(null);
+    }
+
+    //region Activity awareness
+
+    @Override
+    public void onAttachedToActivity(@NonNull ActivityPluginBinding binding) {
+        attachToActivity(binding);
+    }
+
+    @Override
+    public void onReattachedToActivityForConfigChanges(@NonNull ActivityPluginBinding binding) {
+        attachToActivity(binding);
+    }
+
+    @Override
+    public void onDetachedFromActivity() {
+        detachFromActivity();
+    }
+
+    @Override
+    public void onDetachedFromActivityForConfigChanges() {
+        detachFromActivity();
+    }
+
+    @Override
+    public boolean onNewIntent(Intent intent) {
+        Activity activity = currentActivity.get();
+        if (activity != null) {
+            Batch.onNewIntent(activity, intent);
+        }
+        return false;
+    }
+
+    private void attachToActivity(@NonNull ActivityPluginBinding binding) {
+        if (manageActivityLifecycle) {
+            binding.addOnNewIntentListener(this);
+            currentActivity = new WeakReference<>(binding.getActivity());
+        }
+    }
+
+    private void detachFromActivity() {
+        if (manageActivityLifecycle) {
+            Activity activity = currentActivity.get();
+            if (activity != null) {
+                Batch.onStop(activity);
+                Batch.onDestroy(activity);
+            }
+        }
+    }
+
+    //endregion
+
+    //region Public API
+
+    /**
+     * Ready the plugin for use.
+     * This MUST be called in an {@link android.app.Application} subclass' {@link Application#onCreate()}.
+     * <p>
+     * Once setup success fully, the configuration cannot be changed anymore
+     * as this calls {@link com.batch.android.Batch#setConfig(Config);}
+     * <p>
+     * Note: If setup has never been called, or if Batch wasn't provided an APIKey in the manifest or
+     * using {@link BatchFlutterPlugin#getConfiguration(Context)} and {@link BatchPluginConfiguration#setAPIKey(String)},
+     * any method call will throw an exception.
+     *
+     * @return Whether the plugin was successfully setup. Returns true on any subsequent call if one
+     * setup call succeeded.
+     */
+    public static synchronized boolean setup(@NonNull Context context) {
+        if (didSetup) {
+            //TODO: Log that this can't work as we've already been setup
+            return true;
+        }
+
+        Config batchConfig = getConfiguration(context).makeBatchConfig();
+
+        if (batchConfig != null) {
+            Batch.setConfig(batchConfig);
+            didSetup = true;
+            return true;
+        } else {
+            //TODO: Log
+            return false;
+        }
+    }
+
+    /**
+     * Get the plugin configuration object.
+     * It will be initialized with the previous values, including what has been read from the manifest.
+     * <p>
+     * Once {@link BatchFlutterPlugin#setup(Context)} has been called, changing values in the returned
+     * object will not have any effect.
+     */
+    public static BatchPluginConfiguration getConfiguration(@NonNull Context context) {
+        //noinspection ConstantConditions
+        if (context == null) {
+            throw new IllegalArgumentException("Cannot call getConfiguration with a null context");
+        }
+        // Ensure that we read the default values from the manifest before any custom one is set
+        // as this can be called before "onAttachedToEngine"
+        configuration.initFromManifest(context);
+        return configuration;
+    }
+
+    /**
+     * Set whether BatchFlutterPlugin should automatically manage Batch's activity lifecycle
+     * (as in automatically calling {@link Batch#onStart(Activity)} and so on).
+     * <p>
+     * If you add batch_flutter in a hybrid application (one that mixes native android activities with
+     * flutter ones), you should turn this off and register {@link com.batch.android.BatchActivityLifecycleHelper}
+     * in your {@link Application} subclass.
+     */
+    public static void setManageActivityLifecycle(boolean manageActivityLifecycle) {
+        BatchFlutterPlugin.manageActivityLifecycle = manageActivityLifecycle;
+    }
+
+    //endregion
 }
