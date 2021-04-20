@@ -39,8 +39,7 @@ public class BatchFlutterPlugin implements FlutterPlugin, MethodCallHandler, Act
 
     private final static BatchPluginConfiguration configuration = new BatchPluginConfiguration();
 
-    @VisibleForTesting
-    protected static boolean didSetup = false;
+    private static boolean didCallSetup = false;
 
     private static boolean manageActivityLifecycle = true;
 
@@ -58,6 +57,11 @@ public class BatchFlutterPlugin implements FlutterPlugin, MethodCallHandler, Act
         System.setProperty(PLUGIN_VERSION_SYSTEM_PROPERTY, PLUGIN_VERSION);
     }
 
+    @VisibleForTesting
+    protected boolean isSetup() {
+        return didCallSetup;
+    }
+
     @Override
     public void onAttachedToEngine(@NonNull FlutterPluginBinding flutterPluginBinding) {
         channel = new MethodChannel(flutterPluginBinding.getBinaryMessenger(), "batch_flutter");
@@ -73,7 +77,7 @@ public class BatchFlutterPlugin implements FlutterPlugin, MethodCallHandler, Act
 
     @Override
     public void onMethodCall(@NonNull MethodCall call, @NonNull Result result) {
-        if (!didSetup) {
+        if (!isSetup()) {
             result.error(BatchBridgePublicErrorCode.MISSING_SETUP.code,
                     "batch_flutter's BatchFlutterPlugin.setup() has not been called.",
                     null);
@@ -174,7 +178,7 @@ public class BatchFlutterPlugin implements FlutterPlugin, MethodCallHandler, Act
      * setup call succeeded.
      */
     public static synchronized boolean setup(@NonNull Context context) {
-        if (didSetup) {
+        if (didCallSetup) {
             //TODO: Log that this can't work as we've already been setup
             return true;
         }
@@ -183,7 +187,7 @@ public class BatchFlutterPlugin implements FlutterPlugin, MethodCallHandler, Act
 
         if (batchConfig != null) {
             Batch.setConfig(batchConfig);
-            didSetup = true;
+            didCallSetup = true;
             return true;
         } else {
             //TODO: Log
