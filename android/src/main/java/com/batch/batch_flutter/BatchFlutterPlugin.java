@@ -108,8 +108,7 @@ public class BatchFlutterPlugin implements FlutterPlugin, MethodCallHandler, Act
             // or throw ?
             arguments = new HashMap<>();
         }
-
-        // TODO: implement Parameters
+        
         BatchBridge.call(call.method, arguments, activity)
                 .setExecutor(ContextCompat.getMainExecutor(activity))
                 .then(result::success)
