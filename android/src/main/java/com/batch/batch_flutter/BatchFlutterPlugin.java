@@ -6,11 +6,17 @@ import android.content.Context;
 import android.content.Intent;
 
 import androidx.annotation.NonNull;
+import androidx.core.content.ContextCompat;
 
 import com.batch.android.Batch;
 import com.batch.android.Config;
+import com.batch.batch_flutter.interop.BatchBridge;
+import com.batch.batch_flutter.interop.BatchBridgeException;
+import com.batch.batch_flutter.interop.BatchBridgePublicErrorCode;
+import com.batch.batch_flutter.interop.BatchBridgeNotImplementedException;
 
 import java.lang.ref.WeakReference;
+import java.util.HashMap;
 
 import io.flutter.embedding.engine.plugins.FlutterPlugin;
 import io.flutter.embedding.engine.plugins.activity.ActivityAware;
@@ -51,22 +57,45 @@ public class BatchFlutterPlugin implements FlutterPlugin, MethodCallHandler, Act
 
     @Override
     public void onAttachedToEngine(@NonNull FlutterPluginBinding flutterPluginBinding) {
-        // Automatically read configuration from manifest
-        configuration.initFromManifest(flutterPluginBinding.getApplicationContext());
-
         channel = new MethodChannel(flutterPluginBinding.getBinaryMessenger(), "batch_flutter");
         channel.setMethodCallHandler(this);
-    }
-
-    @Override
-    public void onMethodCall(@NonNull MethodCall call, @NonNull Result result) {
-        result.notImplemented();
     }
 
     @Override
     public void onDetachedFromEngine(@NonNull FlutterPluginBinding binding) {
         channel.setMethodCallHandler(null);
     }
+
+    //region Method calling
+
+    @Override
+    public void onMethodCall(@NonNull MethodCall call, @NonNull Result result) {
+        Activity activity = currentActivity.get();
+        if (activity == null) {
+            //TODO: Log
+            result.error(BatchBridgePublicErrorCode.NOT_ATTACHED_TO_ACTIVITY.code,
+                    "batch_flutter isn't attached to an activity.",
+                    null);
+            return;
+        }
+        // TODO: implement Parameters
+        BatchBridge.call(call.method, new HashMap<>(), activity)
+                .setExecutor(ContextCompat.getMainExecutor(activity))
+                .then(result::success)
+                .catchException(e -> {
+                    if (e instanceof BatchBridgeNotImplementedException) {
+                        result.notImplemented();
+                    } else if (e instanceof BatchBridgeException) {
+                        BatchBridgeException bridgeException = (BatchBridgeException) e;
+                        result.error(bridgeException.pluginCode.code, bridgeException.description, bridgeException.details);
+                    } else {
+                        // TODO: Log the exception
+                        result.error(BatchBridgePublicErrorCode.UNKNOWN_BRIDGE_ERROR.code, "Unknown Batch native bridge error. Please see logcat for more info.", null);
+                    }
+                });
+    }
+
+    //endregion
 
     //region Activity awareness
 
@@ -102,8 +131,8 @@ public class BatchFlutterPlugin implements FlutterPlugin, MethodCallHandler, Act
     private void attachToActivity(@NonNull ActivityPluginBinding binding) {
         if (manageActivityLifecycle) {
             binding.addOnNewIntentListener(this);
-            currentActivity = new WeakReference<>(binding.getActivity());
         }
+        currentActivity = new WeakReference<>(binding.getActivity());
     }
 
     private void detachFromActivity() {

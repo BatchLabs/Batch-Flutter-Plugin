@@ -36,8 +36,8 @@ public class BatchBridge {
     }
 
     @SuppressWarnings("unused")
-    public static Promise<String> call(String action, Map<String, Object> parameters, Activity activity) {
-        Promise<String> result;
+    public static Promise<Object> call(String action, Map<String, Object> parameters, Activity activity) {
+        Promise<Object> result;
 
         try {
             result = doAction(action, parameters, activity);
@@ -49,39 +49,40 @@ public class BatchBridge {
     }
 
     @NonNull
-    private static Promise<String> doAction(String actionName, Map<String, Object> parameters, Activity activity) throws BridgeException {
+    private static Promise<Object> doAction(String actionName, Map<String, Object> parameters, Activity activity) throws BatchBridgeException, BatchBridgeNotImplementedException {
         if (actionName == null || actionName.length() == 0) {
-            throw new BridgeException(INVALID_PARAMETER + " : Empty or null action");
+            throw new BatchBridgeException(BatchBridgePublicErrorCode.INTERNAL_BRIDGE_ERROR, "Invalid parameter : Empty or null action");
         }
 
         Action action;
         try {
             action = Action.fromName(actionName);
         } catch (IllegalArgumentException actionParsingException) {
-            throw new BridgeException(INVALID_PARAMETER + " : Unknown action '" + actionName + "'", actionParsingException);
+            //TODO: Log
+            throw new BatchBridgeNotImplementedException(actionName);
         }
 
         switch (action) {
             case OPT_IN:
                 optIn(activity);
-                break;
+                return Promise.resolved(null);
             case OPT_OUT:
                 optOut(activity, false);
-                break;
+                return Promise.resolved(null);
             case OPT_OUT_AND_WIPE_DATA:
                 optOut(activity, true);
-                break;
+                return Promise.resolved(null);
             case MESSAGING_SET_DO_NOT_DISTURB_ENABLED:
                 Batch.Messaging.setDoNotDisturbEnabled(getTypedParameter(parameters, "enabled", Boolean.class));
-                break;
+                return Promise.resolved(null);
             case MESSAGING_SHOW_PENDING_MESSAGE:
                 showPendingMessage(activity);
-                break;
+                return Promise.resolved(null);
             case PUSH_GET_LAST_KNOWN_TOKEN:
                 return Promise.resolved(getLastKnownPushToken());
             case PUSH_DISMISS_NOTIFICATIONS:
                 dismissNotifications();
-                break;
+                return Promise.resolved(null);
             case PUSH_IOS_REFRESH_TOKEN:
             case PUSH_IOS_REQUEST_PERMISSION:
             case PUSH_CLEAR_BADGE:
@@ -96,13 +97,13 @@ public class BatchBridge {
                 return Promise.resolved(Batch.User.getLanguage(activity));
             case USER_GET_REGION:
                 return Promise.resolved(Batch.User.getRegion(activity));
+            default:
+                throw new BatchBridgeNotImplementedException(actionName);
         }
-
-        throw new BridgeException(INVALID_PARAMETER + " : Action '" + actionName + "' is known, but not implemented");
     }
 
     @SuppressWarnings("unchecked")
-    private static <T> T getTypedParameter(Map<String, Object> parameters, String parameterName, Class<T> parameterClass) throws BridgeException {
+    private static <T> T getTypedParameter(Map<String, Object> parameters, String parameterName, Class<T> parameterClass) throws BatchBridgeException {
         Object result = null;
 
         if (parameters != null) {
@@ -110,25 +111,14 @@ public class BatchBridge {
         }
 
         if (result == null) {
-            throw new BridgeException(INVALID_PARAMETER + " : Required parameter '" + parameterName + "' missing");
+            throw new BatchBridgeException(BatchBridgePublicErrorCode.INTERNAL_BRIDGE_ERROR, "Required parameter '" + parameterName + "' missing");
         }
 
         if (!parameterClass.isInstance(result)) {
-            throw new BridgeException(INVALID_PARAMETER + " : Required parameter '" + parameterName + "' of wrong type");
+            throw new BatchBridgeException(BatchBridgePublicErrorCode.INTERNAL_BRIDGE_ERROR, "Required parameter '" + parameterName + "' of wrong type");
         }
 
         return (T) result;
-    }
-
-    private static Map<String, Object> errorToMap(Exception exception) {
-        final Map<String, Object> errorMap = new HashMap<>();
-
-        if (exception != null) {
-            errorMap.put("cause", exception.getMessage());
-            errorMap.put("kind", exception.toString());
-        }
-
-        return errorMap;
     }
 
     private static void optIn(Activity activity) {
@@ -154,7 +144,7 @@ public class BatchBridge {
 
 //region User Data
 
-    private static void userDataEdit(Map<String, Object> parameters) throws BridgeException {
+    private static void userDataEdit(Map<String, Object> parameters) throws BatchBridgeException {
         try {
             //noinspection unchecked
             List<Map<String, Object>> operations = getTypedParameter(parameters, "operations", List.class);
@@ -266,24 +256,24 @@ public class BatchBridge {
 
             editor.save();
         } catch (ClassCastException e) {
-            throw new BridgeException("Error while reading operations ", e);
+            throw new BatchBridgeException(BatchBridgePublicErrorCode.INTERNAL_BRIDGE_ERROR, "Error while decoding user data operations ", null, e);
         }
     }
 
-    private static void trackEvent(Map<String, Object> parameters) throws BridgeException {
+    private static void trackEvent(Map<String, Object> parameters) throws BatchBridgeException {
         String name = getTypedParameter(parameters, "name", String.class);
 
         String label = null;
         try {
             label = getTypedParameter(parameters, "label", String.class);
-        } catch (BridgeException e) {
+        } catch (BatchBridgeException e) {
             // The parameter is optional, disregard the exception
         }
 
         Map data = null;
         try {
             data = getTypedParameter(parameters, "event_data", Map.class);
-        } catch (BridgeException e) {
+        } catch (BatchBridgeException e) {
             // The parameter is optional, disregard the exception
         }
 
@@ -322,7 +312,7 @@ public class BatchBridge {
                 } else if ("f".equals(type)) {
                     batchEventData.put(entryStringKey, getTypedParameter(entryMapValue, "value", Number.class).doubleValue());
                 } else {
-                    throw new BridgeException(INVALID_PARAMETER + " : Unknown event_data.attributes type");
+                    throw new BatchBridgeException(BatchBridgePublicErrorCode.INTERNAL_BRIDGE_ERROR, "Unknown event_data.attributes type");
                 }
             }
         }
@@ -330,39 +320,13 @@ public class BatchBridge {
         Batch.User.trackEvent(name, label, batchEventData);
     }
 
-    private static void trackLegacyEvent(Map<String, Object> parameters) throws BridgeException {
-        String name = getTypedParameter(parameters, "name", String.class);
-
-        String label = null;
-        try {
-            label = getTypedParameter(parameters, "label", String.class);
-        } catch (BridgeException e) {
-            // The parameter is optional, disregard the exception
-        }
-
-        Map data = null;
-        try {
-            data = getTypedParameter(parameters, "data", Map.class);
-        } catch (BridgeException e) {
-            // The parameter is optional, disregard the exception
-        }
-
-        JSONObject jsonData = null;
-
-        if (data != null) {
-            jsonData = new JSONObject(data);
-        }
-
-        Batch.User.trackEvent(name, label, jsonData);
-    }
-
-    private static void trackTransaction(Map<String, Object> parameters) throws BridgeException {
+    private static void trackTransaction(Map<String, Object> parameters) throws BatchBridgeException {
         double amount = getTypedParameter(parameters, "amount", Number.class).doubleValue();
 
         Map data = null;
         try {
             data = getTypedParameter(parameters, "data", Map.class);
-        } catch (BridgeException e) {
+        } catch (BatchBridgeException e) {
             // The parameter is optional, disregard the exception
         }
 
@@ -375,25 +339,25 @@ public class BatchBridge {
         Batch.User.trackTransaction(amount, jsonData);
     }
 
-    private static void trackLocation(Map<String, Object> parameters) throws BridgeException {
+    private static void trackLocation(Map<String, Object> parameters) throws BatchBridgeException {
         double latitude = getTypedParameter(parameters, "latitude", Number.class).doubleValue();
         double longitude = getTypedParameter(parameters, "longitude", Number.class).doubleValue();
 
         Integer precision = null;
         try {
             precision = getTypedParameter(parameters, "precision", Integer.class);
-        } catch (BridgeException e) {
+        } catch (BatchBridgeException e) {
             // The parameter is optional, disregard the exception
         }
 
         Number date = null;
         try {
             Number rawDate = getTypedParameter(parameters, "date", Number.class);
-        } catch (BridgeException e) {
+        } catch (BatchBridgeException e) {
             // The parameter is optional, disregard the exception
         }
 
-        Location location = new Location("com.batch.android.cordova.bridge");
+        Location location = new Location("com.batch.batch_flutter.interop");
         location.setLatitude(latitude);
         location.setLongitude(longitude);
 
