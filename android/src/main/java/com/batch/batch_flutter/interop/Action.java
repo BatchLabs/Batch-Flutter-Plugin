@@ -26,7 +26,9 @@ enum Action
     USER_GET_LANGUAGE("user.getLanguage"),
     USER_GET_REGION("user.getRegion"),
 	USER_GET_INSTALLATION_ID("user.getInstallationID"),
-    DEBUG_SHOW_DEBUG_VIEW("debug.showDebugView");
+    DEBUG_SHOW_DEBUG_VIEW("debug.showDebugView"),
+    /// For testing
+    ECHO("echo");
 
     /**
      * Action name, the one passed as a paremeter in {@link com.batch.batch_flutter.interop.BatchBridge}

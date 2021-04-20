@@ -97,6 +97,8 @@ public class BatchBridge {
                 return Promise.resolved(Batch.User.getLanguage(activity));
             case USER_GET_REGION:
                 return Promise.resolved(Batch.User.getRegion(activity));
+            case ECHO:
+                return Promise.resolved(parameters.get("value"));
             default:
                 throw new BatchBridgeNotImplementedException(actionName);
         }
