@@ -11,12 +11,11 @@ import io.flutter.plugin.common.MethodCall;
 import io.flutter.plugin.common.MethodChannel;
 import io.flutter.plugin.common.MethodChannel.MethodCallHandler;
 import io.flutter.plugin.common.MethodChannel.Result;
-import io.flutter.plugin.common.PluginRegistry.Registrar;
 
 /** BatchFlutterPlugin */
 public class BatchFlutterPlugin implements FlutterPlugin, MethodCallHandler, ActivityAware {
 
-  private final static PluginConfiguration configuration = new PluginConfiguration();
+  private final static BatchPluginConfiguration configuration = new BatchPluginConfiguration();
 
   /// The MethodChannel that will the communication between Flutter and native Android
   ///
@@ -68,7 +67,7 @@ public class BatchFlutterPlugin implements FlutterPlugin, MethodCallHandler, Act
   //endregion
 
   //region Public API
-  public static PluginConfiguration getConfiguration(@NonNull Context context) {
+  public static BatchPluginConfiguration getConfiguration(@NonNull Context context) {
     //noinspection ConstantConditions
     if (context == null) {
       throw new IllegalArgumentException("Cannot call getConfiguration with a null context");

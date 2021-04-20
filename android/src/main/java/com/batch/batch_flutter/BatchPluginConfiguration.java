@@ -12,7 +12,7 @@ import com.batch.android.Config;
  * Manages Batch configuration for the flutter plugin.
  * Configuration will be read from the manifest, but can be overridden at app launch.
  */
-public class PluginConfiguration {
+public class BatchPluginConfiguration {
 
     private static final String APIKEY_MANIFEST_KEY = "com.batch.flutter.apikey";
     private static final String GAID_MANIFEST_KEY = "com.batch.flutter.use_gaid";
@@ -65,7 +65,7 @@ public class PluginConfiguration {
         return apiKey;
     }
 
-    public PluginConfiguration setAPIKey(@Nullable String apiKey) {
+    public BatchPluginConfiguration setAPIKey(@Nullable String apiKey) {
         this.apiKey = apiKey;
         return this;
     }
@@ -74,7 +74,7 @@ public class PluginConfiguration {
         return canUseAdvertisingID;
     }
 
-    public PluginConfiguration setCanUseAdvertisingID(boolean canUseAdvertisingID) {
+    public BatchPluginConfiguration setCanUseAdvertisingID(boolean canUseAdvertisingID) {
         this.canUseAdvertisingID = canUseAdvertisingID;
         return this;
     }
@@ -83,7 +83,7 @@ public class PluginConfiguration {
         return canUseAdvancedDeviceInformation;
     }
 
-    public PluginConfiguration setCanUseAdvancedDeviceInformation(boolean canUseAdvancedDeviceInformation) {
+    public BatchPluginConfiguration setCanUseAdvancedDeviceInformation(boolean canUseAdvancedDeviceInformation) {
         this.canUseAdvancedDeviceInformation = canUseAdvancedDeviceInformation;
         return this;
     }
