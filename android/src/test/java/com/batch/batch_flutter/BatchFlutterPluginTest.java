@@ -14,6 +14,8 @@ import org.junit.runner.RunWith;
 import org.robolectric.annotation.LooperMode;
 
 import java.lang.ref.WeakReference;
+import java.util.HashMap;
+import java.util.Map;
 
 import io.flutter.plugin.common.MethodCall;
 
@@ -87,7 +89,32 @@ public class BatchFlutterPluginTest {
             Assert.assertFalse(internalErrorResult.didCallSuccess);
             Assert.assertEquals(BatchBridgePublicErrorCode.INTERNAL_BRIDGE_ERROR.code, internalErrorResult.lastErrorArguments.errorCode);
         });
+    }
 
+    @Test
+    public void testBridgeSuccess() {
+        ActivityScenario<TestActivity> scenario = rule.getScenario();
 
+        scenario.onActivity((activity) -> {
+            Assert.assertNotNull(activity);
+
+            ControllableBatchFlutterPlugin plugin = new ControllableBatchFlutterPlugin();
+            plugin.didCallSetupOverride = true;
+            plugin.currentActivity = new WeakReference<>(activity);
+
+            final String helloWorld = "Hello, world!";
+            final Map<String, Object> echoArguments = new HashMap<>();
+            echoArguments.put("value", helloWorld);
+
+            ObservableFlutterResult echoResult = new ObservableFlutterResult();
+            plugin.onMethodCall(new MethodCall("echo", echoArguments), echoResult);
+
+            shadowOf(getMainLooper()).idle();
+
+            Assert.assertFalse(echoResult.didCallNotImplemented);
+            Assert.assertFalse(echoResult.didCallError);
+            Assert.assertTrue(echoResult.didCallSuccess);
+            Assert.assertEquals(helloWorld, echoResult.lastSuccessArgument);
+        });
     }
 }

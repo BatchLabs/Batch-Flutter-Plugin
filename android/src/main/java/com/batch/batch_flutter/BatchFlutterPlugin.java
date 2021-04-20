@@ -13,11 +13,12 @@ import com.batch.android.Batch;
 import com.batch.android.Config;
 import com.batch.batch_flutter.interop.BatchBridge;
 import com.batch.batch_flutter.interop.BatchBridgeException;
-import com.batch.batch_flutter.interop.BatchBridgePublicErrorCode;
 import com.batch.batch_flutter.interop.BatchBridgeNotImplementedException;
+import com.batch.batch_flutter.interop.BatchBridgePublicErrorCode;
 
 import java.lang.ref.WeakReference;
 import java.util.HashMap;
+import java.util.Map;
 
 import io.flutter.embedding.engine.plugins.FlutterPlugin;
 import io.flutter.embedding.engine.plugins.activity.ActivityAware;
@@ -92,8 +93,24 @@ public class BatchFlutterPlugin implements FlutterPlugin, MethodCallHandler, Act
                     null);
             return;
         }
+
+        Map<String, Object> arguments = null;
+        if (isObjectAMapOfStrings(call.arguments)) {
+            try {
+                //noinspection unchecked
+                arguments = (Map<String, Object>) call.arguments;
+            } catch (ClassCastException ignored) {
+            }
+        }
+
+        if (arguments == null) {
+            //TODO: Log that flutter arguments were not a map
+            // or throw ?
+            arguments = new HashMap<>();
+        }
+
         // TODO: implement Parameters
-        BatchBridge.call(call.method, new HashMap<>(), activity)
+        BatchBridge.call(call.method, arguments, activity)
                 .setExecutor(ContextCompat.getMainExecutor(activity))
                 .then(result::success)
                 .catchException(e -> {
@@ -226,4 +243,20 @@ public class BatchFlutterPlugin implements FlutterPlugin, MethodCallHandler, Act
     }
 
     //endregion
+
+    private boolean isObjectAMapOfStrings(Object object) {
+        if (!(object instanceof Map<?, ?>)) {
+            return false;
+        }
+
+        Map<?, ?> map = (Map<?, ?>) object;
+
+        for (Object key : map.keySet()) {
+            if (!(key instanceof String)) {
+                return false;
+            }
+        }
+
+        return true;
+    }
 }
