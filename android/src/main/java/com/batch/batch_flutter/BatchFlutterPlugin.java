@@ -6,6 +6,7 @@ import android.content.Context;
 import android.content.Intent;
 
 import androidx.annotation.NonNull;
+import androidx.annotation.VisibleForTesting;
 import androidx.core.content.ContextCompat;
 
 import com.batch.android.Batch;
@@ -38,7 +39,8 @@ public class BatchFlutterPlugin implements FlutterPlugin, MethodCallHandler, Act
 
     private final static BatchPluginConfiguration configuration = new BatchPluginConfiguration();
 
-    private static boolean didSetup = false;
+    @VisibleForTesting
+    protected static boolean didSetup = false;
 
     private static boolean manageActivityLifecycle = true;
 
@@ -49,7 +51,8 @@ public class BatchFlutterPlugin implements FlutterPlugin, MethodCallHandler, Act
     private MethodChannel channel;
 
     /// Current Activity
-    private WeakReference<Activity> currentActivity = new WeakReference<>(null);
+    @VisibleForTesting
+    protected WeakReference<Activity> currentActivity = new WeakReference<>(null);
 
     static {
         System.setProperty(PLUGIN_VERSION_SYSTEM_PROPERTY, PLUGIN_VERSION);
