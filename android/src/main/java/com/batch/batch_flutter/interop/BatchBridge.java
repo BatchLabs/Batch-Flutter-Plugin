@@ -153,104 +153,129 @@ public class BatchBridge {
                 return;
             }
 
-            BatchUserDataEditor editor = Batch.User.getEditor();
+            BatchUserDataEditor editor = Batch.User.editor();
 
             for (Map<String, Object> operationDescription : operations) {
                 String operationName = getTypedParameter(operationDescription, "operation", String.class);
 
-                if ("SET_LANGUAGE".equals(operationName)) {
-                    Object value = operationDescription.get("value");
+                switch (operationName) {
+                    case "SET_LANGUAGE": {
+                        Object value = operationDescription.get("value");
 
-                    if (value != null && !(value instanceof String)) {
-                        Log.e("Batch Bridge", "Invalid SET_LANGUAGE value: it can only be a string or null");
-                        // Invalid value, continue. NULL is allowed though
-                        continue;
+                        if (value != null && !(value instanceof String)) {
+                            Log.e("Batch Bridge", "Invalid SET_LANGUAGE value: it can only be a string or null");
+                            // Invalid value, continue. NULL is allowed though
+                            continue;
+                        }
+
+                        editor.setLanguage((String) value);
+                        break;
                     }
+                    case "SET_REGION": {
+                        Object value = operationDescription.get("value");
 
-                    editor.setLanguage((String) value);
-                } else if ("SET_REGION".equals(operationName)) {
-                    Object value = operationDescription.get("value");
+                        if (value != null && !(value instanceof String)) {
+                            Log.e("Batch Bridge", "Invalid SET_REGION value: it can only be a string or null");
+                            // Invalid value, continue. NULL is allowed though
+                            continue;
+                        }
 
-                    if (value != null && !(value instanceof String)) {
-                        Log.e("Batch Bridge", "Invalid SET_REGION value: it can only be a string or null");
-                        // Invalid value, continue. NULL is allowed though
-                        continue;
+                        editor.setRegion((String) value);
+                        break;
                     }
+                    case "SET_IDENTIFIER": {
+                        Object value = operationDescription.get("value");
 
-                    editor.setRegion((String) value);
-                } else if ("SET_IDENTIFIER".equals(operationName)) {
-                    Object value = operationDescription.get("value");
+                        if (value != null && !(value instanceof String)) {
+                            Log.e("Batch Bridge", "Invalid SET_IDENTIFIER value: it can only be a string or null");
+                            // Invalid value, continue. NULL is allowed though
+                            continue;
+                        }
 
-                    if (value != null && !(value instanceof String)) {
-                        Log.e("Batch Bridge", "Invalid SET_IDENTIFIER value: it can only be a string or null");
-                        // Invalid value, continue. NULL is allowed though
-                        continue;
+                        editor.setIdentifier((String) value);
+                        break;
                     }
+                    case "SET_ATTRIBUTE":
+                        String key = getTypedParameter(operationDescription, "key", String.class);
+                        String type = getTypedParameter(operationDescription, "type", String.class);
 
-                    editor.setIdentifier((String) value);
-                } else if ("SET_ATTRIBUTE".equals(operationName)) {
-                    String key = getTypedParameter(operationDescription, "key", String.class);
-                    String type = getTypedParameter(operationDescription, "type", String.class);
+                        switch (type) {
+                            case "string":
+                                editor.setAttribute(key, getTypedParameter(operationDescription, "value", String.class));
+                                break;
+                            case "date":
+                                editor.setAttribute(key, new Date(getTypedParameter(operationDescription, "value", Number.class).longValue()));
+                                break;
+                            case "integer": {
+                                Object rawValue = operationDescription.get("value");
 
-                    if ("string".equals(type)) {
-                        editor.setAttribute(key, getTypedParameter(operationDescription, "value", String.class));
-                    } else if ("date".equals(type)) {
-                        editor.setAttribute(key, new Date(getTypedParameter(operationDescription, "value", Number.class).longValue()));
-                    } else if ("integer".equals(type)) {
-                        Object rawValue = operationDescription.get("value");
+                                if (rawValue instanceof Number) {
+                                    editor.setAttribute(key, ((Number) rawValue).longValue());
+                                } else if (rawValue instanceof String) {
+                                    try {
+                                        editor.setAttribute(key, Long.parseLong((String) rawValue));
+                                    } catch (NumberFormatException e) {
+                                        Log.e("Batch Bridge", "Invalid SET_ATTRIBUTE integer value: couldn't parse value", e);
+                                    }
+                                }
+                                break;
+                            }
+                            case "float": {
+                                Object rawValue = operationDescription.get("value");
 
-                        if (rawValue instanceof Number) {
-                            editor.setAttribute(key, ((Number) rawValue).longValue());
-                        } else if (rawValue instanceof String) {
-                            try {
-                                editor.setAttribute(key, Long.parseLong((String) rawValue));
-                            } catch (NumberFormatException e) {
-                                Log.e("Batch Bridge", "Invalid SET_ATTRIBUTE integer value: couldn't parse value", e);
+                                if (rawValue instanceof Number) {
+                                    editor.setAttribute(key, ((Number) rawValue).doubleValue());
+                                } else if (rawValue instanceof String) {
+                                    try {
+                                        editor.setAttribute(key, Double.parseDouble((String) rawValue));
+                                    } catch (NumberFormatException e) {
+                                        Log.e("Batch Bridge", "Invalid SET_ATTRIBUTE float value: couldn't parse value", e);
+                                    }
+                                }
+                                break;
+                            }
+                            case "boolean": {
+                                Object rawValue = operationDescription.get("value");
+
+                                if (rawValue instanceof Boolean) {
+                                    editor.setAttribute(key, (Boolean) rawValue);
+                                } else if (rawValue instanceof String) {
+                                    try {
+                                        editor.setAttribute(key, Boolean.parseBoolean((String) rawValue));
+                                    } catch (NumberFormatException e) {
+                                        Log.e("Batch Bridge", "Invalid SET_ATTRIBUTE boolean value: couldn't parse value", e);
+                                    }
+                                }
+                                break;
                             }
                         }
-                    } else if ("float".equals(type)) {
-                        Object rawValue = operationDescription.get("value");
+                        break;
+                    case "REMOVE_ATTRIBUTE":
+                        editor.removeAttribute(getTypedParameter(operationDescription, "key", String.class));
+                        break;
+                    case "CLEAR_ATTRIBUTES":
+                        editor.clearAttributes();
+                        break;
+                    case "ADD_TAG": {
+                        String tag = getTypedParameter(operationDescription, "tag", String.class);
+                        String collection = getTypedParameter(operationDescription, "collection", String.class);
 
-                        if (rawValue instanceof Number) {
-                            editor.setAttribute(key, ((Number) rawValue).doubleValue());
-                        } else if (rawValue instanceof String) {
-                            try {
-                                editor.setAttribute(key, Double.parseDouble((String) rawValue));
-                            } catch (NumberFormatException e) {
-                                Log.e("Batch Bridge", "Invalid SET_ATTRIBUTE float value: couldn't parse value", e);
-                            }
-                        }
-                    } else if ("boolean".equals(type)) {
-                        Object rawValue = operationDescription.get("value");
-
-                        if (rawValue instanceof Boolean) {
-                            editor.setAttribute(key, (Boolean) rawValue);
-                        } else if (rawValue instanceof String) {
-                            try {
-                                editor.setAttribute(key, Boolean.parseBoolean((String) rawValue));
-                            } catch (NumberFormatException e) {
-                                Log.e("Batch Bridge", "Invalid SET_ATTRIBUTE boolean value: couldn't parse value", e);
-                            }
-                        }
+                        editor.addTag(collection, tag);
+                        break;
                     }
-                } else if ("REMOVE_ATTRIBUTE".equals(operationName)) {
-                    editor.removeAttribute(getTypedParameter(operationDescription, "key", String.class));
-                } else if ("CLEAR_ATTRIBUTES".equals(operationName)) {
-                    editor.clearAttributes();
-                } else if ("ADD_TAG".equals(operationName)) {
-                    String tag = getTypedParameter(operationDescription, "tag", String.class);
-                    String collection = getTypedParameter(operationDescription, "collection", String.class);
+                    case "REMOVE_TAG": {
+                        String tag = getTypedParameter(operationDescription, "tag", String.class);
+                        String collection = getTypedParameter(operationDescription, "collection", String.class);
 
-                    editor.addTag(collection, tag);
-                } else if ("REMOVE_TAG".equals(operationName)) {
-                    String tag = getTypedParameter(operationDescription, "tag", String.class);
-                    String collection = getTypedParameter(operationDescription, "collection", String.class);
-
-                    editor.removeTag(collection, tag);
-                } else if ("CLEAR_TAGS".equals(operationName)) {
-                    editor.clearTags();
-                } else if ("CLEAR_TAG_COLLECTION".equals(operationName)) {
-                    editor.clearTagCollection(getTypedParameter(operationDescription, "collection", String.class));
+                        editor.removeTag(collection, tag);
+                        break;
+                    }
+                    case "CLEAR_TAGS":
+                        editor.clearTags();
+                        break;
+                    case "CLEAR_TAG_COLLECTION":
+                        editor.clearTagCollection(getTypedParameter(operationDescription, "collection", String.class));
+                        break;
                 }
             }
 
