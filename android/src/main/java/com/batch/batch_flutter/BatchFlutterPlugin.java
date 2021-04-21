@@ -44,11 +44,9 @@ public class BatchFlutterPlugin implements FlutterPlugin, MethodCallHandler, Act
 
     private static boolean manageActivityLifecycle = true;
 
-    /// The MethodChannel that will the communication between Flutter and native Android
-    ///
-    /// This local reference serves to register the plugin with the Flutter Engine and unregister it
-    /// when the Flutter Engine is detached from the Activity
-    private MethodChannel channel;
+    /// MethodChannels used to communicate with the plugin
+    private MethodChannel coreChannel;
+    private MethodChannel userChannel;
 
     /// Current Activity
     @VisibleForTesting
@@ -65,13 +63,16 @@ public class BatchFlutterPlugin implements FlutterPlugin, MethodCallHandler, Act
 
     @Override
     public void onAttachedToEngine(@NonNull FlutterPluginBinding flutterPluginBinding) {
-        channel = new MethodChannel(flutterPluginBinding.getBinaryMessenger(), "batch_flutter");
-        channel.setMethodCallHandler(this);
+        coreChannel = new MethodChannel(flutterPluginBinding.getBinaryMessenger(), "batch_flutter");
+        coreChannel.setMethodCallHandler(this);
+        userChannel = new MethodChannel(flutterPluginBinding.getBinaryMessenger(), "batch_flutter.user");
+        userChannel.setMethodCallHandler(this);
     }
 
     @Override
     public void onDetachedFromEngine(@NonNull FlutterPluginBinding binding) {
-        channel.setMethodCallHandler(null);
+        coreChannel.setMethodCallHandler(null);
+        userChannel.setMethodCallHandler(null);
     }
 
     //region Method calling
