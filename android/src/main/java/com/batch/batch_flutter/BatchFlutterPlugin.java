@@ -167,6 +167,7 @@ public class BatchFlutterPlugin implements FlutterPlugin, MethodCallHandler, Act
 
     @Override
     public boolean onNewIntent(Intent intent) {
+        BatchFlutterLogger.d("Activity: onNewIntent");
         Activity activity = currentActivity.get();
         if (activity != null) {
             Batch.onNewIntent(activity, intent);
@@ -175,13 +176,16 @@ public class BatchFlutterPlugin implements FlutterPlugin, MethodCallHandler, Act
     }
 
     private void attachToActivity(@NonNull ActivityPluginBinding binding) {
+        BatchFlutterLogger.d("Activity: attached. Should manage lifecycle: " + manageActivityLifecycle);
         if (manageActivityLifecycle) {
             binding.addOnNewIntentListener(this);
+            Batch.onStart(binding.getActivity());
         }
         currentActivity = new WeakReference<>(binding.getActivity());
     }
 
     private void detachFromActivity() {
+        BatchFlutterLogger.d("Activity: detached. Should manage lifecycle: " + manageActivityLifecycle);
         if (manageActivityLifecycle) {
             Activity activity = currentActivity.get();
             if (activity != null) {
