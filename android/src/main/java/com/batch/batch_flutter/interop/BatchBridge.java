@@ -25,8 +25,6 @@ import java.util.Map;
  */
 
 public class BatchBridge {
-    private static final String INVALID_PARAMETER = "Invalid parameter";
-
     private static final String BRIDGE_VERSION_ENVIRONEMENT_VAR = "batch.bridge.version";
 
     private static final String BRIDGE_VERSION = "Bridge/1.0";
