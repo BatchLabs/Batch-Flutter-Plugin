@@ -1,6 +1,7 @@
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
     package="com.batch.batch_flutter_example">
    <application
+        android:name=".ExampleApplication"
         android:label="batch_flutter_example"
         android:icon="@mipmap/ic_launcher">
         <activity
