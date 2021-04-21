@@ -81,7 +81,9 @@ public class BatchFlutterPlugin implements FlutterPlugin, MethodCallHandler, Act
         if (!isSetup()) {
             final String message = "batch_flutter's BatchFlutterPlugin.setup() has not been called." +
                     "Please make sure that you followed integration steps, and called this method " +
-                    "in your Application subclass' onCreate().";
+                    "in your Application subclass' onCreate().\n" +
+                    "If you're still encountering an error, check that your application subclass" +
+                    "is registered using 'android:name' on <application> in your AndroidManifest.xml.";
             BatchFlutterLogger.e(message);
             result.error(BatchBridgePublicErrorCode.MISSING_SETUP.code,
                     message,
