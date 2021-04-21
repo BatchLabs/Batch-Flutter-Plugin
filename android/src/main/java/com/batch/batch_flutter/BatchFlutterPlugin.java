@@ -47,6 +47,7 @@ public class BatchFlutterPlugin implements FlutterPlugin, MethodCallHandler, Act
     /// MethodChannels used to communicate with the plugin
     private MethodChannel coreChannel;
     private MethodChannel userChannel;
+    private MethodChannel pushChannel;
 
     /// Current Activity
     @VisibleForTesting
@@ -67,12 +68,15 @@ public class BatchFlutterPlugin implements FlutterPlugin, MethodCallHandler, Act
         coreChannel.setMethodCallHandler(this);
         userChannel = new MethodChannel(flutterPluginBinding.getBinaryMessenger(), "batch_flutter.user");
         userChannel.setMethodCallHandler(this);
+        pushChannel = new MethodChannel(flutterPluginBinding.getBinaryMessenger(), "batch_flutter.push");
+        pushChannel.setMethodCallHandler(this);
     }
 
     @Override
     public void onDetachedFromEngine(@NonNull FlutterPluginBinding binding) {
         coreChannel.setMethodCallHandler(null);
         userChannel.setMethodCallHandler(null);
+        pushChannel.setMethodCallHandler(null);
     }
 
     //region Method calling
