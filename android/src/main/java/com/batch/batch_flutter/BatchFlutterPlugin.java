@@ -79,36 +79,49 @@ public class BatchFlutterPlugin implements FlutterPlugin, MethodCallHandler, Act
     @Override
     public void onMethodCall(@NonNull MethodCall call, @NonNull Result result) {
         if (!isSetup()) {
+            final String message = "batch_flutter's BatchFlutterPlugin.setup() has not been called." +
+                    "Please make sure that you followed integration steps, and called this method " +
+                    "in your Application subclass' onCreate().";
+            BatchFlutterLogger.e(message);
             result.error(BatchBridgePublicErrorCode.MISSING_SETUP.code,
-                    "batch_flutter's BatchFlutterPlugin.setup() has not been called.",
+                    message,
                     null);
             return;
         }
 
         Activity activity = currentActivity.get();
         if (activity == null) {
-            //TODO: Log
+            final String message = "batch_flutter isn't attached to an activity.";
+            BatchFlutterLogger.e(message);
             result.error(BatchBridgePublicErrorCode.NOT_ATTACHED_TO_ACTIVITY.code,
-                    "batch_flutter isn't attached to an activity.",
+                    message,
                     null);
             return;
         }
 
         Map<String, Object> arguments = null;
-        if (isObjectAMapOfStrings(call.arguments)) {
-            try {
-                //noinspection unchecked
-                arguments = (Map<String, Object>) call.arguments;
-            } catch (ClassCastException ignored) {
+        if (call.arguments != null) {
+            if (isObjectAMapOfStrings(call.arguments)) {
+                try {
+                    //noinspection unchecked
+                    arguments = (Map<String, Object>) call.arguments;
+                } catch (ClassCastException ignored) {
+                }
+            } else {
+                final String message = "Bridge message root arguments were not null, but not" +
+                        "of Map type. Got: '" + call.arguments.getClass().toString() + "'.";
+                BatchFlutterLogger.e(message);
+                result.error(BatchBridgePublicErrorCode.BAD_BRIDGE_ARGUMENT_TYPE.code,
+                        message,
+                        null);
+                return;
             }
         }
 
         if (arguments == null) {
-            //TODO: Log that flutter arguments were not a map
-            // or throw ?
             arguments = new HashMap<>();
         }
-        
+
         BatchBridge.call(call.method, arguments, activity)
                 .setExecutor(ContextCompat.getMainExecutor(activity))
                 .then(result::success)
@@ -119,7 +132,7 @@ public class BatchFlutterPlugin implements FlutterPlugin, MethodCallHandler, Act
                         BatchBridgeException bridgeException = (BatchBridgeException) e;
                         result.error(bridgeException.pluginCode.code, bridgeException.description, bridgeException.details);
                     } else {
-                        // TODO: Log the exception
+                        BatchFlutterLogger.e("Unknown bridge error", e);
                         result.error(BatchBridgePublicErrorCode.UNKNOWN_BRIDGE_ERROR.code, "Unknown Batch native bridge error. Please see logcat for more info.", null);
                     }
                 });
@@ -195,7 +208,7 @@ public class BatchFlutterPlugin implements FlutterPlugin, MethodCallHandler, Act
      */
     public static synchronized boolean setup(@NonNull Context context) {
         if (didCallSetup) {
-            //TODO: Log that this can't work as we've already been setup
+            BatchFlutterLogger.i("BatchFlutterPlugin.setup() has already been called once. Ignoring.");
             return true;
         }
 
@@ -206,7 +219,8 @@ public class BatchFlutterPlugin implements FlutterPlugin, MethodCallHandler, Act
             didCallSetup = true;
             return true;
         } else {
-            //TODO: Log
+            BatchFlutterLogger.e("Could not setup BatchFlutterPlugin: your configuration is " +
+                    "invalid. Did you set a non-null APIKey using getConfiguration() or using manifest meta-data?");
             return false;
         }
     }
@@ -223,6 +237,13 @@ public class BatchFlutterPlugin implements FlutterPlugin, MethodCallHandler, Act
         if (context == null) {
             throw new IllegalArgumentException("Cannot call getConfiguration with a null context");
         }
+
+        if (didCallSetup) {
+            BatchFlutterLogger.i("BatchFlutterPlugin.setup() has already been called. Any " +
+                    "configuration change won't be applied, as they all must be " +
+                    "done before calling this method.");
+        }
+
         // Ensure that we read the default values from the manifest before any custom one is set
         // as this can be called before "onAttachedToEngine"
         configuration.initFromManifest(context);

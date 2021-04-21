@@ -11,6 +11,7 @@ import com.batch.android.BatchEventData;
 import com.batch.android.BatchMessage;
 import com.batch.android.BatchUserDataEditor;
 import com.batch.android.json.JSONObject;
+import com.batch.batch_flutter.BatchFlutterLogger;
 import com.batch.batch_flutter.Promise;
 
 import java.util.Date;
@@ -56,7 +57,7 @@ public class BatchBridge {
         try {
             action = Action.fromName(actionName);
         } catch (IllegalArgumentException actionParsingException) {
-            //TODO: Log
+            BatchFlutterLogger.e("Bridge action '" + actionName + "' is not implemented.");
             throw new BatchBridgeNotImplementedException(actionName);
         }
 
@@ -111,11 +112,11 @@ public class BatchBridge {
         }
 
         if (result == null) {
-            throw new BatchBridgeException(BatchBridgePublicErrorCode.INTERNAL_BRIDGE_ERROR, "Required parameter '" + parameterName + "' missing");
+            throw new BatchBridgeException(BatchBridgePublicErrorCode.BAD_BRIDGE_ARGUMENT_TYPE, "Required parameter '" + parameterName + "' missing");
         }
 
         if (!parameterClass.isInstance(result)) {
-            throw new BatchBridgeException(BatchBridgePublicErrorCode.INTERNAL_BRIDGE_ERROR, "Required parameter '" + parameterName + "' of wrong type");
+            throw new BatchBridgeException(BatchBridgePublicErrorCode.BAD_BRIDGE_ARGUMENT_TYPE, "Required parameter '" + parameterName + "' of wrong type");
         }
 
         return (T) result;
