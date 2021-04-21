@@ -115,6 +115,16 @@ public class BatchFlutterPluginTest {
             Assert.assertFalse(echoResult.didCallError);
             Assert.assertTrue(echoResult.didCallSuccess);
             Assert.assertEquals(helloWorld, echoResult.lastSuccessArgument);
+
+            echoResult.didCallSuccess = false;
+            plugin.onMethodCall(new MethodCall("echo", null), echoResult);
+
+            shadowOf(getMainLooper()).idle();
+
+            Assert.assertFalse(echoResult.didCallNotImplemented);
+            Assert.assertFalse(echoResult.didCallError);
+            Assert.assertTrue(echoResult.didCallSuccess);
+            Assert.assertNull(echoResult.lastSuccessArgument);
         });
     }
 }
