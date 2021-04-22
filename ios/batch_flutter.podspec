@@ -8,7 +8,7 @@ Pod::Spec.new do |s|
   s.summary          = 'Batch.com Flutter Plugin'
   s.homepage         = 'https://batch.com'
   s.license          = { :type => 'MIT', :file => '../LICENSE' }
-  spec.authors = {
+  s.authors = {
     "Batch.com" => "support@batch.com"
   }
   s.source           = { :path => '.' }
