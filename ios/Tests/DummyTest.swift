@@ -2,7 +2,7 @@ import Foundation
 import XCTest
 
 class DummyTest: XCTestCase {
-    func dummyTest() {
+    func testDummy() {
         XCTAssertTrue(true)
     }
 }
