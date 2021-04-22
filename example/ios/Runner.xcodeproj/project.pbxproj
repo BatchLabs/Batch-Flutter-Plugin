@@ -225,7 +225,6 @@
 				TargetAttributes = {
 					51C6680B2631C53C0032290E = {
 						CreatedOnToolsVersion = 12.5;
-						TestTargetID = 97C146ED1CF9000F007C117D;
 					};
 					97C146ED1CF9000F007C117D = {
 						CreatedOnToolsVersion = 7.3.1;
@@ -322,7 +321,7 @@
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 			shellPath = /bin/sh;
-			shellScript = "/bin/sh \"$FLUTTER_ROOT/packages/flutter_tools/bin/xcode_backend.sh\" build";
+			shellScript = "/bin/sh \"$FLUTTER_ROOT/packages/flutter_tools/bin/xcode_backend.sh\" build\n";
 		};
 		BE7E116E942A5EA46073BE76 /* [CP] Check Pods Manifest.lock */ = {
 			isa = PBXShellScriptBuildPhase;
@@ -454,6 +453,7 @@
 				CLANG_ENABLE_MODULES = YES;
 				CURRENT_PROJECT_VERSION = "$(FLUTTER_BUILD_NUMBER)";
 				ENABLE_BITCODE = NO;
+				"EXCLUDED_ARCHS[sdk=iphonesimulator*]" = "arm64 i386";
 				INFOPLIST_FILE = Runner/Info.plist;
 				LD_RUNPATH_SEARCH_PATHS = (
 					"$(inherited)",
@@ -471,7 +471,6 @@
 			isa = XCBuildConfiguration;
 			baseConfigurationReference = F45B661D7CBB8FBC1B907027 /* Pods-batch_flutter_tests.debug.xcconfig */;
 			buildSettings = {
-				BUNDLE_LOADER = "$(TEST_HOST)";
 				CLANG_ANALYZER_NUMBER_OBJECT_CONVERSION = YES_AGGRESSIVE;
 				CLANG_CXX_LANGUAGE_STANDARD = "gnu++14";
 				CLANG_ENABLE_OBJC_WEAK = YES;
@@ -480,6 +479,7 @@
 				CLANG_WARN_UNGUARDED_AVAILABILITY = YES_AGGRESSIVE;
 				CODE_SIGN_STYLE = Automatic;
 				DEVELOPMENT_TEAM = U5K2ETC2Y6;
+				"EXCLUDED_ARCHS[sdk=iphonesimulator*]" = "arm64 i386";
 				GCC_C_LANGUAGE_STANDARD = gnu11;
 				INFOPLIST_FILE = batch_flutter_tests/Info.plist;
 				IPHONEOS_DEPLOYMENT_TARGET = 10.0;
@@ -490,13 +490,13 @@
 				);
 				MTL_ENABLE_DEBUG_INFO = INCLUDE_SOURCE;
 				MTL_FAST_MATH = YES;
+				ONLY_ACTIVE_ARCH = NO;
 				PRODUCT_BUNDLE_IDENTIFIER = "com.batch.ios.batch-flutter-tests";
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				SWIFT_ACTIVE_COMPILATION_CONDITIONS = DEBUG;
 				SWIFT_OPTIMIZATION_LEVEL = "-Onone";
 				SWIFT_VERSION = 5.0;
 				TARGETED_DEVICE_FAMILY = "1,2";
-				TEST_HOST = "$(BUILT_PRODUCTS_DIR)/Runner.app/Runner";
 			};
 			name = Debug;
 		};
@@ -504,7 +504,6 @@
 			isa = XCBuildConfiguration;
 			baseConfigurationReference = 12639553348C6CE73A2481CC /* Pods-batch_flutter_tests.release.xcconfig */;
 			buildSettings = {
-				BUNDLE_LOADER = "$(TEST_HOST)";
 				CLANG_ANALYZER_NUMBER_OBJECT_CONVERSION = YES_AGGRESSIVE;
 				CLANG_CXX_LANGUAGE_STANDARD = "gnu++14";
 				CLANG_ENABLE_OBJC_WEAK = YES;
@@ -513,6 +512,8 @@
 				CLANG_WARN_UNGUARDED_AVAILABILITY = YES_AGGRESSIVE;
 				CODE_SIGN_STYLE = Automatic;
 				DEVELOPMENT_TEAM = U5K2ETC2Y6;
+				EXCLUDED_ARCHS = "";
+				"EXCLUDED_ARCHS[sdk=iphonesimulator*]" = "arm64 i386";
 				GCC_C_LANGUAGE_STANDARD = gnu11;
 				INFOPLIST_FILE = batch_flutter_tests/Info.plist;
 				IPHONEOS_DEPLOYMENT_TARGET = 10.0;
@@ -526,7 +527,6 @@
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				SWIFT_VERSION = 5.0;
 				TARGETED_DEVICE_FAMILY = "1,2";
-				TEST_HOST = "$(BUILT_PRODUCTS_DIR)/Runner.app/Runner";
 			};
 			name = Release;
 		};
@@ -534,7 +534,6 @@
 			isa = XCBuildConfiguration;
 			baseConfigurationReference = EB5F1A6BE25A3333F91C1E16 /* Pods-batch_flutter_tests.profile.xcconfig */;
 			buildSettings = {
-				BUNDLE_LOADER = "$(TEST_HOST)";
 				CLANG_ANALYZER_NUMBER_OBJECT_CONVERSION = YES_AGGRESSIVE;
 				CLANG_CXX_LANGUAGE_STANDARD = "gnu++14";
 				CLANG_ENABLE_OBJC_WEAK = YES;
@@ -543,6 +542,7 @@
 				CLANG_WARN_UNGUARDED_AVAILABILITY = YES_AGGRESSIVE;
 				CODE_SIGN_STYLE = Automatic;
 				DEVELOPMENT_TEAM = U5K2ETC2Y6;
+				"EXCLUDED_ARCHS[sdk=iphonesimulator*]" = "arm64 i386";
 				GCC_C_LANGUAGE_STANDARD = gnu11;
 				INFOPLIST_FILE = batch_flutter_tests/Info.plist;
 				IPHONEOS_DEPLOYMENT_TARGET = 10.0;
@@ -556,7 +556,6 @@
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				SWIFT_VERSION = 5.0;
 				TARGETED_DEVICE_FAMILY = "1,2";
-				TEST_HOST = "$(BUILT_PRODUCTS_DIR)/Runner.app/Runner";
 			};
 			name = Profile;
 		};
@@ -675,6 +674,7 @@
 				CLANG_ENABLE_MODULES = YES;
 				CURRENT_PROJECT_VERSION = "$(FLUTTER_BUILD_NUMBER)";
 				ENABLE_BITCODE = NO;
+				"EXCLUDED_ARCHS[sdk=iphonesimulator*]" = "arm64 i386";
 				INFOPLIST_FILE = Runner/Info.plist;
 				LD_RUNPATH_SEARCH_PATHS = (
 					"$(inherited)",
@@ -697,6 +697,7 @@
 				CLANG_ENABLE_MODULES = YES;
 				CURRENT_PROJECT_VERSION = "$(FLUTTER_BUILD_NUMBER)";
 				ENABLE_BITCODE = NO;
+				"EXCLUDED_ARCHS[sdk=iphonesimulator*]" = "arm64 i386";
 				INFOPLIST_FILE = Runner/Info.plist;
 				LD_RUNPATH_SEARCH_PATHS = (
 					"$(inherited)",

@@ -59,7 +59,9 @@ def batch_flutter_additional_ios_build_settings(target)
     build_configuration.build_settings['CLANG_WARN_QUOTED_INCLUDE_IN_FRAMEWORK_HEADER'] = 'NO'
 
     # Remove this when Flutter finally supports Apple Silicon
-    build_configuration.build_settings['EXCLUDED_ARCHS[sdk=iphonesimulator*]'] = 'arm64'
+    build_configuration.build_settings['EXCLUDED_ARCHS[sdk=iphonesimulator*]'] = 'i386 arm64'
+
+    build_configuration.build_settings['ONLY_ACTIVE_ARCH'] = 'NO'
   end
 end
 
