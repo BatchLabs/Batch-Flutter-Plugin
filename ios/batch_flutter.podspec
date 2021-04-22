@@ -21,4 +21,9 @@ Pod::Spec.new do |s|
   s.ios.deployment_target  = '10.0'
   s.swift_version = '5.0'
   s.static_framework = true
+
+  # Unit Tests
+  s.test_spec 'Tests' do |test_spec|
+    test_spec.source_files = 'Tests/**/*.{h,m,swift}'
+  end
 end
