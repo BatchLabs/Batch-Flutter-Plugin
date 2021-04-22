@@ -3,10 +3,14 @@ PODS:
   - batch_flutter (0.0.1):
     - Batch (~> 1.17.0)
     - Flutter
+  - batch_flutter/Tests (0.0.1):
+    - Batch (~> 1.17.0)
+    - Flutter
   - Flutter (1.0.0)
 
 DEPENDENCIES:
   - batch_flutter (from `.symlinks/plugins/batch_flutter/ios`)
+  - batch_flutter/Tests (from `.symlinks/plugins/batch_flutter/ios`)
   - Flutter (from `Flutter`)
 
 SPEC REPOS:
@@ -21,9 +25,9 @@ EXTERNAL SOURCES:
 
 SPEC CHECKSUMS:
   Batch: 5e739a053a0d8ce231a48fb318104034fe5876c6
-  batch_flutter: 0a4977d51942061ac1927c76560bc1d81149d067
+  batch_flutter: 52070f725cd50039a3548cd3deb9952a945e6dc3
   Flutter: 434fef37c0980e73bb6479ef766c45957d4b510c
 
-PODFILE CHECKSUM: fe0e1ee7f3d1f7d00b11b474b62dd62134535aea
+PODFILE CHECKSUM: 739f7b3bd70f3497e588400194496612f6766a5d
 
 COCOAPODS: 1.10.1
