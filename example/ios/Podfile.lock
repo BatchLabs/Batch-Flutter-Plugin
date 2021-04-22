@@ -1,0 +1,29 @@
+PODS:
+  - Batch (1.17.0)
+  - batch_flutter (0.0.1):
+    - Batch (~> 1.17.0)
+    - Flutter
+  - Flutter (1.0.0)
+
+DEPENDENCIES:
+  - batch_flutter (from `.symlinks/plugins/batch_flutter/ios`)
+  - Flutter (from `Flutter`)
+
+SPEC REPOS:
+  trunk:
+    - Batch
+
+EXTERNAL SOURCES:
+  batch_flutter:
+    :path: ".symlinks/plugins/batch_flutter/ios"
+  Flutter:
+    :path: Flutter
+
+SPEC CHECKSUMS:
+  Batch: 5e739a053a0d8ce231a48fb318104034fe5876c6
+  batch_flutter: 0a4977d51942061ac1927c76560bc1d81149d067
+  Flutter: 434fef37c0980e73bb6479ef766c45957d4b510c
+
+PODFILE CHECKSUM: fe0e1ee7f3d1f7d00b11b474b62dd62134535aea
+
+COCOAPODS: 1.10.1
