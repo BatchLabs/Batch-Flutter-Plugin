@@ -1,4 +1,4 @@
-#import "BatchFlutterPlugin.h"
+#import "BatchFlutterPluginTrampoline.h"
 #if __has_include(<batch_flutter/batch_flutter-Swift.h>)
 #import <batch_flutter/batch_flutter-Swift.h>
 #else
@@ -8,8 +8,8 @@
 #import "batch_flutter-Swift.h"
 #endif
 
-@implementation BatchFlutterPlugin
+@implementation BatchFlutterPluginTrampoline
 + (void)registerWithRegistrar:(NSObject<FlutterPluginRegistrar>*)registrar {
-  [SwiftBatchFlutterPlugin registerWithRegistrar:registrar];
+  [BatchFlutterPlugin registerWithRegistrar:registrar];
 }
 @end
