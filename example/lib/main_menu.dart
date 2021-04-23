@@ -37,9 +37,9 @@ class _MainMenuState extends State<MainMenu> {
 
     try {
       lastPushToken =
-          await BatchPush.instance.lastKnownPushToken ?? 'null Installation ID';
+          await BatchPush.instance.lastKnownPushToken ?? 'null push token';
     } on PlatformException {
-      lastPushToken = 'Failed to get Installation ID.';
+      lastPushToken = 'Failed to get Push Token';
     }
 
     if (!mounted) return;
@@ -60,6 +60,11 @@ class _MainMenuState extends State<MainMenu> {
         ElevatedButton(
           child: Text("Refresh"),
           onPressed: () => updateBatchInformation(),
+        ),
+        ElevatedButton(
+          child: Text("Request notif. auth. (iOS)"),
+          onPressed: () =>
+              BatchPush.instance.requestNotificationAuthorization(),
         ),
         ElevatedButton(
           child: Text("Open Batch Store"),

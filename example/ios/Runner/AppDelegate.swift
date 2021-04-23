@@ -13,6 +13,7 @@ import Batch
     
     BatchUNUserNotificationCenterDelegate.registerAsDelegate()
     BatchFlutterPlugin.configuration.APIKey = "6082F280A2A98586FD421AADEE5AB5"
+    BatchFlutterPlugin.setup()
     
     return super.application(application, didFinishLaunchingWithOptions: launchOptions)
   }
