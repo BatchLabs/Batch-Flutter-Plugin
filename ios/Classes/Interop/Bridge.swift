@@ -11,11 +11,11 @@ struct Bridge {
             return FlutterMethodNotImplemented
         }
         
-        return doAction(action, parameters: parameters)
+        return doAction(action, parameters: parameters) as AnyObject?
     }
     
     // Bool is a temporary return value
-func doAction(_ action: Action, parameters: [String: AnyObject]) -> Any? {
+    func doAction(_ action: Action, parameters: [String: AnyObject]) -> Any? {
         switch action {
             case .push_iOSRefreshToken:
                 BatchPush.refreshToken()
@@ -34,12 +34,12 @@ func doAction(_ action: Action, parameters: [String: AnyObject]) -> Any? {
                 //TODO
                 return nil
             case .push_getLastKnownPushToken:
-                return BatchPush.lastKnownPushToken
+                return BatchPush.lastKnownPushToken() as NSString?
             case .user_getInstallationID:
-                return BatchUser.installationID
+                return BatchUser.installationID() as NSString?
             case .echo:
                 //TODO: error
-                return parameters["value"] as? String
+                return parameters["value"] as? NSString
             default:
                 return FlutterMethodNotImplemented
         }

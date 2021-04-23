@@ -53,7 +53,9 @@ public class BatchFlutterPlugin: NSObject, FlutterPlugin {
             }
         }
         
-        result(bridge.call(rawAction: call.method, parameters: bridgeParameters))
+        let bridgeResult = bridge.call(rawAction: call.method, parameters: bridgeParameters)
+        print("Debug - Got Batch Flutter Call: \(call.method). Result: \(String(describing: bridgeResult))")
+        result(bridgeResult)
     }
     
     // MARK: Public API
