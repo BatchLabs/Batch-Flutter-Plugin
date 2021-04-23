@@ -79,6 +79,11 @@ end
 target 'batch_flutter_tests' do
 end
 
+target 'RichNotifications' do
+  use_frameworks!
+  pod 'BatchExtension'
+end
+
 post_install do |installer|
   installer.pods_project.targets.each do |target|
     #if target.name == 'batch_flutter-Unit-Tests'
