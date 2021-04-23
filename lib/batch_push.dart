@@ -10,4 +10,8 @@ class BatchPush {
   Future<String?> get lastKnownPushToken async {
     return await _channel.invokeMethod('push.getLastKnownPushToken');
   }
+
+  void requestNotificationAuthorization() {
+    _channel.invokeMethod('push.iOS.requestPermission');
+  }
 }

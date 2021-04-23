@@ -39,6 +39,8 @@ public class BatchFlutterPlugin: NSObject, FlutterPlugin {
     private let bridge = Bridge()
     
     public func handle(_ call: FlutterMethodCall, result: @escaping FlutterResult) {
+        // TODO: Check for setup call
+        
         // We only support [String: AnyObject] arguments, or nil.
         // TODO: check if nil/empty action
         
@@ -82,10 +84,11 @@ public class BatchFlutterPlugin: NSObject, FlutterPlugin {
      
      Once setup succeeds, the configuration cannot be changed using the `configuration` property anymore.
      
-     If `manageBatchLifecycle` is true, this method will start Batch.
+     If `manageBatchLifecycle` is true, this method will start Batch and refresh the push token.
      
      - Returns: True if the plugin was setup, false othwersie. Returns true on any subsequent call if one setup call succeeded.
      */
+    @discardableResult
     public static func setup() -> Bool {
         if didCallSetup {
             //TODO log
@@ -102,6 +105,7 @@ public class BatchFlutterPlugin: NSObject, FlutterPlugin {
         if manageBatchLifecycle {
             if let batchAPIKey = configuration.actualAPIKey {
                 Batch.start(withAPIKey: batchAPIKey)
+                BatchPush.refreshToken()
             } else {
                 // TODO: Race condition, log an error
             }
