@@ -3,7 +3,7 @@ enum Action: String {
     case optOut = "optOut"
     case optOutAndWipeData = "optOutAndWipeData"
     
-    case push_GetLastKnownPushToken = "push.getLastKnownPushToken"
+    case push_getLastKnownPushToken = "push.getLastKnownPushToken"
     case push_iOSRequestPermission = "push.iOS.requestPermission"
     case push_iOSRefreshToken = "push.iOS.refreshToken"
     case push_clearBadge = "push.clearBadge"

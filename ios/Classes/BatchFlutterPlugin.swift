@@ -13,6 +13,8 @@ fileprivate struct Consts {
 @objc
 public class BatchFlutterPlugin: NSObject, FlutterPlugin {
     
+    // MARK: Internal static variables & methods
+    
     private static var didCallSetup = false
     
     private static func setupBatchEnvironmentVariables() {
@@ -21,13 +23,37 @@ public class BatchFlutterPlugin: NSObject, FlutterPlugin {
     }
     
     public static func register(with registrar: FlutterPluginRegistrar) {
-        let channel = FlutterMethodChannel(name: "batch_flutter", binaryMessenger: registrar.messenger())
         let instance = BatchFlutterPlugin()
-        registrar.addMethodCallDelegate(instance, channel: channel)
+        registerChannel(name: "batch_flutter", registrar: registrar, pluginInstance: instance)
+        registerChannel(name: "batch_flutter.user", registrar: registrar, pluginInstance: instance)
+        registerChannel(name: "batch_flutter.push", registrar: registrar, pluginInstance: instance)
+    }
+    
+    private static func registerChannel(name: String, registrar: FlutterPluginRegistrar, pluginInstance: BatchFlutterPlugin) {
+        let channel = FlutterMethodChannel(name: name, binaryMessenger: registrar.messenger())
+        registrar.addMethodCallDelegate(pluginInstance, channel: channel)
     }
 
+    // MARK: Internal instance variables & methods
+    
+    private let bridge = Bridge()
+    
     public func handle(_ call: FlutterMethodCall, result: @escaping FlutterResult) {
+        // We only support [String: AnyObject] arguments, or nil.
+        // TODO: check if nil/empty action
         
+        var bridgeParameters: [String: AnyObject] = [:]
+        
+        if let callArguments = call.arguments {
+            if let dictionaryArguments =  callArguments as? [String: AnyObject] {
+                bridgeParameters = dictionaryArguments
+            } else {
+                // TODO: throw error
+                print("Invalid flutter arguments")
+            }
+        }
+        
+        result(bridge.call(rawAction: call.method, parameters: bridgeParameters))
     }
     
     // MARK: Public API
@@ -53,6 +79,8 @@ public class BatchFlutterPlugin: NSObject, FlutterPlugin {
      Failure to do so will throw exceptions on the Flutter side of the plugin.
      
      Once setup succeeds, the configuration cannot be changed using the `configuration` property anymore.
+     
+     If `manageBatchLifecycle` is true, this method will start Batch.
      
      - Returns: True if the plugin was setup, false othwersie. Returns true on any subsequent call if one setup call succeeded.
      */
