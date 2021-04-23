@@ -3,7 +3,7 @@
 	archiveVersion = 1;
 	classes = {
 	};
-	objectVersion = 50;
+	objectVersion = 52;
 	objects = {
 
 /* Begin PBXBuildFile section */
@@ -11,6 +11,9 @@
 		1498D2341E8E89220040F4C2 /* GeneratedPluginRegistrant.m in Sources */ = {isa = PBXBuildFile; fileRef = 1498D2331E8E89220040F4C2 /* GeneratedPluginRegistrant.m */; };
 		2428AECDD0B74C5AC213AB60 /* Pods_Runner.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 25804F8FBEDE323A9BE7B9CA /* Pods_Runner.framework */; };
 		3B3967161E833CAA004F5970 /* AppFrameworkInfo.plist in Resources */ = {isa = PBXBuildFile; fileRef = 3B3967151E833CAA004F5970 /* AppFrameworkInfo.plist */; };
+		510F5CA82633505C004184A4 /* NotificationService.swift in Sources */ = {isa = PBXBuildFile; fileRef = 510F5CA72633505C004184A4 /* NotificationService.swift */; };
+		510F5CAC2633505C004184A4 /* RichNotifications.appex in Embed App Extensions */ = {isa = PBXBuildFile; fileRef = 510F5CA52633505C004184A4 /* RichNotifications.appex */; settings = {ATTRIBUTES = (RemoveHeadersOnCopy, ); }; };
+		510F5CB426335086004184A4 /* BatchExtension in Frameworks */ = {isa = PBXBuildFile; productRef = 510F5CB326335086004184A4 /* BatchExtension */; };
 		51C6680F2631C53C0032290E /* batch_flutter_tests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 51C6680E2631C53C0032290E /* batch_flutter_tests.swift */; };
 		74858FAF1ED2DC5600515810 /* AppDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = 74858FAE1ED2DC5600515810 /* AppDelegate.swift */; };
 		97C146FC1CF9000F007C117D /* Main.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 97C146FA1CF9000F007C117D /* Main.storyboard */; };
@@ -20,6 +23,13 @@
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
+		510F5CAA2633505C004184A4 /* PBXContainerItemProxy */ = {
+			isa = PBXContainerItemProxy;
+			containerPortal = 97C146E61CF9000F007C117D /* Project object */;
+			proxyType = 1;
+			remoteGlobalIDString = 510F5CA42633505C004184A4;
+			remoteInfo = RichNotifications;
+		};
 		51C668112631C53C0032290E /* PBXContainerItemProxy */ = {
 			isa = PBXContainerItemProxy;
 			containerPortal = 97C146E61CF9000F007C117D /* Project object */;
@@ -30,6 +40,17 @@
 /* End PBXContainerItemProxy section */
 
 /* Begin PBXCopyFilesBuildPhase section */
+		510F5CB12633505C004184A4 /* Embed App Extensions */ = {
+			isa = PBXCopyFilesBuildPhase;
+			buildActionMask = 2147483647;
+			dstPath = "";
+			dstSubfolderSpec = 13;
+			files = (
+				510F5CAC2633505C004184A4 /* RichNotifications.appex in Embed App Extensions */,
+			);
+			name = "Embed App Extensions";
+			runOnlyForDeploymentPostprocessing = 0;
+		};
 		9705A1C41CF9048500538489 /* Embed Frameworks */ = {
 			isa = PBXCopyFilesBuildPhase;
 			buildActionMask = 2147483647;
@@ -52,6 +73,9 @@
 		402FE3B8584E62B895E27900 /* Pods-Runner.debug.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-Runner.debug.xcconfig"; path = "Target Support Files/Pods-Runner/Pods-Runner.debug.xcconfig"; sourceTree = "<group>"; };
 		456E72D6AF43922233734A06 /* Pods-Runner.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-Runner.release.xcconfig"; path = "Target Support Files/Pods-Runner/Pods-Runner.release.xcconfig"; sourceTree = "<group>"; };
 		510F5CA026334C94004184A4 /* Runner.entitlements */ = {isa = PBXFileReference; lastKnownFileType = text.plist.entitlements; path = Runner.entitlements; sourceTree = "<group>"; };
+		510F5CA52633505C004184A4 /* RichNotifications.appex */ = {isa = PBXFileReference; explicitFileType = "wrapper.app-extension"; includeInIndex = 0; path = RichNotifications.appex; sourceTree = BUILT_PRODUCTS_DIR; };
+		510F5CA72633505C004184A4 /* NotificationService.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = NotificationService.swift; sourceTree = "<group>"; };
+		510F5CA92633505C004184A4 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
 		51ADFDD92631C629009721CC /* Pods_Runner.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; path = Pods_Runner.framework; sourceTree = BUILT_PRODUCTS_DIR; };
 		51C6680C2631C53C0032290E /* batch_flutter_tests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = batch_flutter_tests.xctest; sourceTree = BUILT_PRODUCTS_DIR; };
 		51C6680E2631C53C0032290E /* batch_flutter_tests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = batch_flutter_tests.swift; sourceTree = "<group>"; };
@@ -72,6 +96,14 @@
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
+		510F5CA22633505C004184A4 /* Frameworks */ = {
+			isa = PBXFrameworksBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				510F5CB426335086004184A4 /* BatchExtension in Frameworks */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
 		51C668092631C53C0032290E /* Frameworks */ = {
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
@@ -102,6 +134,15 @@
 			name = Frameworks;
 			sourceTree = "<group>";
 		};
+		510F5CA62633505C004184A4 /* RichNotifications */ = {
+			isa = PBXGroup;
+			children = (
+				510F5CA72633505C004184A4 /* NotificationService.swift */,
+				510F5CA92633505C004184A4 /* Info.plist */,
+			);
+			path = RichNotifications;
+			sourceTree = "<group>";
+		};
 		51C6680D2631C53C0032290E /* batch_flutter_tests */ = {
 			isa = PBXGroup;
 			children = (
@@ -128,6 +169,7 @@
 				9740EEB11CF90186004384FC /* Flutter */,
 				97C146F01CF9000F007C117D /* Runner */,
 				51C6680D2631C53C0032290E /* batch_flutter_tests */,
+				510F5CA62633505C004184A4 /* RichNotifications */,
 				97C146EF1CF9000F007C117D /* Products */,
 				BBA42F27AA1541C05555B485 /* Pods */,
 				3531AB89C92BCF03A6C02F03 /* Frameworks */,
@@ -139,6 +181,7 @@
 			children = (
 				97C146EE1CF9000F007C117D /* Runner.app */,
 				51C6680C2631C53C0032290E /* batch_flutter_tests.xctest */,
+				510F5CA52633505C004184A4 /* RichNotifications.appex */,
 			);
 			name = Products;
 			sourceTree = "<group>";
@@ -175,6 +218,26 @@
 /* End PBXGroup section */
 
 /* Begin PBXNativeTarget section */
+		510F5CA42633505C004184A4 /* RichNotifications */ = {
+			isa = PBXNativeTarget;
+			buildConfigurationList = 510F5CAD2633505C004184A4 /* Build configuration list for PBXNativeTarget "RichNotifications" */;
+			buildPhases = (
+				510F5CA12633505C004184A4 /* Sources */,
+				510F5CA22633505C004184A4 /* Frameworks */,
+				510F5CA32633505C004184A4 /* Resources */,
+			);
+			buildRules = (
+			);
+			dependencies = (
+			);
+			name = RichNotifications;
+			packageProductDependencies = (
+				510F5CB326335086004184A4 /* BatchExtension */,
+			);
+			productName = RichNotifications;
+			productReference = 510F5CA52633505C004184A4 /* RichNotifications.appex */;
+			productType = "com.apple.product-type.app-extension";
+		};
 		51C6680B2631C53C0032290E /* batch_flutter_tests */ = {
 			isa = PBXNativeTarget;
 			buildConfigurationList = 51C668162631C53C0032290E /* Build configuration list for PBXNativeTarget "batch_flutter_tests" */;
@@ -205,10 +268,12 @@
 				97C146EC1CF9000F007C117D /* Resources */,
 				9705A1C41CF9048500538489 /* Embed Frameworks */,
 				3B06AD1E1E4923F5004D2608 /* Thin Binary */,
+				510F5CB12633505C004184A4 /* Embed App Extensions */,
 			);
 			buildRules = (
 			);
 			dependencies = (
+				510F5CAB2633505C004184A4 /* PBXTargetDependency */,
 			);
 			name = Runner;
 			productName = Runner;
@@ -225,6 +290,9 @@
 				LastUpgradeCheck = 1020;
 				ORGANIZATIONNAME = "";
 				TargetAttributes = {
+					510F5CA42633505C004184A4 = {
+						CreatedOnToolsVersion = 12.5;
+					};
 					51C6680B2631C53C0032290E = {
 						CreatedOnToolsVersion = 12.5;
 					};
@@ -243,17 +311,28 @@
 				Base,
 			);
 			mainGroup = 97C146E51CF9000F007C117D;
+			packageReferences = (
+				510F5CB226335086004184A4 /* XCRemoteSwiftPackageReference "Batch-iOS-SDK-Extension" */,
+			);
 			productRefGroup = 97C146EF1CF9000F007C117D /* Products */;
 			projectDirPath = "";
 			projectRoot = "";
 			targets = (
 				97C146ED1CF9000F007C117D /* Runner */,
 				51C6680B2631C53C0032290E /* batch_flutter_tests */,
+				510F5CA42633505C004184A4 /* RichNotifications */,
 			);
 		};
 /* End PBXProject section */
 
 /* Begin PBXResourcesBuildPhase section */
+		510F5CA32633505C004184A4 /* Resources */ = {
+			isa = PBXResourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
 		51C6680A2631C53C0032290E /* Resources */ = {
 			isa = PBXResourcesBuildPhase;
 			buildActionMask = 2147483647;
@@ -350,6 +429,14 @@
 /* End PBXShellScriptBuildPhase section */
 
 /* Begin PBXSourcesBuildPhase section */
+		510F5CA12633505C004184A4 /* Sources */ = {
+			isa = PBXSourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				510F5CA82633505C004184A4 /* NotificationService.swift in Sources */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
 		51C668082631C53C0032290E /* Sources */ = {
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
@@ -370,6 +457,11 @@
 /* End PBXSourcesBuildPhase section */
 
 /* Begin PBXTargetDependency section */
+		510F5CAB2633505C004184A4 /* PBXTargetDependency */ = {
+			isa = PBXTargetDependency;
+			target = 510F5CA42633505C004184A4 /* RichNotifications */;
+			targetProxy = 510F5CAA2633505C004184A4 /* PBXContainerItemProxy */;
+		};
 		51C668122631C53C0032290E /* PBXTargetDependency */ = {
 			isa = PBXTargetDependency;
 			target = 97C146ED1CF9000F007C117D /* Runner */;
@@ -451,6 +543,7 @@
 			isa = XCBuildConfiguration;
 			baseConfigurationReference = 7AFA3C8E1D35360C0083082E /* Release.xcconfig */;
 			buildSettings = {
+				ALWAYS_EMBED_SWIFT_STANDARD_LIBRARIES = YES;
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
 				CLANG_ENABLE_MODULES = YES;
 				CODE_SIGN_ENTITLEMENTS = Runner/Runner.entitlements;
@@ -469,6 +562,93 @@
 				SWIFT_OBJC_BRIDGING_HEADER = "Runner/Runner-Bridging-Header.h";
 				SWIFT_VERSION = 5.0;
 				VERSIONING_SYSTEM = "apple-generic";
+			};
+			name = Profile;
+		};
+		510F5CAE2633505C004184A4 /* Debug */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				CLANG_ANALYZER_NUMBER_OBJECT_CONVERSION = YES_AGGRESSIVE;
+				CLANG_CXX_LANGUAGE_STANDARD = "gnu++14";
+				CLANG_ENABLE_OBJC_WEAK = YES;
+				CLANG_WARN_DOCUMENTATION_COMMENTS = YES;
+				CLANG_WARN_QUOTED_INCLUDE_IN_FRAMEWORK_HEADER = YES;
+				CLANG_WARN_UNGUARDED_AVAILABILITY = YES_AGGRESSIVE;
+				CODE_SIGN_STYLE = Automatic;
+				DEVELOPMENT_TEAM = U5K2ETC2Y6;
+				GCC_C_LANGUAGE_STANDARD = gnu11;
+				INFOPLIST_FILE = RichNotifications/Info.plist;
+				IPHONEOS_DEPLOYMENT_TARGET = 14.5;
+				LD_RUNPATH_SEARCH_PATHS = (
+					"$(inherited)",
+					"@executable_path/Frameworks",
+					"@executable_path/../../Frameworks",
+				);
+				MTL_ENABLE_DEBUG_INFO = INCLUDE_SOURCE;
+				MTL_FAST_MATH = YES;
+				PRODUCT_BUNDLE_IDENTIFIER = com.batch.batchFlutterExample.RichNotifications;
+				PRODUCT_NAME = "$(TARGET_NAME)";
+				SKIP_INSTALL = YES;
+				SWIFT_ACTIVE_COMPILATION_CONDITIONS = DEBUG;
+				SWIFT_OPTIMIZATION_LEVEL = "-Onone";
+				SWIFT_VERSION = 5.0;
+				TARGETED_DEVICE_FAMILY = "1,2";
+			};
+			name = Debug;
+		};
+		510F5CAF2633505C004184A4 /* Release */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				CLANG_ANALYZER_NUMBER_OBJECT_CONVERSION = YES_AGGRESSIVE;
+				CLANG_CXX_LANGUAGE_STANDARD = "gnu++14";
+				CLANG_ENABLE_OBJC_WEAK = YES;
+				CLANG_WARN_DOCUMENTATION_COMMENTS = YES;
+				CLANG_WARN_QUOTED_INCLUDE_IN_FRAMEWORK_HEADER = YES;
+				CLANG_WARN_UNGUARDED_AVAILABILITY = YES_AGGRESSIVE;
+				CODE_SIGN_STYLE = Automatic;
+				DEVELOPMENT_TEAM = U5K2ETC2Y6;
+				GCC_C_LANGUAGE_STANDARD = gnu11;
+				INFOPLIST_FILE = RichNotifications/Info.plist;
+				IPHONEOS_DEPLOYMENT_TARGET = 14.5;
+				LD_RUNPATH_SEARCH_PATHS = (
+					"$(inherited)",
+					"@executable_path/Frameworks",
+					"@executable_path/../../Frameworks",
+				);
+				MTL_FAST_MATH = YES;
+				PRODUCT_BUNDLE_IDENTIFIER = com.batch.batchFlutterExample.RichNotifications;
+				PRODUCT_NAME = "$(TARGET_NAME)";
+				SKIP_INSTALL = YES;
+				SWIFT_VERSION = 5.0;
+				TARGETED_DEVICE_FAMILY = "1,2";
+			};
+			name = Release;
+		};
+		510F5CB02633505C004184A4 /* Profile */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				CLANG_ANALYZER_NUMBER_OBJECT_CONVERSION = YES_AGGRESSIVE;
+				CLANG_CXX_LANGUAGE_STANDARD = "gnu++14";
+				CLANG_ENABLE_OBJC_WEAK = YES;
+				CLANG_WARN_DOCUMENTATION_COMMENTS = YES;
+				CLANG_WARN_QUOTED_INCLUDE_IN_FRAMEWORK_HEADER = YES;
+				CLANG_WARN_UNGUARDED_AVAILABILITY = YES_AGGRESSIVE;
+				CODE_SIGN_STYLE = Automatic;
+				DEVELOPMENT_TEAM = U5K2ETC2Y6;
+				GCC_C_LANGUAGE_STANDARD = gnu11;
+				INFOPLIST_FILE = RichNotifications/Info.plist;
+				IPHONEOS_DEPLOYMENT_TARGET = 14.5;
+				LD_RUNPATH_SEARCH_PATHS = (
+					"$(inherited)",
+					"@executable_path/Frameworks",
+					"@executable_path/../../Frameworks",
+				);
+				MTL_FAST_MATH = YES;
+				PRODUCT_BUNDLE_IDENTIFIER = com.batch.batchFlutterExample.RichNotifications;
+				PRODUCT_NAME = "$(TARGET_NAME)";
+				SKIP_INSTALL = YES;
+				SWIFT_VERSION = 5.0;
+				TARGETED_DEVICE_FAMILY = "1,2";
 			};
 			name = Profile;
 		};
@@ -675,6 +855,7 @@
 			isa = XCBuildConfiguration;
 			baseConfigurationReference = 9740EEB21CF90195004384FC /* Debug.xcconfig */;
 			buildSettings = {
+				ALWAYS_EMBED_SWIFT_STANDARD_LIBRARIES = YES;
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
 				CLANG_ENABLE_MODULES = YES;
 				CODE_SIGN_ENTITLEMENTS = Runner/Runner.entitlements;
@@ -701,6 +882,7 @@
 			isa = XCBuildConfiguration;
 			baseConfigurationReference = 7AFA3C8E1D35360C0083082E /* Release.xcconfig */;
 			buildSettings = {
+				ALWAYS_EMBED_SWIFT_STANDARD_LIBRARIES = YES;
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
 				CLANG_ENABLE_MODULES = YES;
 				CODE_SIGN_ENTITLEMENTS = Runner/Runner.entitlements;
@@ -725,6 +907,16 @@
 /* End XCBuildConfiguration section */
 
 /* Begin XCConfigurationList section */
+		510F5CAD2633505C004184A4 /* Build configuration list for PBXNativeTarget "RichNotifications" */ = {
+			isa = XCConfigurationList;
+			buildConfigurations = (
+				510F5CAE2633505C004184A4 /* Debug */,
+				510F5CAF2633505C004184A4 /* Release */,
+				510F5CB02633505C004184A4 /* Profile */,
+			);
+			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
+		};
 		51C668162631C53C0032290E /* Build configuration list for PBXNativeTarget "batch_flutter_tests" */ = {
 			isa = XCConfigurationList;
 			buildConfigurations = (
@@ -756,6 +948,25 @@
 			defaultConfigurationName = Release;
 		};
 /* End XCConfigurationList section */
+
+/* Begin XCRemoteSwiftPackageReference section */
+		510F5CB226335086004184A4 /* XCRemoteSwiftPackageReference "Batch-iOS-SDK-Extension" */ = {
+			isa = XCRemoteSwiftPackageReference;
+			repositoryURL = "https://github.com/BatchLabs/Batch-iOS-SDK-Extension.git";
+			requirement = {
+				kind = upToNextMajorVersion;
+				minimumVersion = 3.0.2;
+			};
+		};
+/* End XCRemoteSwiftPackageReference section */
+
+/* Begin XCSwiftPackageProductDependency section */
+		510F5CB326335086004184A4 /* BatchExtension */ = {
+			isa = XCSwiftPackageProductDependency;
+			package = 510F5CB226335086004184A4 /* XCRemoteSwiftPackageReference "Batch-iOS-SDK-Extension" */;
+			productName = BatchExtension;
+		};
+/* End XCSwiftPackageProductDependency section */
 	};
 	rootObject = 97C146E61CF9000F007C117D /* Project object */;
 }
