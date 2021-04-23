@@ -2,10 +2,23 @@ import Flutter
 import UIKit
 import Batch
 
+fileprivate struct Consts {
+    static let BridgeVersionEnvironmentVar = "batch.bridge.version"
+    static let BridgeVersion = "Bridge/1.0"
+    
+    static let PluginVersionEnvironmentVar = "batch.plugin.version"
+    static let PluginVersion = "Flutter/0.0.1"
+}
+
 @objc
 public class BatchFlutterPlugin: NSObject, FlutterPlugin {
     
     private static var didCallSetup = false
+    
+    private static func setupBatchEnvironmentVariables() {
+        setenv(Consts.BridgeVersionEnvironmentVar, Consts.BridgeVersion, 1)
+        setenv(Consts.PluginVersionEnvironmentVar, Consts.PluginVersion, 1)
+    }
     
     public static func register(with registrar: FlutterPluginRegistrar) {
         let channel = FlutterMethodChannel(name: "batch_flutter", binaryMessenger: registrar.messenger())
