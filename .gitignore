@@ -8,7 +8,7 @@ build/
 /.gradle
 
 # API Documentations
-/api_docs/dart
+/api_docs/flutter-api-reference
 
 # Miscellaneous
 *.class

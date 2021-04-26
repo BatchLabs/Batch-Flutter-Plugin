@@ -1,4 +1,4 @@
 .PHONY: doc
 
 doc:
-	dartdoc build --output api_docs/dart
+	dartdoc build --output api_docs/flutter-api-reference

@@ -23,7 +23,7 @@ The plugin will eventually be available on pub.dev.
  
 # Building
 
-Build instructions are detailed in [BUILDING.md](BUILDING.md).
+Build instructions are detailed in [BUILDING.md](https://github.com/BatchLabs/Batch-Flutter-Plugin/blob/master/BUILDING.md).
 
 # Contributing
-Please refer to our [contributing guidelines](CONTRIBUTING.md).
+Please refer to our [contributing guidelines](https://github.com/BatchLabs/Batch-Flutter-Plugin/blob/master/CONTRIBUTING.md).
