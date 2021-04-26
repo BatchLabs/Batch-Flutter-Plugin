@@ -43,6 +43,8 @@ android {
         //noinspection GradleDynamicVersion
         implementation 'com.batch.android:batch-sdk:1.17.+'
 
+        implementation 'androidx.appcompat:appcompat:1.2.0'
+
         testImplementation 'androidx.test:core:1.3.0'
         testImplementation 'androidx.test:rules:1.3.0'
         testImplementation 'androidx.test.ext:junit:1.1.2'
