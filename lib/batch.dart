@@ -18,4 +18,13 @@ class Batch {
   static Batch instance = new Batch();
 
   static const MethodChannel _channel = const MethodChannel('batch_flutter');
+
+  /// Get the debug view controller.
+  /// For development purposes only, this contains UI with multiple debug
+  /// features allowing you to debug your Batch implementation more easily.
+  /// If you want to make it accessible in production, you should hide it
+  /// in a hard to reproduce sequence.
+  void showDebugView() {
+    _channel.invokeMethod('debug.showDebugView');
+  }
 }
