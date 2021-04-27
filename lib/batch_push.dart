@@ -23,6 +23,12 @@ class BatchPush {
     return await _channel.invokeMethod('push.getLastKnownPushToken');
   }
 
+  /// Call this method to trigger the iOS popup that asks the user if they want
+  /// to allow notifications to be displayed, then get a Push token.
+  /// The default registration is made with Badge, Sound and Alert.
+  /// You should call this at a strategic moment, like at the end of your onboarding.
+  ///
+  /// Batch will automatically ask for a push token if the user replies positively.
   void requestNotificationAuthorization() {
     _channel.invokeMethod('push.iOS.requestPermission');
   }
