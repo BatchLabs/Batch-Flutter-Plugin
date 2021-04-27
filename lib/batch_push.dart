@@ -32,4 +32,19 @@ class BatchPush {
   void requestNotificationAuthorization() {
     _channel.invokeMethod('push.iOS.requestPermission');
   }
+
+  /// Call this method to ask iOS for a provisional notification authorization.
+  /// Batch will then automatically ask for a push token.
+  ///
+  /// Provisional authorization will NOT show a popup asking for user authorization,
+  /// but notifications will NOT be displayed on the lock screen, or as a banner
+  /// when the phone is unlocked.
+  /// They will directly be sent to the notification center,
+  /// accessible when the user swipes up on the lockscreen,
+  /// or down from the statusbar when unlocked.
+  ///
+  /// This method does nothing on iOS 11 or lower.
+  void requestProvisionalNotificationAuthorization() {
+    _channel.invokeMethod('push.iOS.requestProvisionalPermission');
+  }
 }
