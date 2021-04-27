@@ -84,6 +84,7 @@ public class BatchBridge {
                 return Promise.resolved(null);
             case PUSH_IOS_REFRESH_TOKEN:
             case PUSH_IOS_REQUEST_PERMISSION:
+            case PUSH_IOS_REQUEST_PROVISIONAL_PERMISSION:
             case PUSH_CLEAR_BADGE:
             case PUSH_SET_IOSSHOW_FOREGROUND:
                 // iOS only, do nothing

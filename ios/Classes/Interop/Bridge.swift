@@ -21,8 +21,10 @@ struct Bridge {
                 BatchPush.refreshToken()
                 return nil
             case .push_iOSRequestPermission:
-                //TODO add provisional notif (and on android too)
                 BatchPush.requestNotificationAuthorization()
+                return nil
+            case .push_iOSRequestProvisionalPermission:
+                BatchPush.requestProvisionalNotificationAuthorization()
                 return nil
             case .push_dismissNotifications:
                 BatchPush.dismissNotifications()

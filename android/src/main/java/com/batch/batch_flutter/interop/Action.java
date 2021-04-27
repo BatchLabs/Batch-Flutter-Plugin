@@ -14,6 +14,7 @@ enum Action
     MESSAGING_SHOW_PENDING_MESSAGE("messaging.showPendingMessage"),
     PUSH_GET_LAST_KNOWN_TOKEN("push.getLastKnownPushToken"),
     PUSH_IOS_REQUEST_PERMISSION("push.iOS.requestPermission"),
+    PUSH_IOS_REQUEST_PROVISIONAL_PERMISSION("push.iOS.requestProvisionalPermission"),
     PUSH_IOS_REFRESH_TOKEN("push.iOS.refreshToken"),
     PUSH_CLEAR_BADGE("push.clearBadge"),
     PUSH_DISMISS_NOTIFICATIONS("push.dismissNotifications"),
