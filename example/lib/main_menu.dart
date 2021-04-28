@@ -1,3 +1,4 @@
+import 'package:batch_flutter/batch.dart';
 import 'package:batch_flutter/batch_push.dart';
 import 'package:batch_flutter/batch_user.dart';
 import 'package:flutter/material.dart';
@@ -74,6 +75,10 @@ class _MainMenuState extends State<MainMenu> {
               MaterialPageRoute(builder: (context) => RootTabPage()),
             )
           },
+        ),
+        ElevatedButton(
+          child: Text("Open Batch Debug"),
+          onPressed: () => {Batch.instance.showDebugView()},
         ),
       ],
     );
