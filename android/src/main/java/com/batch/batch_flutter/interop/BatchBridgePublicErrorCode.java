@@ -9,7 +9,7 @@ public enum BatchBridgePublicErrorCode {
     UNKNOWN_BRIDGE_ERROR("unknownBridgeError"),
     INTERNAL_BRIDGE_ERROR("internalBridgeError"),
     BAD_BRIDGE_ARGUMENT_TYPE("badBridgeArgumentType"),
-    MISSING_SETUP("android_missingSetup"),
+    MISSING_SETUP("missingSetup"),
     NOT_ATTACHED_TO_ACTIVITY("android_notAttachedToActivity");
 
     public final String code;
