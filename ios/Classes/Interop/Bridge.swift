@@ -4,49 +4,54 @@ import Flutter
 
 struct Bridge {
     // Bool is a temporary return value
-    func call(rawAction: String, parameters: [String: AnyObject]) -> Any? {
+    func call(rawAction: String, parameters: [String: AnyObject]) -> LightPromise<AnyObject?> {
         guard let action = Action.init(rawValue: rawAction) else {
             //TODO: better exception handling
             print("Invalid action name \(rawAction)")
-            return FlutterMethodNotImplemented
+            return LightPromise<AnyObject?>.rejected(BridgeInternalError.notImplemented)
         }
         
-        return doAction(action, parameters: parameters) as AnyObject?
+        return doAction(action, parameters: parameters)
     }
     
     // Bool is a temporary return value
-    func doAction(_ action: Action, parameters: [String: AnyObject]) -> Any? {
+    func doAction(_ action: Action, parameters: [String: AnyObject]) -> LightPromise<AnyObject?> {
         switch action {
             case .push_iOSRefreshToken:
                 BatchPush.refreshToken()
-                return nil
+                return emptySuccessPromise()
             case .push_iOSRequestPermission:
                 BatchPush.requestNotificationAuthorization()
-                return nil
+                return emptySuccessPromise()
             case .push_iOSRequestProvisionalPermission:
                 BatchPush.requestProvisionalNotificationAuthorization()
-                return nil
+                return emptySuccessPromise()
             case .push_dismissNotifications:
                 BatchPush.dismissNotifications()
-                return nil
+                return emptySuccessPromise()
             case .push_clearBadge:
                 BatchPush.clearBadge()
-                return nil
+                return emptySuccessPromise()
             case .push_iOSSetShowForegroundNotifications:
                 //TODO
-                return nil
+                return LightPromise<AnyObject?>.rejected(BridgeInternalError.notImplemented)
             case .push_getLastKnownPushToken:
-                return BatchPush.lastKnownPushToken() as NSString?
+                return LightPromise<AnyObject?>.resolved(BatchPush.lastKnownPushToken() as NSString?)
             case .user_getInstallationID:
-                return BatchUser.installationID() as NSString?
+                return LightPromise<AnyObject?>.resolved(BatchUser.installationID() as NSString?)
             case .debug_showDebugView:
                 showDebugView()
-                return nil
+                return emptySuccessPromise()
             case .echo:
                 //TODO: error
-                return parameters["value"] as? NSString
+                return LightPromise<NSString?>.resolved(parameters["value"] as? NSString)
             default:
-                return FlutterMethodNotImplemented
+                return LightPromise<AnyObject?>.rejected(BridgeInternalError.notImplemented)
         }
+    }
+    
+    /// Convinence method to get a promise resolved with nil
+    private func emptySuccessPromise() -> LightPromise<AnyObject?> {
+        return LightPromise<AnyObject?>.resolved(nil)
     }
 }

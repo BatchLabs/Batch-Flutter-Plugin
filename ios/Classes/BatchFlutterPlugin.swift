@@ -38,7 +38,7 @@ public class BatchFlutterPlugin: NSObject, FlutterPlugin {
     
     private let bridge = Bridge()
     
-    public func handle(_ call: FlutterMethodCall, result: @escaping FlutterResult) {
+    public func handle(_ call: FlutterMethodCall, result flutterResult: @escaping FlutterResult) {
         // TODO: Check for setup call
         
         // We only support [String: AnyObject] arguments, or nil.
@@ -55,9 +55,32 @@ public class BatchFlutterPlugin: NSObject, FlutterPlugin {
             }
         }
         
-        let bridgeResult = bridge.call(rawAction: call.method, parameters: bridgeParameters)
-        print("Debug - Got Batch Flutter Call: \(call.method). Result: \(String(describing: bridgeResult))")
-        result(bridgeResult)
+        bridge.call(rawAction: call.method, parameters: bridgeParameters)
+            .continueOn(.asyncMain)
+            .then { bridgeResult in
+                print("Debug - Got Batch Flutter Call: \(call.method). Result: \(String(describing: bridgeResult))")
+                flutterResult(bridgeResult)
+            }
+            .catch { error in
+                if let internalError = error as? BridgeInternalError {
+                    if internalError == BridgeInternalError.notImplemented {
+                        //TODO: Print
+                        flutterResult(FlutterError(code: BridgeError.ErrorCode.unknownBridgeError.rawValue,
+                                                   message: "Internal Batch native bridge error (\(internalError)). Please see the console for more info.",
+                                                   details: nil))
+                        return
+                    }
+                } else if let bridgeError = error as? BridgeError {
+                    flutterResult(FlutterError(code: bridgeError.code.rawValue,
+                                               message: bridgeError.description,
+                                               details: bridgeError.details))
+                    return
+                }
+                flutterResult(FlutterError(code: BridgeError.ErrorCode.unknownBridgeError.rawValue,
+                                           message: "Unknown Batch native bridge error (\(String(describing: error))). Please see the console for more info.",
+                                           details: nil))
+                return
+            }
     }
     
     // MARK: Public API
