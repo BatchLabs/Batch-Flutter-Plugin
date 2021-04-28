@@ -39,19 +39,32 @@ public class BatchFlutterPlugin: NSObject, FlutterPlugin {
     private let bridge = Bridge()
     
     public func handle(_ call: FlutterMethodCall, result flutterResult: @escaping FlutterResult) {
-        // TODO: Check for setup call
+        if !BatchFlutterPlugin.didCallSetup {
+            let errorMessage = """
+                batch_flutter's BatchFlutterPlugin.setup() has not been called.
+                Please make sure that you followed the integration steps, and called this method
+                in your AppDelegate's didFinishLaunchingWithOptions method.
+                """
+            //TODO: Log
+            flutterResult(FlutterError(code: BridgeError.ErrorCode.missingSetup.rawValue,
+                                       message: errorMessage,
+                                       details: nil))
+            return
+        }
         
         // We only support [String: AnyObject] arguments, or nil.
-        // TODO: check if nil/empty action
-        
         var bridgeParameters: [String: AnyObject] = [:]
         
         if let callArguments = call.arguments {
             if let dictionaryArguments =  callArguments as? [String: AnyObject] {
                 bridgeParameters = dictionaryArguments
             } else {
-                // TODO: throw error
-                print("Invalid flutter arguments")
+                let errorMessage = "Bridge message root arguments were not nil, but not [String: AnyObject]."
+                //TODO: Log
+                flutterResult(FlutterError(code: BridgeError.ErrorCode.badBridgeArgumentType.rawValue,
+                                           message: errorMessage,
+                                           details: nil))
+                return
             }
         }
         
