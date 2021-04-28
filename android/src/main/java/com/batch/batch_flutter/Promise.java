@@ -65,7 +65,7 @@ public class Promise<T> {
 
         ThenRunnable<T> thenRunnable;
         while (!thenQueue.isEmpty()) {
-            thenRunnable = thenQueue.removeLast();
+            thenRunnable = thenQueue.removeFirst();
             postThenRunnable(thenRunnable, value);
         }
     }
@@ -80,7 +80,7 @@ public class Promise<T> {
 
         CatchRunnable catchRunnable;
         while (!catchQueue.isEmpty()) {
-            catchRunnable = catchQueue.removeLast();
+            catchRunnable = catchQueue.removeFirst();
             postCatchRunnable(catchRunnable, exception);
         }
     }
