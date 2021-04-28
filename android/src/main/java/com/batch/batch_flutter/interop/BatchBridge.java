@@ -97,6 +97,9 @@ public class BatchBridge {
                 return Promise.resolved(Batch.User.getLanguage(activity));
             case USER_GET_REGION:
                 return Promise.resolved(Batch.User.getRegion(activity));
+            case DEBUG_SHOW_DEBUG_VIEW:
+                showDebugView(activity);
+                return Promise.resolved(null);
             case ECHO:
                 return Promise.resolved(parameters.get("value"));
             default:
@@ -404,6 +407,10 @@ public class BatchBridge {
         if (msg != null) {
             Batch.Messaging.show(activity, msg);
         }
+    }
+
+    private static void showDebugView(Activity activity) {
+        Batch.Debug.startDebugActivity(activity);
     }
 
 //endregion

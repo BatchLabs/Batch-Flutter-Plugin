@@ -39,6 +39,9 @@ struct Bridge {
                 return BatchPush.lastKnownPushToken() as NSString?
             case .user_getInstallationID:
                 return BatchUser.installationID() as NSString?
+            case .debug_showDebugView:
+                showDebugView()
+                return nil
             case .echo:
                 //TODO: error
                 return parameters["value"] as? NSString
