@@ -10,6 +10,10 @@ fileprivate struct Consts {
     static let PluginVersion = "Flutter/0.0.1"
 }
 
+/// Batch's Flutter Plugin main class.
+/// `BatchFlutterPlugin.setup()` needs be called in
+///
+/// See `configuration` and `manageBatchLifecycle` for more info on how to configure it.
 @objc
 public class BatchFlutterPlugin: NSObject, FlutterPlugin {
     
