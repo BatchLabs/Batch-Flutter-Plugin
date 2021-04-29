@@ -10,6 +10,10 @@ If you need to create a new native source file, add it in `ios/Classes/`, go to 
 
 ## API Documentation
 
+If you have all of the dependencies installed, you can run `make docs` and copy the api_docs subdirectories in the documentation repository.  
+
+Otherwise, you can build a specific platform:  
+
 ### Flutter
 
 Run `make doc`. You will need dartdoc for this: `flutter pub global activate dartdoc`. You might need to update your $PATH.
