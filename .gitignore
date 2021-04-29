@@ -9,6 +9,7 @@ build/
 
 # API Documentations
 /api_docs/flutter-api-reference
+/api_docs/flutter-ios-api-reference
 
 # Miscellaneous
 *.class

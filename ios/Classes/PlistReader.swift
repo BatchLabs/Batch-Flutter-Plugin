@@ -1,7 +1,7 @@
 import Foundation
 
 // Reads values from Info.plist
-public struct PlistReader {
+internal struct PlistReader {
     static func readBoolean(key: String, fallbackValue: Bool) -> Bool {
         return Bundle.main.object(forInfoDictionaryKey: key) as? Bool ?? fallbackValue
     }
