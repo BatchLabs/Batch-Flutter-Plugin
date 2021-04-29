@@ -14,6 +14,24 @@ class BatchFlutterPluginTest: XCTestCase {
         XCTAssertTrue(didNotSetupResult.gotResult)
         XCTAssertTrue(didNotSetupResult.isError(code: BridgeError.ErrorCode.missingSetup))
     }
+    
+    func testBridgeErrors() {
+        let plugin = ControllableBatchFlutterPlugin()
+        plugin.isSetupOverride = true
+        plugin.bridgeExecutorQueue = LightPromiseExecutor.synchronous
+        
+        var notImplementedResult = RecordingFlutterResult()
+        plugin.handle(FlutterMethodCall(methodName: "not_implemented", arguments: nil), result: notImplementedResult.asFlutterCallback())
+        
+        XCTAssertTrue(notImplementedResult.gotResult)
+        XCTAssertTrue(notImplementedResult.isNotImplemented)
+        
+        notImplementedResult = RecordingFlutterResult()
+        plugin.handle(FlutterMethodCall(methodName: "", arguments: nil), result: notImplementedResult.asFlutterCallback())
+        
+        XCTAssertTrue(notImplementedResult.gotResult)
+        XCTAssertTrue(notImplementedResult.isNotImplemented)
+    }
 }
 
 class ControllableBatchFlutterPlugin: BatchFlutterPlugin {

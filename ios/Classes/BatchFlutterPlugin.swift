@@ -82,6 +82,7 @@ public class BatchFlutterPlugin: NSObject, FlutterPlugin {
                 if let internalError = error as? BridgeInternalError {
                     if internalError == BridgeInternalError.notImplemented {
                         flutterResult(FlutterMethodNotImplemented)
+                        return
                     } else {
                         //TODO: Print
                         flutterResult(FlutterError(code: BridgeError.ErrorCode.unknownBridgeError.rawValue,
