@@ -43,7 +43,7 @@ public class BatchFlutterPlugin: NSObject, FlutterPlugin {
     private let bridge = Bridge()
     
     public func handle(_ call: FlutterMethodCall, result flutterResult: @escaping FlutterResult) {
-        if !BatchFlutterPlugin.didCallSetup {
+        if !isSetup {
             let errorMessage = """
                 batch_flutter's BatchFlutterPlugin.setup() has not been called.
                 Please make sure that you followed the integration steps, and called this method
@@ -81,6 +81,8 @@ public class BatchFlutterPlugin: NSObject, FlutterPlugin {
             .catch { error in
                 if let internalError = error as? BridgeInternalError {
                     if internalError == BridgeInternalError.notImplemented {
+                        flutterResult(FlutterMethodNotImplemented)
+                    } else {
                         //TODO: Print
                         flutterResult(FlutterError(code: BridgeError.ErrorCode.unknownBridgeError.rawValue,
                                                    message: "Internal Batch native bridge error (\(internalError)). Please see the console for more info.",
@@ -98,6 +100,10 @@ public class BatchFlutterPlugin: NSObject, FlutterPlugin {
                                            details: nil))
                 return
             }
+    }
+    
+    internal var isSetup: Bool {
+        return BatchFlutterPlugin.didCallSetup
     }
     
     // MARK: Public API
