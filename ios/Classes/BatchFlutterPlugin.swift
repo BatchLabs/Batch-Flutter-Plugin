@@ -73,7 +73,7 @@ public class BatchFlutterPlugin: NSObject, FlutterPlugin {
         }
         
         bridge.call(rawAction: call.method, parameters: bridgeParameters)
-            .continueOn(.asyncMain)
+            .continueOn(bridgeExecutorQueue)
             .then { bridgeResult in
                 print("Debug - Got Batch Flutter Call: \(call.method). Result: \(String(describing: bridgeResult))")
                 flutterResult(bridgeResult)
@@ -105,6 +105,10 @@ public class BatchFlutterPlugin: NSObject, FlutterPlugin {
     internal var isSetup: Bool {
         return BatchFlutterPlugin.didCallSetup
     }
+    
+    /// Allows the tests to deice how the bridge executor callbacks will be ran
+    /// This allows simple calls to be tested (not ones that actually require threading)
+    internal var bridgeExecutorQueue: LightPromiseExecutor = LightPromiseExecutor.asyncMain
     
     // MARK: Public API
     
