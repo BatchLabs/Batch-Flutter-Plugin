@@ -43,7 +43,6 @@ struct Bridge {
                 showDebugView()
                 return emptySuccessPromise()
             case .echo:
-                //TODO: error
                 return LightPromise<NSString?>.resolved(parameters["value"] as? NSString)
             default:
                 return LightPromise<AnyObject?>.rejected(BridgeInternalError.notImplemented)

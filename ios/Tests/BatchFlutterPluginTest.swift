@@ -32,6 +32,25 @@ class BatchFlutterPluginTest: XCTestCase {
         XCTAssertTrue(notImplementedResult.gotResult)
         XCTAssertTrue(notImplementedResult.isNotImplemented)
     }
+    
+    func testBridgeSuccess() {
+        let plugin = ControllableBatchFlutterPlugin()
+        plugin.isSetupOverride = true
+        plugin.bridgeExecutorQueue = LightPromiseExecutor.synchronous
+        
+        let helloWorld = "Hello, world!"
+        var echoResult = RecordingFlutterResult()
+        plugin.handle(FlutterMethodCall(methodName: "echo", arguments: ["value": helloWorld]), result: echoResult.asFlutterCallback())
+        
+        XCTAssertTrue(echoResult.gotResult)
+        XCTAssertEqual(helloWorld, echoResult.lastResult as? String)
+        
+        echoResult = RecordingFlutterResult()
+        plugin.handle(FlutterMethodCall(methodName: "echo", arguments: ["value": nil]), result: echoResult.asFlutterCallback())
+        
+        XCTAssertTrue(echoResult.gotResult)
+        XCTAssertNil(echoResult.lastResult)
+    }
 }
 
 class ControllableBatchFlutterPlugin: BatchFlutterPlugin {
