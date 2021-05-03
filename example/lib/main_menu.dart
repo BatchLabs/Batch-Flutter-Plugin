@@ -51,6 +51,8 @@ class _MainMenuState extends State<MainMenu> {
     });
   }
 
+  void setTestCustomData() {}
+
   @override
   Widget build(BuildContext context) {
     return Column(
@@ -79,6 +81,10 @@ class _MainMenuState extends State<MainMenu> {
         ElevatedButton(
           child: Text("Open Batch Debug"),
           onPressed: () => {Batch.instance.showDebugView()},
+        ),
+        ElevatedButton(
+          child: Text("Set test custom data"),
+          onPressed: () => {setTestCustomData()},
         ),
       ],
     );
