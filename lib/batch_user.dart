@@ -14,9 +14,9 @@ class BatchUser {
     return await _channel.invokeMethod('user.getInstallationID');
   }
 
-  /// Instanciate a new BatchUserDataEditor to edit custom data attributes and tags.
+  /// Instanciate a new [BatchUserDataEditor] to edit custom data attributes and tags.
   ///
-  /// See BatchUserDataEditor's documentation for more info.
+  /// See [BatchUserDataEditor]'s documentation for more info.
   BatchUserDataEditor newEditor() {
     return BatchUserDataEditorImpl();
   }
@@ -30,14 +30,15 @@ class BatchUser {
   /// than 200 characters. If the label is too long, it will be ignored.
   ///
   /// The event data is an optional object holding attributes and tags related
-  /// to the event. See BatchEventData's documentation for more info.
+  /// to the event. See [BatchEventData]'s documentation for more info.
   void trackEvent({required String name, String? label, BatchEventData? data}) {
-    throw UnimplementedError();
+    //TODO: add data
+    _channel.invokeMethod("user.track.event", {"name": name, "label": label});
   }
 
   /// Track a transaction.
   void trackTransaction(double amount) {
-    throw UnimplementedError();
+    _channel.invokeMethod("user.track.transaction", {"amount": amount});
   }
 
   /// Track a geolocation update.
@@ -46,7 +47,8 @@ class BatchUser {
   /// your behalf. Acquire location permission and values on your own and
   /// communicate them to Batch (if needed) using this method.
   void trackLocation({required double latitude, required double longitude}) {
-    throw UnimplementedError();
+    _channel.invokeMethod(
+        "user.track.location", {"latitude": latitude, "longitude": longitude});
   }
 }
 

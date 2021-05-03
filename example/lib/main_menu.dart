@@ -51,7 +51,9 @@ class _MainMenuState extends State<MainMenu> {
     });
   }
 
-  void setTestCustomData() {}
+  void setTestCustomData() {
+    BatchUser.instance.trackEvent(name: "test_event", label: "test_label");
+  }
 
   @override
   Widget build(BuildContext context) {
