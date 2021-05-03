@@ -65,7 +65,7 @@ public class BatchFlutterPlugin: NSObject, FlutterPlugin {
             } else {
                 let errorMessage = "Bridge message root arguments were not nil, but not [String: AnyObject]."
                 //TODO: Log
-                flutterResult(FlutterError(code: BridgeError.ErrorCode.badBridgeArgumentType.rawValue,
+                flutterResult(FlutterError(code: BridgeError.ErrorCode.badArgumentType.rawValue,
                                            message: errorMessage,
                                            details: nil))
                 return

@@ -8,11 +8,16 @@ struct BridgeError: Error {
     enum ErrorCode: String {
         case unknownBridgeError
         case internalBridgeError
-        case badBridgeArgumentType
+        case badArgumentType
         case missingSetup
     }
     
     let code: ErrorCode
     let description: String
     let details: [String: AnyObject]?
+    
+    /// Helper for badBridgeArgumentType as it is a common error
+    static func makeBadArgumentError(argumentName: String) -> BridgeError {
+        return BridgeError(code: ErrorCode.badArgumentType, description: "Required parameter '\(argumentName)' missing or of wrong type", details: nil)
+    }
 }

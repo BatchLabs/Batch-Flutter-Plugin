@@ -15,6 +15,9 @@ enum Action: String {
     case user_getLanguage = "user.getLanguage"
     case user_getRegion = "user.getRegion"
     case user_getInstallationID = "user.getInstallationID"
+    case user_trackEvent = "user.track.event"
+    case user_trackTransaction = "user.track.transaction"
+    case user_trackLocation = "user.track.location"
     
     case debug_showDebugView = "debug.showDebugView"
     

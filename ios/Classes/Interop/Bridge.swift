@@ -16,36 +16,49 @@ struct Bridge {
     
     // Bool is a temporary return value
     func doAction(_ action: Action, parameters: [String: AnyObject]) -> LightPromise<AnyObject?> {
-        switch action {
-            case .push_iOSRefreshToken:
-                BatchPush.refreshToken()
-                return emptySuccessPromise()
-            case .push_iOSRequestPermission:
-                BatchPush.requestNotificationAuthorization()
-                return emptySuccessPromise()
-            case .push_iOSRequestProvisionalPermission:
-                BatchPush.requestProvisionalNotificationAuthorization()
-                return emptySuccessPromise()
-            case .push_dismissNotifications:
-                BatchPush.dismissNotifications()
-                return emptySuccessPromise()
-            case .push_clearBadge:
-                BatchPush.clearBadge()
-                return emptySuccessPromise()
-            case .push_iOSSetShowForegroundNotifications:
-                //TODO
-                return LightPromise<AnyObject?>.rejected(BridgeInternalError.notImplemented)
-            case .push_getLastKnownPushToken:
-                return LightPromise<AnyObject?>.resolved(BatchPush.lastKnownPushToken() as NSString?)
-            case .user_getInstallationID:
-                return LightPromise<AnyObject?>.resolved(BatchUser.installationID() as NSString?)
-            case .debug_showDebugView:
-                showDebugView()
-                return emptySuccessPromise()
-            case .echo:
-                return LightPromise<NSString?>.resolved(parameters["value"] as? NSString)
-            default:
-                return LightPromise<AnyObject?>.rejected(BridgeInternalError.notImplemented)
+        do {
+            switch action {
+                case .push_iOSRefreshToken:
+                    BatchPush.refreshToken()
+                    return emptySuccessPromise()
+                case .push_iOSRequestPermission:
+                    BatchPush.requestNotificationAuthorization()
+                    return emptySuccessPromise()
+                case .push_iOSRequestProvisionalPermission:
+                    BatchPush.requestProvisionalNotificationAuthorization()
+                    return emptySuccessPromise()
+                case .push_dismissNotifications:
+                    BatchPush.dismissNotifications()
+                    return emptySuccessPromise()
+                case .push_clearBadge:
+                    BatchPush.clearBadge()
+                    return emptySuccessPromise()
+                case .push_iOSSetShowForegroundNotifications:
+                    //TODO
+                    return LightPromise<AnyObject?>.rejected(BridgeInternalError.notImplemented)
+                case .push_getLastKnownPushToken:
+                    return LightPromise<AnyObject?>.resolved(BatchPush.lastKnownPushToken() as NSString?)
+                case .user_getInstallationID:
+                    return LightPromise<AnyObject?>.resolved(BatchUser.installationID() as NSString?)
+                case .user_trackEvent:
+                    try trackEvent(parameters)
+                    return emptySuccessPromise()
+                case .user_trackLocation:
+                    try trackLocation(parameters)
+                    return emptySuccessPromise()
+                case .user_trackTransaction:
+                    try trackTransaction(parameters)
+                    return emptySuccessPromise()
+                case .debug_showDebugView:
+                    showDebugView()
+                    return emptySuccessPromise()
+                case .echo:
+                    return LightPromise<NSString?>.resolved(parameters["value"] as? NSString)
+                default:
+                    return LightPromise<AnyObject?>.rejected(BridgeInternalError.notImplemented)
+            }
+        } catch {
+            return LightPromise<AnyObject?>.rejected(error)
         }
     }
     
