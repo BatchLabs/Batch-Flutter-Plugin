@@ -20,6 +20,34 @@ class BatchUser {
   BatchUserDataEditor newEditor() {
     return BatchUserDataEditorImpl();
   }
+
+  /// Track an event.
+  ///
+  /// The event name is required and must not be empty. It should be composed of letters,
+  /// numbers or underscores ([a-z0-9_]) and can’t be longer than 30 characters.
+  ///
+  /// The event label is an optional string, which must not be empty or longer
+  /// than 200 characters. If the label is too long, it will be ignored.
+  ///
+  /// The event data is an optional object holding attributes and tags related
+  /// to the event. See BatchEventData's documentation for more info.
+  void trackEvent({required String name, String? label, BatchEventData? data}) {
+    throw UnimplementedError();
+  }
+
+  /// Track a transaction.
+  void trackTransaction(double amount) {
+    throw UnimplementedError();
+  }
+
+  /// Track a geolocation update.
+  ///
+  /// Batch does not ask for location permission or acquire user location on
+  /// your behalf. Acquire location permission and values on your own and
+  /// communicate them to Batch (if needed) using this method.
+  void trackLocation({required double latitude, required double longitude}) {
+    throw UnimplementedError();
+  }
 }
 
 /// Batch's user data editor.
