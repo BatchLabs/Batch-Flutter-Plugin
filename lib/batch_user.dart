@@ -14,7 +14,9 @@ class BatchUser {
     return await _channel.invokeMethod('user.getInstallationID');
   }
 
-  /// Instanciate a new BatchUserDataEditor.
+  /// Instanciate a new BatchUserDataEditor to edit custom data attributes and tags.
+  ///
+  /// See BatchUserDataEditor's documentation for more info.
   BatchUserDataEditor newEditor() {
     return BatchUserDataEditorImpl();
   }
@@ -125,6 +127,72 @@ abstract class BatchUserDataEditor {
 
   /// Save all of the pending changes. This action cannot be undone.
   void save();
+}
+
+/// Object holding data to be associated to an event.
+///
+/// Events support at most 10 tags and 15 attributes. Event data that is over
+/// the limit will be discarded.
+///
+/// Keys should be strings composed of letters, numbers or underscores
+/// ([a-z0-9_]) and can't be longer than 30 characters.
+class BatchEventData {
+  /// Add a tag.
+  /// Collections are not supported.
+  ///
+  /// Tags can't be longer than 64 characters, and can't be empty.
+  /// For better results, you should trim/lowercase your strings,
+  /// and use slugs when possible.
+  BatchEventData addTag(String tag) {
+    return this;
+  }
+
+  /// Add a string attribute for the given key.
+  ///
+  /// The attribute key should be a string composed of letters, numbers
+  /// or underscores ([a-z0-9_]) and can't be longer than 30 characters.
+  ///
+  /// The attribute string value can't be empty or longer than 64 characters.
+  /// For better results, you should trim/lowercase your strings
+  /// and use slugs when possible.
+  BatchEventData putString(String key, String value) {
+    return this;
+  }
+
+  /// Add a boolean attribute for the given key.
+  ///
+  /// The attribute key should be a string composed of letters, numbers
+  /// or underscores ([a-z0-9_]) and can't be longer than 30 characters.
+  BatchEventData putBoolean(String key, bool value) {
+    return this;
+  }
+
+  /// Add an integer attribute for the given key.
+  ///
+  /// The attribute key should be a string composed of letters, numbers
+  /// or underscores ([a-z0-9_]) and can't be longer than 30 characters.
+  BatchEventData putInteger(String key, int value) {
+    return this;
+  }
+
+  /// Add a double attribute for the given key.
+  ///
+  /// The attribute key should be a string composed of letters, numbers
+  /// or underscores ([a-z0-9_]) and can't be longer than 30 characters.
+  BatchEventData putDouble(String key, double value) {
+    return this;
+  }
+
+  /// Add a DateTime attribute for the given key.
+  ///
+  /// The attribute key should be a string composed of letters, numbers
+  /// or underscores ([a-z0-9_]) and can't be longer than 30 characters.
+  ///
+  /// Date attribute values are sent in UTC to Batch. If you notice that the reported
+  /// time may be off, try making an UTC DateTime for consistency.
+  BatchEventData putDate(String key, double value) {
+    return this;
+  }
 }
 
 /// Private class: Do not instanciate this: use the `newEditor()` method on `BatchUser`.
