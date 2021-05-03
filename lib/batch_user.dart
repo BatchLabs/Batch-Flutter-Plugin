@@ -13,4 +13,209 @@ class BatchUser {
   Future<String?> get installationID async {
     return await _channel.invokeMethod('user.getInstallationID');
   }
+
+  /// Instanciate a new BatchUserDataEditor.
+  BatchUserDataEditor newEditor() {
+    return BatchUserDataEditorImpl();
+  }
+}
+
+/// Batch's user data editor.
+/// This object is used to transactionally edit user data. Calls can be chained
+/// in a builder-like fashion.
+/// Once you're done with your changes, call `save()` to persist your changes.
+abstract class BatchUserDataEditor {
+  /// Set the application langauge. Overrides Batch's automatically detected value.
+  ///
+  /// `null` deletes the override: Batch will autodetect the user language.
+  BatchUserDataEditor setLanguage(String? language);
+
+  /// Set the application region. Overrides Batch's automatically detected value.
+  ///
+  /// `null` deletes the override: Batch will autodetect the user region.
+  BatchUserDataEditor setRegion(String? region);
+
+  /// Set the custom user identifier.
+  ///
+  /// Be careful: you should make sure the identifier uniquely identifies a user.
+  /// When pushing using an identifier, all installations with that identifier will get the Push,
+  /// which can cause some privacy issues if done wrong.
+  BatchUserDataEditor setIdentifier(String? identifier);
+
+  /// Set a string attribute for a key.
+  ///
+  /// Attribute's key cannot be empty. It should be made of letters, numbers or underscores ([a-z0-9_])
+  /// and can't be longer than 30 characters.
+  /// String attribut values are non-empty strings and can't be longer than 64 characters.
+  ///
+  /// Any attribute with an invalid key or value will be ignored.
+  BatchUserDataEditor setStringAttribute(String key, String value);
+
+  /// Set an integer attribute for a key.
+  ///
+  /// Attribute's key cannot be empty. It should be made of letters, numbers or underscores ([a-z0-9_])
+  /// and can't be longer than 30 characters.
+  ///
+  /// Any attribute with an invalid key or value will be ignored.
+  BatchUserDataEditor setIntegerAttribute(String key, int value);
+
+  /// Set a double attribute for a key.
+  ///
+  /// Attribute's key cannot be empty. It should be made of letters, numbers or underscores ([a-z0-9_])
+  /// and can't be longer than 30 characters.
+  ///
+  /// Any attribute with an invalid key or value will be ignored.
+  BatchUserDataEditor setDoubleAttribute(String key, double value);
+
+  /// Set a boolean attribute for a key.
+  ///
+  /// Attribute's key cannot be empty. It should be made of letters, numbers or underscores ([a-z0-9_])
+  /// and can't be longer than 30 characters.
+  ///
+  /// Any attribute with an invalid key or value will be ignored.
+  BatchUserDataEditor setBooleanAttribute(String key, bool value);
+
+  /// Set a Date attribute for a key.
+  ///
+  /// Attribute's key cannot be empty. It should be made of letters, numbers or underscores ([a-z0-9_])
+  /// and can't be longer than 30 characters.
+  ///
+  /// Date attribute values are sent in UTC to Batch. If you notice that the reported
+  /// time may be off, try making an UTC DateTime for consistency.
+  ///
+  /// Any attribute with an invalid key or value will be ignored.
+  BatchUserDataEditor setDateTimeAttribute(String key, DateTime value);
+
+  /// Delete an attribute using its key.
+  ///
+  /// If the attribute doesn't exist, this method is silently ignored.
+  BatchUserDataEditor removeAttribute(String key);
+
+  /// Delete all attributes.
+  BatchUserDataEditor clearAttributes();
+
+  /// Add a tag to a collection.
+  ///
+  /// If the collection doesn't exist, it will be created.
+  ///
+  /// The tag collection name must be a string of letters, numbers or
+  /// underscores (`[a-z0-9_]`) and can't be longer than 30 characters.
+  ///
+  /// The tag cannot be empty or longer than 64 characters.
+  BatchUserDataEditor addTag(String collection, String tag);
+
+  /// Delete a tag from a collection.
+  ///
+  /// If the collection is empty, it will be deleted.
+  ///
+  /// The tag collection name must be a string of letters, numbers or
+  /// underscores (`[a-z0-9_]`) and can't be longer than 30 characters.
+  ///
+  /// If the tag doesn't exist, this method will silently do nothing.
+  BatchUserDataEditor removeTag(String collection, String tag);
+
+  /// Removes all tags from a collection.
+  ///
+  /// The tag collection name must be a string of letters, numbers or
+  /// underscores (`[a-z0-9_]`) and can't be longer than 30 characters.
+  BatchUserDataEditor clearTagCollection(String collection);
+
+  /// Removes all tags.
+  BatchUserDataEditor clearTags();
+
+  /// Save all of the pending changes. This action cannot be undone.
+  void save();
+}
+
+/// Private class: Do not instanciate this: use the `newEditor()` method on `BatchUser`.
+/// <nodoc>
+class BatchUserDataEditorImpl implements BatchUserDataEditor {
+  @override
+  BatchUserDataEditor addTag(String collection, String tag) {
+    // TODO: implement addTag
+    throw UnimplementedError();
+  }
+
+  @override
+  BatchUserDataEditor clearAttributes() {
+    // TODO: implement clearAttributes
+    throw UnimplementedError();
+  }
+
+  @override
+  BatchUserDataEditor clearTagCollection(String collection) {
+    // TODO: implement clearTagCollection
+    throw UnimplementedError();
+  }
+
+  @override
+  BatchUserDataEditor clearTags() {
+    // TODO: implement clearTags
+    throw UnimplementedError();
+  }
+
+  @override
+  BatchUserDataEditor removeAttribute(String key) {
+    // TODO: implement removeAttribute
+    throw UnimplementedError();
+  }
+
+  @override
+  BatchUserDataEditor removeTag(String collection, String tag) {
+    // TODO: implement removeTag
+    throw UnimplementedError();
+  }
+
+  @override
+  void save() {
+    // TODO: implement save
+  }
+
+  @override
+  BatchUserDataEditor setBooleanAttribute(String key, bool value) {
+    // TODO: implement setBooleanAttribute
+    throw UnimplementedError();
+  }
+
+  @override
+  BatchUserDataEditor setDateTimeAttribute(String key, DateTime value) {
+    // TODO: implement setDateTimeAttribute
+    throw UnimplementedError();
+  }
+
+  @override
+  BatchUserDataEditor setDoubleAttribute(String key, double value) {
+    // TODO: implement setDoubleAttribute
+    throw UnimplementedError();
+  }
+
+  @override
+  BatchUserDataEditor setIdentifier(String? identifier) {
+    // TODO: implement setIdentifier
+    throw UnimplementedError();
+  }
+
+  @override
+  BatchUserDataEditor setIntegerAttribute(String key, int value) {
+    // TODO: implement setIntegerAttribute
+    throw UnimplementedError();
+  }
+
+  @override
+  BatchUserDataEditor setLanguage(String? language) {
+    // TODO: implement setLanguage
+    throw UnimplementedError();
+  }
+
+  @override
+  BatchUserDataEditor setRegion(String? region) {
+    // TODO: implement setRegion
+    throw UnimplementedError();
+  }
+
+  @override
+  BatchUserDataEditor setStringAttribute(String key, String value) {
+    // TODO: implement setStringAttribute
+    throw UnimplementedError();
+  }
 }
