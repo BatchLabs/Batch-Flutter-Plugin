@@ -11,6 +11,8 @@ import Batch
   ) -> Bool {
     GeneratedPluginRegistrant.register(with: self)
     
+    Batch.setInternalLogsEnabled(true)
+    
     BatchUNUserNotificationCenterDelegate.registerAsDelegate()
     BatchFlutterPlugin.configuration.APIKey = "6082F280A2A98586FD421AADEE5AB5"
     BatchFlutterPlugin.setup()
