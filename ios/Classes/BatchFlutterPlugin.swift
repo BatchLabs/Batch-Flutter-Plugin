@@ -3,10 +3,10 @@ import UIKit
 import Batch
 
 fileprivate struct Consts {
-    static let BridgeVersionEnvironmentVar = "batch.bridge.version"
+    static let BridgeVersionEnvironmentVar = "BATCH_BRIDGE_VERSION"
     static let BridgeVersion = "Bridge/1.0"
     
-    static let PluginVersionEnvironmentVar = "batch.plugin.version"
+    static let PluginVersionEnvironmentVar = "BATCH_PLUGIN_VERSION"
     static let PluginVersion = "Flutter/0.0.1"
 }
 
@@ -161,6 +161,8 @@ public class BatchFlutterPlugin: NSObject, FlutterPlugin {
                 // TODO: Race condition, log an error
             }
         }
+        
+        setupBatchEnvironmentVariables()
         
         return true
     }
