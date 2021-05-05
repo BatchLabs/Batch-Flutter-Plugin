@@ -1,4 +1,8 @@
+import 'dart:collection';
+
+import 'package:batch_flutter/src/typed_attribute.dart';
 import 'package:flutter/services.dart';
+import 'package:flutter/widgets.dart';
 
 /// Provides user related functionality, such as custom data and events.
 /// Do not instanciate this: use the `instance` static property.
@@ -32,8 +36,11 @@ class BatchUser {
   /// The event data is an optional object holding attributes and tags related
   /// to the event. See [BatchEventData]'s documentation for more info.
   void trackEvent({required String name, String? label, BatchEventData? data}) {
-    //TODO: add data
-    _channel.invokeMethod("user.track.event", {"name": name, "label": label});
+    Map eventArgs = {"name": name, "label": label};
+    if (data != null) {
+      eventArgs["event_data"] = data.internalGetBridgeRepresentation();
+    }
+    _channel.invokeMethod("user.track.event", eventArgs);
   }
 
   /// Track a transaction.
@@ -163,10 +170,17 @@ abstract class BatchUserDataEditor {
 ///
 /// Events support at most 10 tags and 15 attributes. Event data that is over
 /// the limit will be discarded.
+/// Note: those limits are enforced by the native SDKs, they might be different
+/// depending on the underlying SDK version your project is using.
 ///
 /// Keys should be strings composed of letters, numbers or underscores
 /// ([a-z0-9_]) and can't be longer than 30 characters.
 class BatchEventData {
+  static const int _maxStringLength = 64;
+
+  Set<String> _tags = new HashSet();
+  Map<String, TypedAttribute> _attributes = new HashMap();
+
   /// Add a tag.
   /// Collections are not supported.
   ///
@@ -174,6 +188,11 @@ class BatchEventData {
   /// For better results, you should trim/lowercase your strings,
   /// and use slugs when possible.
   BatchEventData addTag(String tag) {
+    if (tag.length == 0 || tag.length > _maxStringLength) {
+      // TODO: log
+      return this;
+    }
+    _tags.add(tag.toLowerCase());
     return this;
   }
 
@@ -186,6 +205,10 @@ class BatchEventData {
   /// For better results, you should trim/lowercase your strings
   /// and use slugs when possible.
   BatchEventData putString(String key, String value) {
+    if (_validateAttributeKey()) {
+      _attributes[key.toLowerCase()] =
+          TypedAttribute(type: TypedAttributeType.string, value: value);
+    }
     return this;
   }
 
@@ -194,6 +217,10 @@ class BatchEventData {
   /// The attribute key should be a string composed of letters, numbers
   /// or underscores ([a-z0-9_]) and can't be longer than 30 characters.
   BatchEventData putBoolean(String key, bool value) {
+    if (_validateAttributeKey()) {
+      _attributes[key.toLowerCase()] =
+          TypedAttribute(type: TypedAttributeType.boolean, value: value);
+    }
     return this;
   }
 
@@ -202,6 +229,10 @@ class BatchEventData {
   /// The attribute key should be a string composed of letters, numbers
   /// or underscores ([a-z0-9_]) and can't be longer than 30 characters.
   BatchEventData putInteger(String key, int value) {
+    if (_validateAttributeKey()) {
+      _attributes[key.toLowerCase()] =
+          TypedAttribute(type: TypedAttributeType.integer, value: value);
+    }
     return this;
   }
 
@@ -210,6 +241,10 @@ class BatchEventData {
   /// The attribute key should be a string composed of letters, numbers
   /// or underscores ([a-z0-9_]) and can't be longer than 30 characters.
   BatchEventData putDouble(String key, double value) {
+    if (_validateAttributeKey()) {
+      _attributes[key.toLowerCase()] =
+          TypedAttribute(type: TypedAttributeType.float, value: value);
+    }
     return this;
   }
 
@@ -220,8 +255,31 @@ class BatchEventData {
   ///
   /// Date attribute values are sent in UTC to Batch. If you notice that the reported
   /// time may be off, try making an UTC DateTime for consistency.
-  BatchEventData putDate(String key, double value) {
+  BatchEventData putDate(String key, DateTime value) {
+    if (_validateAttributeKey()) {
+      _attributes[key.toLowerCase()] = TypedAttribute(
+          type: TypedAttributeType.date,
+          value: value.toUtc().millisecondsSinceEpoch ~/ 1000);
+    }
     return this;
+  }
+
+  /// Internal method. Get the serializable representation of this object
+  ///
+  /// <nodoc>
+  @protected
+  Map internalGetBridgeRepresentation() {
+    return {
+      "attributes": _attributes
+          .map((key, value) => MapEntry(key, value.toBridgeRepresentation())),
+      "tags": _tags.toList()
+    };
+  }
+
+  bool _validateAttributeKey() {
+    //TODO: implement attribute key validation
+    //TODO: log on error
+    return true;
   }
 }
 
