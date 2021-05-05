@@ -350,6 +350,9 @@ public class BatchBridge {
                     batchEventData.put(entryStringKey, getTypedParameter(entryMapValue, "value", Number.class).longValue());
                 } else if ("f".equals(type)) {
                     batchEventData.put(entryStringKey, getTypedParameter(entryMapValue, "value", Number.class).doubleValue());
+                } else if ("d".equals(type)) {
+                    long timestamp = getTypedParameter(entryMapValue, "value", Number.class).longValue();
+                    batchEventData.put(entryStringKey, new Date(timestamp));
                 } else {
                     throw new BatchBridgeException(BatchBridgePublicErrorCode.INTERNAL_BRIDGE_ERROR, "Unknown event_data.attributes type");
                 }
