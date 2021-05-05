@@ -52,7 +52,16 @@ class _MainMenuState extends State<MainMenu> {
   }
 
   void setTestCustomData() {
-    BatchUser.instance.trackEvent(name: "test_event", label: "test_label");
+    BatchEventData eventData = new BatchEventData();
+    eventData.putString("string", "bar");
+    eventData.putBoolean("bool", true);
+    eventData.putDate("date", DateTime.now());
+    eventData.putInteger("int", 1);
+    eventData.putDouble("double", 2);
+    eventData.addTag("tag1");
+    eventData.addTag("tag1").addTag("tag2");
+    BatchUser.instance
+        .trackEvent(name: "test_event", label: "test_label", data: eventData);
   }
 
   @override
