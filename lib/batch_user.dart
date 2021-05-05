@@ -259,7 +259,7 @@ class BatchEventData {
     if (_validateAttributeKey()) {
       _attributes[key.toLowerCase()] = TypedAttribute(
           type: TypedAttributeType.date,
-          value: value.toUtc().millisecondsSinceEpoch ~/ 1000);
+          value: value.toUtc().millisecondsSinceEpoch);
     }
     return this;
   }
@@ -323,11 +323,6 @@ class BatchUserDataEditorImpl implements BatchUserDataEditor {
   }
 
   @override
-  void save() {
-    // TODO: implement save
-  }
-
-  @override
   BatchUserDataEditor setBooleanAttribute(String key, bool value) {
     // TODO: implement setBooleanAttribute
     throw UnimplementedError();
@@ -373,5 +368,10 @@ class BatchUserDataEditorImpl implements BatchUserDataEditor {
   BatchUserDataEditor setStringAttribute(String key, String value) {
     // TODO: implement setStringAttribute
     throw UnimplementedError();
+  }
+
+  @override
+  void save() {
+    // TODO: implement save
   }
 }
