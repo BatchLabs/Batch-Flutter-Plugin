@@ -176,6 +176,7 @@ abstract class BatchUserDataEditor {
 /// Keys should be strings composed of letters, numbers or underscores
 /// ([a-z0-9_]) and can't be longer than 30 characters.
 class BatchEventData {
+  static final RegExp _attributeKeyRegexp = RegExp("^[a-zA-Z0-9_]{1,30}\$");
   static const int _maxStringLength = 64;
 
   Set<String> _tags = new HashSet();
@@ -205,7 +206,7 @@ class BatchEventData {
   /// For better results, you should trim/lowercase your strings
   /// and use slugs when possible.
   BatchEventData putString(String key, String value) {
-    if (_validateAttributeKey()) {
+    if (_validateAttributeKey(key)) {
       _attributes[key.toLowerCase()] =
           TypedAttribute(type: TypedAttributeType.string, value: value);
     }
@@ -217,7 +218,7 @@ class BatchEventData {
   /// The attribute key should be a string composed of letters, numbers
   /// or underscores ([a-z0-9_]) and can't be longer than 30 characters.
   BatchEventData putBoolean(String key, bool value) {
-    if (_validateAttributeKey()) {
+    if (_validateAttributeKey(key)) {
       _attributes[key.toLowerCase()] =
           TypedAttribute(type: TypedAttributeType.boolean, value: value);
     }
@@ -229,7 +230,7 @@ class BatchEventData {
   /// The attribute key should be a string composed of letters, numbers
   /// or underscores ([a-z0-9_]) and can't be longer than 30 characters.
   BatchEventData putInteger(String key, int value) {
-    if (_validateAttributeKey()) {
+    if (_validateAttributeKey(key)) {
       _attributes[key.toLowerCase()] =
           TypedAttribute(type: TypedAttributeType.integer, value: value);
     }
@@ -241,7 +242,7 @@ class BatchEventData {
   /// The attribute key should be a string composed of letters, numbers
   /// or underscores ([a-z0-9_]) and can't be longer than 30 characters.
   BatchEventData putDouble(String key, double value) {
-    if (_validateAttributeKey()) {
+    if (_validateAttributeKey(key)) {
       _attributes[key.toLowerCase()] =
           TypedAttribute(type: TypedAttributeType.float, value: value);
     }
@@ -256,7 +257,7 @@ class BatchEventData {
   /// Date attribute values are sent in UTC to Batch. If you notice that the reported
   /// time may be off, try making an UTC DateTime for consistency.
   BatchEventData putDate(String key, DateTime value) {
-    if (_validateAttributeKey()) {
+    if (_validateAttributeKey(key)) {
       _attributes[key.toLowerCase()] = TypedAttribute(
           type: TypedAttributeType.date,
           value: value.toUtc().millisecondsSinceEpoch);
@@ -276,9 +277,11 @@ class BatchEventData {
     };
   }
 
-  bool _validateAttributeKey() {
-    //TODO: implement attribute key validation
-    //TODO: log on error
+  bool _validateAttributeKey(String key) {
+    if (!_attributeKeyRegexp.hasMatch(key)) {
+      //TODO: log on error
+      return false;
+    }
     return true;
   }
 }
