@@ -3,7 +3,7 @@ import Batch
 import Flutter
 
 extension Bridge {
-    func trackEvent(_ parameters: [String: AnyObject]) throws {
+    func trackEvent(_ parameters: BridgeParameters) throws {
         //TODO: Handle Event data
         guard let name = parameters["name"] as? String else {
             throw BridgeError.makeBadArgumentError(argumentName: "name")
@@ -14,7 +14,7 @@ extension Bridge {
         BatchUser.trackEvent(name, withLabel: label)
     }
     
-    func trackTransaction(_ parameters: [String: AnyObject]) throws {
+    func trackTransaction(_ parameters: BridgeParameters) throws {
         guard let amount = parameters["amount"] as? Double else {
             throw BridgeError.makeBadArgumentError(argumentName: "amount")
         }

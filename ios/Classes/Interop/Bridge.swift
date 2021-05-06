@@ -2,9 +2,11 @@ import Foundation
 import Batch
 import Flutter
 
+typealias BridgeParameters = [String: AnyObject]
+
 struct Bridge {
     // Bool is a temporary return value
-    func call(rawAction: String, parameters: [String: AnyObject]) -> LightPromise<AnyObject?> {
+    func call(rawAction: String, parameters: BridgeParameters) -> LightPromise<AnyObject?> {
         guard let action = Action.init(rawValue: rawAction) else {
             //TODO: better exception handling
             print("Invalid action name \(rawAction)")
@@ -15,7 +17,7 @@ struct Bridge {
     }
     
     // Bool is a temporary return value
-    func doAction(_ action: Action, parameters: [String: AnyObject]) -> LightPromise<AnyObject?> {
+    func doAction(_ action: Action, parameters: BridgeParameters) -> LightPromise<AnyObject?> {
         do {
             switch action {
                 case .push_iOSRefreshToken:
