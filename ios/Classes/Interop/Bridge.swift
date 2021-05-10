@@ -42,6 +42,9 @@ struct Bridge {
                     return LightPromise<AnyObject?>.resolved(BatchPush.lastKnownPushToken() as NSString?)
                 case .user_getInstallationID:
                     return LightPromise<AnyObject?>.resolved(BatchUser.installationID() as NSString?)
+                case .user_edit:
+                    try userDataEdit(parameters: parameters)
+                    return emptySuccessPromise()
                 case .user_trackEvent:
                     try trackEvent(parameters)
                     return emptySuccessPromise()
