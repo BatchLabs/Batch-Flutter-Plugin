@@ -56,10 +56,10 @@ class UserDataOperation {
   final Map<String, dynamic> arguments;
 
   Map<String, dynamic> toBridgeRepresentation() {
-     return {
-       "kind": kind.toBridgeRepresentation(),
-       ...arguments,
-     };
+    return {
+      "operation": kind.toBridgeRepresentation(),
+      ...arguments,
+    };
   }
 }
 
@@ -69,7 +69,8 @@ class UserDataOperation {
 class BatchUserDataEditorImpl implements BatchUserDataEditor {
   List<UserDataOperation> _operationQueue = [];
 
-  BatchUserDataEditorImpl(MethodChannel userMethodChannel) : this._userMethodChannel = userMethodChannel;
+  BatchUserDataEditorImpl(MethodChannel userMethodChannel)
+      : this._userMethodChannel = userMethodChannel;
 
   MethodChannel _userMethodChannel;
 
@@ -108,7 +109,7 @@ class BatchUserDataEditorImpl implements BatchUserDataEditor {
       return this;
     }
 
-    _enqueueOperation(UserDataOperationKind.setRegion, {
+    _enqueueOperation(UserDataOperationKind.setIdentifier, {
       "value": identifier,
     });
 
@@ -178,6 +179,7 @@ class BatchUserDataEditorImpl implements BatchUserDataEditor {
     }
 
     _enqueueOperation(UserDataOperationKind.setAttribute, {
+      "key": key,
       "type": "boolean",
       "value": value,
     });
@@ -192,6 +194,7 @@ class BatchUserDataEditorImpl implements BatchUserDataEditor {
     }
 
     _enqueueOperation(UserDataOperationKind.setAttribute, {
+      "key": key,
       "type": "date",
       "value": value.toUtc().millisecondsSinceEpoch,
     });
@@ -206,6 +209,7 @@ class BatchUserDataEditorImpl implements BatchUserDataEditor {
     }
 
     _enqueueOperation(UserDataOperationKind.setAttribute, {
+      "key": key,
       "type": "float",
       "value": value,
     });
@@ -220,6 +224,7 @@ class BatchUserDataEditorImpl implements BatchUserDataEditor {
     }
 
     _enqueueOperation(UserDataOperationKind.setAttribute, {
+      "key": key,
       "type": "integer",
       "value": value,
     });
@@ -234,6 +239,7 @@ class BatchUserDataEditorImpl implements BatchUserDataEditor {
     }
 
     _enqueueOperation(UserDataOperationKind.setAttribute, {
+      "key": key,
       "type": "string",
       "value": value,
     });
@@ -263,7 +269,8 @@ class BatchUserDataEditorImpl implements BatchUserDataEditor {
   @override
   void save() {
     Map bridgeOperations = {
-      "operations": _operationQueue.map((e) => e.toBridgeRepresentation()),
+      "operations":
+          _operationQueue.map((e) => e.toBridgeRepresentation()).toList(),
     };
     _operationQueue.clear();
     _userMethodChannel.invokeMethod("user.edit", bridgeOperations);
@@ -284,7 +291,8 @@ class BatchUserDataEditorImpl implements BatchUserDataEditor {
     return true;
   }
 
-  void _enqueueOperation(UserDataOperationKind kind, Map<String, dynamic> arguments) {
+  void _enqueueOperation(
+      UserDataOperationKind kind, Map<String, dynamic> arguments) {
     _operationQueue.add(UserDataOperation(kind: kind, arguments: arguments));
   }
 }
