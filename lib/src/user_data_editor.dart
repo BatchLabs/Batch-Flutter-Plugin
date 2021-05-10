@@ -17,7 +17,7 @@ enum UserDataOperationKind {
   addTag,
   removeTag,
   clearTags,
-  clearTagCollections
+  clearTagCollection
 }
 
 extension UserDataOperationKindBridge on UserDataOperationKind {
@@ -41,7 +41,7 @@ extension UserDataOperationKindBridge on UserDataOperationKind {
         return "REMOVE_TAG";
       case UserDataOperationKind.clearTags:
         return "CLEAR_TAGS";
-      case UserDataOperationKind.clearTagCollections:
+      case UserDataOperationKind.clearTagCollection:
         return "CLEAR_TAG_COLLECTION";
     }
   }
@@ -162,7 +162,7 @@ class BatchUserDataEditorImpl implements BatchUserDataEditor {
       return this;
     }
 
-    _enqueueOperation(UserDataOperationKind.clearTagCollections, {
+    _enqueueOperation(UserDataOperationKind.clearTagCollection, {
       "collection": collection,
     });
 
