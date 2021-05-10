@@ -51,17 +51,48 @@ class _MainMenuState extends State<MainMenu> {
     });
   }
 
-  void setTestCustomData() {
+  void testCustomEvent() {
     BatchEventData eventData = new BatchEventData();
     eventData.putString("string", "bar");
     eventData.putBoolean("bool", true);
     eventData.putDate("date", DateTime.now());
     eventData.putInteger("int", 1);
-    eventData.putDouble("double", 2);
+    eventData.putDouble("double", 2.3);
     eventData.addTag("tag1");
     eventData.addTag("tag1").addTag("tag2");
     BatchUser.instance
         .trackEvent(name: "test_event", label: "test_label", data: eventData);
+
+    BatchUser.instance.trackLocation(latitude: 0.4, longitude: 0.523232);
+    BatchUser.instance.trackTransaction(0.34);
+  }
+
+  void testCustomData() {
+    BatchUserDataEditor editor = BatchUser.instance.newEditor();
+    editor
+        .setIdentifier("test_user")
+        .setBooleanAttribute("bootl", true)
+        .setStringAttribute("string", "bar")
+        .setDateTimeAttribute("date", DateTime.now())
+        .setIntegerAttribute("int", 1)
+        .setDoubleAttribute("double", 2.3)
+        .addTag("push_optin", "foot")
+        .addTag("push_optin", "rugby")
+        .setLanguage("pt")
+        .setRegion("BR")
+        .save();
+  }
+
+  void resetCustomData() {
+    BatchUser.instance
+        .newEditor()
+        .setIdentifier(null)
+        .setLanguage(null)
+        .setRegion(null)
+        .clearAttributes()
+        .clearTagCollection("foobar")
+        .clearTags()
+        .save();
   }
 
   @override
@@ -94,8 +125,16 @@ class _MainMenuState extends State<MainMenu> {
           onPressed: () => {Batch.instance.showDebugView()},
         ),
         ElevatedButton(
-          child: Text("Set test custom data"),
-          onPressed: () => {setTestCustomData()},
+          child: Text("Test custom event"),
+          onPressed: () => {testCustomEvent()},
+        ),
+        ElevatedButton(
+          child: Text("Test custom data"),
+          onPressed: () => {testCustomData()},
+        ),
+        ElevatedButton(
+          child: Text("Reset custom data"),
+          onPressed: () => {resetCustomData()},
         ),
       ],
     );
