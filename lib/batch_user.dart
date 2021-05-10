@@ -1,6 +1,7 @@
 import 'dart:collection';
 
 import 'package:batch_flutter/src/typed_attribute.dart';
+import 'package:batch_flutter/src/user_data_editor.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter/widgets.dart';
 
@@ -22,7 +23,7 @@ class BatchUser {
   ///
   /// See [BatchUserDataEditor]'s documentation for more info.
   BatchUserDataEditor newEditor() {
-    return BatchUserDataEditorImpl();
+    return BatchUserDataEditorImpl(_channel);
   }
 
   /// Track an event.
