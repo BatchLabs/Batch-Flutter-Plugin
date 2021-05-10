@@ -9,6 +9,10 @@
 * Added `requestProvisionalNotificationAuthorization()`
 
 
+**User**
+
+* Added `trackEvent()`, `trackTransaction()`, `trackLocation()` and the `BatchEventData` class.
+* Added `newEditor()` which returns a `BatchUserDataEditor` instance, allowing you to edit the user profile (attributes, tags, language/region, custom identifier).
 
 ## 0.0.1
 
