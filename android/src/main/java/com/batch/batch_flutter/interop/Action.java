@@ -19,7 +19,7 @@ enum Action
     PUSH_CLEAR_BADGE("push.clearBadge"),
     PUSH_DISMISS_NOTIFICATIONS("push.dismissNotifications"),
     PUSH_SET_IOSSHOW_FOREGROUND("push.setIOSShowForegroundNotifications"),
-	//USER_EDIT("user.edit"),
+	USER_EDIT("user.edit"),
 	USER_TRACK_EVENT("user.track.event"),
 	USER_TRACK_TRANSACTION("user.track.transaction"),
     USER_TRACK_LOCATION("user.track.location"),

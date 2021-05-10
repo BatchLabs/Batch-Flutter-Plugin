@@ -97,6 +97,9 @@ public class BatchBridge {
                 return Promise.resolved(Batch.User.getLanguage(activity));
             case USER_GET_REGION:
                 return Promise.resolved(Batch.User.getRegion(activity));
+            case USER_EDIT:
+                userDataEdit(parameters);
+                return Promise.resolved(null);
             case USER_TRACK_EVENT:
                 trackEvent(parameters);
                 return Promise.resolved(null);
