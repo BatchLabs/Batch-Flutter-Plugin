@@ -67,6 +67,9 @@ class UserDataOperation {
 /// <nodoc>
 @protected
 class BatchUserDataEditorImpl implements BatchUserDataEditor {
+  static final RegExp _attributeKeyRegexp = RegExp("^[a-zA-Z0-9_]{1,30}\$");
+  static const int _maxStringLength = 64;
+
   List<UserDataOperation> _operationQueue = [];
 
   BatchUserDataEditorImpl(MethodChannel userMethodChannel)
@@ -238,11 +241,18 @@ class BatchUserDataEditorImpl implements BatchUserDataEditor {
       return this;
     }
 
-    _enqueueOperation(UserDataOperationKind.setAttribute, {
-      "key": key,
-      "type": "string",
-      "value": value,
-    });
+    if (value.length <= _maxStringLength) {
+      _enqueueOperation(UserDataOperationKind.setAttribute, {
+        "key": key,
+        "type": "string",
+        "value": value,
+      });
+    } else {
+      //TODO: Logger
+      print("BatchUserDataEditor - Invalid attribute string value. String " +
+          "attributes cannot be longer than 64 characters (bytes). " +
+          "Ignoring attribute '$key'.");
+    }
 
     return this;
   }
@@ -277,17 +287,38 @@ class BatchUserDataEditorImpl implements BatchUserDataEditor {
   }
 
   bool _ensureValidAttributeKey(String key) {
-    //TODO: Implement attribute key validation
+    if (!_attributeKeyRegexp.hasMatch(key)) {
+      //TODO: Logger
+      print(
+          "BatchUserDataEditor - Invalid attribute key. Please make sure that " +
+              "the key is made of letters, underscores and numbers only " +
+              "(a-zA-Z0-9_). It also can't be longer than 30 characters. " +
+              "Ignoring attribute '$key'.");
+      return false;
+    }
     return true;
   }
 
   bool _ensureValidTagCollection(String collection) {
-    //TODO: Implement attribute key validation
+    if (!_attributeKeyRegexp.hasMatch(collection)) {
+      //TODO: Logger
+      print("BatchUserDataEditor - Invalid collection. Please make sure that " +
+          "the collection is made of letters, underscores and numbers only " +
+          "(a-zA-Z0-9_). It also can't be longer than 30 characters. " +
+          "Ignoring collection '$collection'.");
+      return false;
+    }
     return true;
   }
 
   bool _ensureValidTag(String tag) {
-    //TODO: Implement attribute key validation
+    if (tag.length == 0 || tag.length > _maxStringLength) {
+      //TODO: Logger
+      print("BatchUserDataEditor - Invalid tag. Tags are not allowed to " +
+          "be longer than 64 characters (bytes) and must not be empty. " +
+          "Ignoring operation on tag '$tag'.");
+      return false;
+    }
     return true;
   }
 

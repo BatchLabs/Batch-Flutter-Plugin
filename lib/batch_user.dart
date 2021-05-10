@@ -191,7 +191,10 @@ class BatchEventData {
   /// and use slugs when possible.
   BatchEventData addTag(String tag) {
     if (tag.length == 0 || tag.length > _maxStringLength) {
-      // TODO: log
+      //TODO: Logger
+      print("BatchEventData - Invalid tag. Tags are not allowed to " +
+          "be longer than 64 characters (bytes) and must not be empty. " +
+          "Ignoring tag '$tag'.");
       return this;
     }
     _tags.add(tag.toLowerCase());
@@ -280,7 +283,11 @@ class BatchEventData {
 
   bool _validateAttributeKey(String key) {
     if (!_attributeKeyRegexp.hasMatch(key)) {
-      //TODO: log on error
+      //TODO: Logger
+      print("BatchEventData - Invalid attribute key. Please make sure that " +
+          "the key is made of letters, underscores and numbers only " +
+          "(a-zA-Z0-9_). It also can't be longer than 30 characters. " +
+          "Ignoring attribute '$key'.");
       return false;
     }
     return true;
