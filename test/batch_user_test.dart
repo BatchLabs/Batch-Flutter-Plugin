@@ -3,7 +3,7 @@ import 'package:flutter/services.dart';
 import 'package:flutter_test/flutter_test.dart';
 
 void main() {
-  const MethodChannel coreChannel = MethodChannel('batch_flutter');
+  //const MethodChannel coreChannel = MethodChannel('batch_flutter');
   const MethodChannel userChannel = MethodChannel('batch_flutter.user');
 
   TestWidgetsFlutterBinding.ensureInitialized();

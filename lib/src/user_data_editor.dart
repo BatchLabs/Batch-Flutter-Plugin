@@ -81,7 +81,9 @@ class BatchUserDataEditorImpl implements BatchUserDataEditor {
   @override
   BatchUserDataEditor setLanguage(String? language) {
     if (language != null && language.length == 0) {
-      //TODO: Log
+      BatchLogger.public(
+          "BatchUserDataEditor - Language override cannot be empty. If " +
+              "you meant to un-set the language, please use null.");
       return this;
     }
 
@@ -95,7 +97,9 @@ class BatchUserDataEditorImpl implements BatchUserDataEditor {
   @override
   BatchUserDataEditor setRegion(String? region) {
     if (region != null && region.length == 0) {
-      //TODO: Log
+      BatchLogger.public(
+          "BatchUserDataEditor - Region override cannot be empty. If " +
+              "you meant to un-set the region, please use null.");
       return this;
     }
 
@@ -109,7 +113,9 @@ class BatchUserDataEditorImpl implements BatchUserDataEditor {
   @override
   BatchUserDataEditor setIdentifier(String? identifier) {
     if (identifier != null && identifier.length == 0) {
-      //TODO: Log
+      BatchLogger.public(
+          "BatchUserDataEditor - Identifier cannot be empty. If " +
+              "you meant to un-set the identifier, please use null.");
       return this;
     }
 
