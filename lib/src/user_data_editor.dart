@@ -2,6 +2,7 @@ import 'package:flutter/services.dart';
 import 'package:flutter/widgets.dart';
 
 import '../batch_user.dart';
+import 'batch_logger.dart';
 
 /// Private class: User data operations
 /// <nodoc>
@@ -248,10 +249,10 @@ class BatchUserDataEditorImpl implements BatchUserDataEditor {
         "value": value,
       });
     } else {
-      //TODO: Logger
-      print("BatchUserDataEditor - Invalid attribute string value. String " +
-          "attributes cannot be longer than 64 characters (bytes). " +
-          "Ignoring attribute '$key'.");
+      BatchLogger.public(
+          "BatchUserDataEditor - Invalid attribute string value. String " +
+              "attributes cannot be longer than 64 characters (bytes). " +
+              "Ignoring attribute '$key'.");
     }
 
     return this;
@@ -288,8 +289,7 @@ class BatchUserDataEditorImpl implements BatchUserDataEditor {
 
   bool _ensureValidAttributeKey(String key) {
     if (!_attributeKeyRegexp.hasMatch(key)) {
-      //TODO: Logger
-      print(
+      BatchLogger.public(
           "BatchUserDataEditor - Invalid attribute key. Please make sure that " +
               "the key is made of letters, underscores and numbers only " +
               "(a-zA-Z0-9_). It also can't be longer than 30 characters. " +
@@ -301,11 +301,11 @@ class BatchUserDataEditorImpl implements BatchUserDataEditor {
 
   bool _ensureValidTagCollection(String collection) {
     if (!_attributeKeyRegexp.hasMatch(collection)) {
-      //TODO: Logger
-      print("BatchUserDataEditor - Invalid collection. Please make sure that " +
-          "the collection is made of letters, underscores and numbers only " +
-          "(a-zA-Z0-9_). It also can't be longer than 30 characters. " +
-          "Ignoring collection '$collection'.");
+      BatchLogger.public(
+          "BatchUserDataEditor - Invalid collection. Please make sure that " +
+              "the collection is made of letters, underscores and numbers only " +
+              "(a-zA-Z0-9_). It also can't be longer than 30 characters. " +
+              "Ignoring collection '$collection'.");
       return false;
     }
     return true;
@@ -313,10 +313,10 @@ class BatchUserDataEditorImpl implements BatchUserDataEditor {
 
   bool _ensureValidTag(String tag) {
     if (tag.length == 0 || tag.length > _maxStringLength) {
-      //TODO: Logger
-      print("BatchUserDataEditor - Invalid tag. Tags are not allowed to " +
-          "be longer than 64 characters (bytes) and must not be empty. " +
-          "Ignoring operation on tag '$tag'.");
+      BatchLogger.public(
+          "BatchUserDataEditor - Invalid tag. Tags are not allowed to " +
+              "be longer than 64 characters (bytes) and must not be empty. " +
+              "Ignoring operation on tag '$tag'.");
       return false;
     }
     return true;
