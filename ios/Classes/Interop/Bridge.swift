@@ -20,6 +20,16 @@ struct Bridge {
     func doAction(_ action: Action, parameters: BridgeParameters) -> LightPromise<AnyObject?> {
         do {
             switch action {
+                case .optIn:
+                    optIn()
+                    return emptySuccessPromise()
+                case .optOut:
+                    optOut()
+                    return emptySuccessPromise()
+                case .optOutAndWipeData:
+                    optOutAndWipeData()
+                    return emptySuccessPromise()
+                
                 case .push_iOSRefreshToken:
                     BatchPush.refreshToken()
                     return emptySuccessPromise()

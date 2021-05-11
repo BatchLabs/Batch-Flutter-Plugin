@@ -111,6 +111,18 @@ public class BatchFlutterPlugin: NSObject, FlutterPlugin {
     /// This allows simple calls to be tested (not ones that actually require threading)
     internal var bridgeExecutorQueue: LightPromiseExecutor = LightPromiseExecutor.asyncMain
     
+    /// Starts the SDK is the plugin is in managed mode. Does nothing otherwise.
+    internal static func startManagedNativeSDK() {
+        if manageBatchLifecycle {
+            if let batchAPIKey = configuration.actualAPIKey {
+                Batch.start(withAPIKey: batchAPIKey)
+                BatchPush.refreshToken()
+            } else {
+                // TODO: Race condition, log an error
+            }
+        }
+    }
+    
     // MARK: Public API
     
     /**
@@ -153,14 +165,7 @@ public class BatchFlutterPlugin: NSObject, FlutterPlugin {
         
         didCallSetup = true
         
-        if manageBatchLifecycle {
-            if let batchAPIKey = configuration.actualAPIKey {
-                Batch.start(withAPIKey: batchAPIKey)
-                BatchPush.refreshToken()
-            } else {
-                // TODO: Race condition, log an error
-            }
-        }
+        startManagedNativeSDK()
         
         setupBatchEnvironmentVariables()
         
