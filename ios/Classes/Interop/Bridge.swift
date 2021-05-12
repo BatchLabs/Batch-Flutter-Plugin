@@ -51,7 +51,7 @@ struct Bridge {
                 case .push_getLastKnownPushToken:
                     return LightPromise<AnyObject?>.resolved(BatchPush.lastKnownPushToken() as NSString?)
                 case .user_getInstallationID:
-                    return LightPromise<AnyObject?>.resolved(BatchUser.installationID() as NSString?)
+                    return getInstallationID()
                 case .user_edit:
                     try userDataEdit(parameters: parameters)
                     return emptySuccessPromise()
@@ -75,6 +75,16 @@ struct Bridge {
         } catch {
             return LightPromise<AnyObject?>.rejected(error)
         }
+    }
+    
+    private func getInstallationID() -> LightPromise<AnyObject?> {
+        var installID = BatchUser.installationID()
+        // To maintain consistency with Android, an empty installation ID will be nilled.
+        // It's a native SDK weirdness that might someday change
+        if installID?.count == 0 {
+            installID = nil
+        }
+        return LightPromise<AnyObject?>.resolved(installID as NSString?)
     }
     
     /// Convinence method to get a promise resolved with nil
