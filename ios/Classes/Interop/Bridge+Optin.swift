@@ -5,9 +5,6 @@ import Flutter
 extension Bridge {
     func optIn() {
         Batch.optIn()
-        if BatchFlutterPlugin().isSetup {
-            BatchFlutterPlugin.startManagedNativeSDK()
-        }
     }
 
     func optOut() {
