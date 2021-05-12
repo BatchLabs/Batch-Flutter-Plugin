@@ -24,11 +24,9 @@ struct Bridge {
                     optIn()
                     return emptySuccessPromise()
                 case .optOut:
-                    optOut()
-                    return emptySuccessPromise()
+                    return optOut()
                 case .optOutAndWipeData:
-                    optOutAndWipeData()
-                    return emptySuccessPromise()
+                    return optOutAndWipeData()
                 
                 case .push_iOSRefreshToken:
                     BatchPush.refreshToken()
