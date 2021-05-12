@@ -2,12 +2,13 @@
 
 **Core**
 
-* Added `showDebugView()`
+* Added `showDebugView()`.
 * Added `optIn()`, `optOut()` and `optOutAndWipeData()`.
+  - `isOptedOut` will come in a later seed.
 
 **Push**
 
-* Added `requestProvisionalNotificationAuthorization()`
+* Added `requestProvisionalNotificationAuthorization()`.
 
 **User**
 
