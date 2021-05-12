@@ -9,6 +9,7 @@ import androidx.annotation.NonNull;
 import com.batch.android.Batch;
 import com.batch.android.BatchEventData;
 import com.batch.android.BatchMessage;
+import com.batch.android.BatchOptOutResultListener;
 import com.batch.android.BatchUserDataEditor;
 import com.batch.android.json.JSONObject;
 import com.batch.batch_flutter.BatchFlutterLogger;
@@ -66,11 +67,9 @@ public class BatchBridge {
                 optIn(activity);
                 return Promise.resolved(null);
             case OPT_OUT:
-                optOut(activity, false);
-                return Promise.resolved(null);
+                return optOut(activity, false);
             case OPT_OUT_AND_WIPE_DATA:
-                optOut(activity, true);
-                return Promise.resolved(null);
+                return optOut(activity, true);
             case MESSAGING_SET_DO_NOT_DISTURB_ENABLED:
                 Batch.Messaging.setDoNotDisturbEnabled(getTypedParameter(parameters, "enabled", Boolean.class));
                 return Promise.resolved(null);
@@ -143,12 +142,28 @@ public class BatchBridge {
         Batch.onStart(activity);
     }
 
-    private static void optOut(Activity activity, boolean wipeData) {
-        if (wipeData) {
-            Batch.optOutAndWipeData(activity);
-        } else {
-            Batch.optOut(activity);
-        }
+    private static Promise<Object> optOut(Activity activity, boolean wipeData) {
+        return new Promise<>(promise -> {
+
+            BatchOptOutResultListener resultListener = new BatchOptOutResultListener() {
+                @Override
+                public void onSuccess() {
+                    promise.resolve(null);
+                }
+
+                @Override
+                public ErrorPolicy onError() {
+                    promise.resolve(null);
+                    return ErrorPolicy.IGNORE;
+                }
+            };
+
+            if (wipeData) {
+                Batch.optOutAndWipeData(activity, resultListener);
+            } else {
+                Batch.optOut(activity, resultListener);
+            }
+        });
     }
 
     private static String getLastKnownPushToken() {
