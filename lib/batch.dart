@@ -28,8 +28,8 @@ class Batch {
 
   /// Opt-in to Batch SDK.
   /// Will automatically restart the SDK with the configured API Key.
-  void optIn() {
-    _channel.invokeMethod('optIn');
+  void optIn() async {
+    await _channel.invokeMethod('optIn');
   }
 
   /// Opt-out from Batch SDK.
@@ -55,8 +55,8 @@ class Batch {
   /// To implement a consent request where Batch should not be enabled until
   /// the user explicitly opts-in, please see our documentation for opting out of
   /// Batch by default, rather than using this method.
-  void optOut() {
-    _channel.invokeMethod('optOut');
+  void optOut() async {
+    await _channel.invokeMethod('optOut');
   }
 
   /// Opt-out from Batch SDK and wipe data.
@@ -67,7 +67,7 @@ class Batch {
   /// Asking to opt out and wipe data while the SDK is already opted out from
   /// won't do anything: please temporarily opt-in so that the data wipe request
   /// can be sent to Batch's servers.
-  void optOutAndWipeData() {
-    _channel.invokeMethod('optOutAndWipeData');
+  void optOutAndWipeData() async {
+    await _channel.invokeMethod('optOutAndWipeData');
   }
 }
