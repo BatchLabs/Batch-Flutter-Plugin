@@ -136,6 +136,18 @@ class _MainMenuState extends State<MainMenu> {
           child: Text("Reset custom data"),
           onPressed: () => {resetCustomData()},
         ),
+        ElevatedButton(
+          child: Text("Opt-in"),
+          onPressed: () => {Batch.instance.optIn()},
+        ),
+        ElevatedButton(
+          child: Text("Opt-out"),
+          onPressed: () async => {await Batch.instance.optOut()},
+        ),
+        ElevatedButton(
+          child: Text("Opt-out and wipe data"),
+          onPressed: () => {Batch.instance.optOutAndWipeData()},
+        ),
       ],
     );
   }
