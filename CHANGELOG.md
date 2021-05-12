@@ -3,11 +3,11 @@
 **Core**
 
 * Added `showDebugView()`
+* Added `optIn()`, `optOut()` and `optOutAndWipeData()`.
 
 **Push**
 
 * Added `requestProvisionalNotificationAuthorization()`
-
 
 **User**
 
