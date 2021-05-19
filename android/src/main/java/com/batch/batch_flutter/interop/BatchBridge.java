@@ -7,18 +7,23 @@ import android.util.Log;
 import androidx.annotation.NonNull;
 
 import com.batch.android.Batch;
+import com.batch.android.BatchAttributesFetchListener;
 import com.batch.android.BatchEventData;
 import com.batch.android.BatchMessage;
 import com.batch.android.BatchOptOutResultListener;
+import com.batch.android.BatchTagCollectionsFetchListener;
+import com.batch.android.BatchUserAttribute;
 import com.batch.android.BatchUserDataEditor;
 import com.batch.android.json.JSONObject;
 import com.batch.batch_flutter.BatchFlutterLogger;
 import com.batch.batch_flutter.Promise;
 
+import java.util.ArrayList;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.Set;
 
 /**
  * Bridge that allows code to use Batch's APIs via an action+parameters request, to easily bridge it to some kind of JSON RPC
@@ -108,6 +113,10 @@ public class BatchBridge {
             case USER_TRACK_TRANSACTION:
                 trackTransaction(parameters);
                 return Promise.resolved(null);
+            case USER_FETCH_ATTRIBUTES:
+                throw new BatchBridgeNotImplementedException(actionName);
+            case USER_FETCH_TAGS:
+
             case DEBUG_SHOW_DEBUG_VIEW:
                 showDebugView(activity);
                 return Promise.resolved(null);
@@ -430,6 +439,80 @@ public class BatchBridge {
         }
 
         Batch.User.trackLocation(location);
+    }
+
+    private static Promise<Object> userFetchAttributes(Activity activity) {
+        return new Promise<>(promise -> {
+            Batch.User.fetchAttributes(activity, new BatchAttributesFetchListener() {
+                @Override
+                public void onSuccess(@NonNull Map<String, BatchUserAttribute> map) {
+                    Map<String, Map<String, Object>> bridgeAttributes = new HashMap<>();
+
+                    for (Map.Entry<String, BatchUserAttribute> attributeEntry : map.entrySet()) {
+                        Map<String, Object> typedBrdigeAttribute = new HashMap<>();
+                        BatchUserAttribute attribute = attributeEntry.getValue();
+
+                        String type;
+                        switch (attribute.type) {
+                            case BOOL:
+                                type = "e";
+                                break;
+                            case DATE:
+                                type = "d";
+                                break;
+                            case STRING:
+                                type = "s";
+                                break;
+                            case LONGLONG:
+                                type = "i";
+                                break;
+                            case DOUBLE:
+                                type = "f";
+                                break;
+                            default:
+                                promise.reject(new BatchBridgeException(BatchBridgePublicErrorCode.INTERNAL_BRIDGE_ERROR,
+                                        "Fetch attribute: Unknown attribute type " + attribute.type + " for key: " + attributeEntry.getKey()));
+                                return;
+                        }
+
+                        typedBrdigeAttribute.put("type", type);
+                        typedBrdigeAttribute.put("value", attribute.value);
+
+                        bridgeAttributes.put(attributeEntry.getKey(), typedBrdigeAttribute);
+                    }
+
+
+                    promise.resolve(bridgeAttributes);
+                }
+
+                @Override
+                public void onError() {
+                    promise.reject(new BatchBridgeException(BatchBridgePublicErrorCode.INTERNAL_SDK_ERROR, "Native fetchAttributes returned an error"));
+                }
+            });
+        });
+    }
+
+    private static Promise<Object> userFetchTags(Activity activity) {
+        return new Promise<>(promise -> {
+            Batch.User.fetchTagCollections(activity, new BatchTagCollectionsFetchListener() {
+                @Override
+                public void onSuccess(@NonNull Map<String, Set<String>> map) {
+                    Map<String, List<String>> bridgeTagCollections = new HashMap<>();
+
+                    for (Map.Entry<String, Set<String>> tagCollection : map.entrySet()) {
+                        bridgeTagCollections.put(tagCollection.getKey(), new ArrayList<>(tagCollection.getValue()));
+                    }
+
+                    promise.resolve(bridgeTagCollections);
+                }
+
+                @Override
+                public void onError() {
+                    promise.reject(new BatchBridgeException(BatchBridgePublicErrorCode.INTERNAL_SDK_ERROR, "Native fetchTagCollections returned an error"));
+                }
+            });
+        });
     }
 
     private static void showPendingMessage(Activity activity) {

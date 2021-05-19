@@ -27,6 +27,8 @@ enum Action
     USER_GET_LANGUAGE("user.getLanguage"),
     USER_GET_REGION("user.getRegion"),
 	USER_GET_INSTALLATION_ID("user.getInstallationID"),
+    USER_FETCH_ATTRIBUTES("user.fetch.attributes"),
+    USER_FETCH_TAGS("user.fetch.tags"),
     DEBUG_SHOW_DEBUG_VIEW("debug.showDebugView"),
     /// For testing
     ECHO("echo");
