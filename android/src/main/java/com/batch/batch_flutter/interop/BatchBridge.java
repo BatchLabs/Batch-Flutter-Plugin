@@ -114,9 +114,9 @@ public class BatchBridge {
                 trackTransaction(parameters);
                 return Promise.resolved(null);
             case USER_FETCH_ATTRIBUTES:
-                throw new BatchBridgeNotImplementedException(actionName);
+                return userFetchAttributes(activity);
             case USER_FETCH_TAGS:
-
+                return userFetchTags(activity);
             case DEBUG_SHOW_DEBUG_VIEW:
                 showDebugView(activity);
                 return Promise.resolved(null);
