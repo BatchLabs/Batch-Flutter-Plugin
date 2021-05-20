@@ -171,4 +171,43 @@ extension Bridge {
         
         userDataEditor.save()
     }
+    
+    func userDataFetchAttributes() -> LightPromise<AnyObject?> {
+        return LightPromise<AnyObject?> { resolve, reject in
+            BatchUser.fetchAttributes { attributes in
+                guard let attributes = attributes else {
+                    reject(BridgeError.init(code: BridgeError.ErrorCode.internalSDKError,
+                                            description: "Native SDK fetchAttributes returned an error",
+                                            details: nil))
+                    return
+                }
+                
+                let bridgeAttributes: [String: [String: AnyObject]] = attributes.mapValues { userAttribute in
+                    return [:]
+                }
+                
+                resolve(bridgeAttributes as NSDictionary)
+            }
+        }
+    }
+    
+    func userDataFetchTags() -> LightPromise<AnyObject?> {
+        return LightPromise<AnyObject?> { resolve, reject in
+            BatchUser.fetchTagCollections { tagCollections in
+                guard let tagCollections = tagCollections else {
+                    reject(BridgeError.init(code: BridgeError.ErrorCode.internalSDKError,
+                                            description: "Native SDK fetchTagCollections returned an error",
+                                            details: nil))
+                    return
+                }
+                
+                let bridgeTagCollections: [String: [String]] = tagCollections.mapValues { tags in
+                    return Array(tags)
+                }
+                
+                resolve(bridgeTagCollections as NSDictionary)
+            }
+        }
+        
+    }
 }

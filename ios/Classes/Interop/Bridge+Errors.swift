@@ -8,6 +8,7 @@ struct BridgeError: Error {
     enum ErrorCode: String {
         case unknownBridgeError
         case internalBridgeError
+        case internalSDKError
         case badArgumentType
         case missingSetup
     }
