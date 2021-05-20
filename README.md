@@ -4,7 +4,7 @@
 
 The Batch Flutter Plugin allows you to build meaningful communication experience in your iOS app through highly personalized push notifications & In-App messages.
 
-Our [📕 setup documentation](https://doc.batch.com/flutter/prerequisites) details the steps to take for an easy and successful integration.
+Our [📕 setup documentation](https://flutter-doc-preview.batchers.vercel.app/flutter/prerequisites) details the steps to take for an easy and successful integration.
 
 # Prerequisites
 The Batch Flutter Plugin requires Flutter 2 and Dart 2.12 or higher.
