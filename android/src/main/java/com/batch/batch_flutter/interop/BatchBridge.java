@@ -476,6 +476,7 @@ public class BatchBridge {
                         }
 
                         typedBrdigeAttribute.put("type", type);
+                        // TODO: Convert dates
                         typedBrdigeAttribute.put("value", attribute.value);
 
                         bridgeAttributes.put(attributeEntry.getKey(), typedBrdigeAttribute);
