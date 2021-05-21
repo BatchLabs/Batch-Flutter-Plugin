@@ -59,6 +59,20 @@ class BatchUser {
     _channel.invokeMethod(
         "user.track.location", {"latitude": latitude, "longitude": longitude});
   }
+
+  /// Read the saved attributes.
+  /// Reading is asynchronous so as not to interfere with saving operations.
+  Future<Map<String, BatchUserAttribute>> get attributes async {
+    //TODO: Implement attributes
+    return Map();
+  }
+
+  /// Read the saved tag collections.
+  /// Reading is asynchronous so as not to interfere with saving operations.
+  Future<Map<String, List<String>>> get tagCollections async {
+    //TODO: Implement tag collections
+    return Map();
+  }
 }
 
 /// Batch's user data editor.
@@ -294,3 +308,54 @@ class BatchEventData {
     return true;
   }
 }
+
+/// Object representing a user attribute.
+/// An attribute is represented by it's type, which maches the one you've used
+/// when setting the attribute, and its value.
+///
+/// You can get the attribute using the generic getter, or use the typed ones
+/// that will cast the value or return null if the type doesn't match.
+class BatchUserAttribute {
+  BatchUserAttribute({required this.type, required this.value});
+
+  final BatchUserAttributeType type;
+  final dynamic value;
+
+  String? getStringValue() {
+    if (type == BatchUserAttributeType.string) {
+      return value;
+    }
+    return null;
+  }
+
+  DateTime? getDateValue() {
+    if (type == BatchUserAttributeType.date) {
+      return value;
+    }
+    return null;
+  }
+
+  int? getIntegerValue() {
+    if (type == BatchUserAttributeType.integer) {
+      return value;
+    }
+    return null;
+  }
+
+  double? getDoubleValue() {
+    if (type == BatchUserAttributeType.double) {
+      return value;
+    }
+    return null;
+  }
+
+  bool? getBoolValue() {
+    if (type == BatchUserAttributeType.boolean) {
+      return value;
+    }
+    return null;
+  }
+}
+
+/// User attribute types.
+enum BatchUserAttributeType { string, boolean, integer, double, date }
