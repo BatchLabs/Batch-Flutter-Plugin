@@ -86,6 +86,8 @@ class _MainMenuState extends State<MainMenu> {
   void testReadCustomData() async {
     var tags = await BatchUser.instance.tagCollections;
     print("Tags: " + tags.toString());
+    var attributes = await BatchUser.instance.attributes;
+    print("Attributes: " + attributes.toString());
   }
 
   void resetCustomData() {
