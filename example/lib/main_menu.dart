@@ -83,6 +83,11 @@ class _MainMenuState extends State<MainMenu> {
         .save();
   }
 
+  void testReadCustomData() async {
+    var tags = await BatchUser.instance.tagCollections;
+    print("Tags: " + tags.toString());
+  }
+
   void resetCustomData() {
     BatchUser.instance
         .newEditor()
@@ -131,6 +136,10 @@ class _MainMenuState extends State<MainMenu> {
         ElevatedButton(
           child: Text("Test custom data"),
           onPressed: () => {testCustomData()},
+        ),
+        ElevatedButton(
+          child: Text("Test read custom data"),
+          onPressed: () => {testReadCustomData()},
         ),
         ElevatedButton(
           child: Text("Reset custom data"),
