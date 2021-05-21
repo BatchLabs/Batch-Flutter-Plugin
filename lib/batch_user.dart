@@ -70,8 +70,20 @@ class BatchUser {
   /// Read the saved tag collections.
   /// Reading is asynchronous so as not to interfere with saving operations.
   Future<Map<String, List<String>>> get tagCollections async {
-    //TODO: Implement tag collections
-    return Map();
+    Map<String, List<dynamic>>? rawTagCollections =
+        await _channel.invokeMapMethod("user.fetch.tags");
+
+    if (rawTagCollections == null) {
+      //TODO: Error handling: throw an exception
+      return Map();
+    }
+
+    Map<String, List<String>> castedTagCollections = {};
+    rawTagCollections.forEach((key, value) {
+      List<String> tags = List.castFrom(value);
+      castedTagCollections[key] = tags;
+    });
+    return castedTagCollections;
   }
 }
 
