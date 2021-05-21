@@ -175,18 +175,62 @@ extension Bridge {
     func userDataFetchAttributes() -> LightPromise<AnyObject?> {
         return LightPromise<AnyObject?> { resolve, reject in
             BatchUser.fetchAttributes { attributes in
-                guard let attributes = attributes else {
-                    reject(BridgeError.init(code: BridgeError.ErrorCode.internalSDKError,
-                                            description: "Native SDK fetchAttributes returned an error",
-                                            details: nil))
-                    return
+                do {
+                    guard let attributes = attributes else {
+                        throw BridgeError.init(code: BridgeError.ErrorCode.internalSDKError,
+                                        description: "Native SDK fetchAttributes returned an error",
+                                            details: nil)
+                    }
+                    
+                    let bridgeAttributes: [String: [String: AnyObject]] = try attributes.mapValues { userAttribute in
+                        
+                        var bridgeValue: AnyObject? = nil
+                        let bridgeType: String
+                        switch userAttribute.type {
+                            case BatchUserAttributeType.bool:
+                                bridgeType = "e"
+                                bridgeValue = userAttribute.numberValue()
+                                break
+                            case BatchUserAttributeType.date:
+                                bridgeType = "d"
+                                if let dateValue = userAttribute.dateValue() {
+                                    bridgeValue = NSNumber(value: Int64(floor(dateValue.timeIntervalSince1970 * 1000)))
+                                }
+                                break
+                            case BatchUserAttributeType.string:
+                                bridgeType = "s"
+                                bridgeValue = userAttribute.stringValue() as NSString?
+                                break
+                            case BatchUserAttributeType.longLong:
+                                bridgeType = "i"
+                                bridgeValue = userAttribute.numberValue()
+                                break
+                            case BatchUserAttributeType.double:
+                                bridgeType = "f"
+                                bridgeValue = userAttribute.numberValue()
+                                break
+                            default:
+                                throw BridgeError.init(code: BridgeError.ErrorCode.internalBridgeError,
+                                                description: "Fetch attribute: Unknown attribute type \(userAttribute.type).",
+                                                    details: nil)
+                        }
+                        
+                        guard let bridgeValue = bridgeValue else {
+                            throw BridgeError.init(code: BridgeError.ErrorCode.internalBridgeError,
+                                            description: "Fetch attribute: Failed to serialize attribute for type \(bridgeType)",
+                                                details: nil)
+                        }
+                        
+                        return [
+                            "type": bridgeType as NSString,
+                            "value": bridgeValue
+                        ]
+                    }
+                    
+                    resolve(bridgeAttributes as NSDictionary)
+                } catch {
+                    reject(error)
                 }
-                
-                let bridgeAttributes: [String: [String: AnyObject]] = attributes.mapValues { userAttribute in
-                    return [:]
-                }
-                
-                resolve(bridgeAttributes as NSDictionary)
             }
         }
     }
