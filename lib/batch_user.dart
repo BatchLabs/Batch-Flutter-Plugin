@@ -367,6 +367,11 @@ class BatchUserAttribute {
     }
     return null;
   }
+
+  @override
+  String toString() {
+    return ("${value.toString} (${type.toString()})");
+  }
 }
 
 /// User attribute types.
