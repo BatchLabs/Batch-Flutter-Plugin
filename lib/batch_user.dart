@@ -63,8 +63,57 @@ class BatchUser {
   /// Read the saved attributes.
   /// Reading is asynchronous so as not to interfere with saving operations.
   Future<Map<String, BatchUserAttribute>> get attributes async {
-    //TODO: Implement attributes
-    return Map();
+    Map<String, Map<dynamic, dynamic>>? rawAttributes =
+        await _channel.invokeMapMethod("user.fetch.attributes");
+
+    if (rawAttributes == null) {
+      //TODO: Error handling: throw an exception
+      return Map();
+    }
+
+    Map<String, BatchUserAttribute> attributes = {};
+    rawAttributes.forEach((key, rawTypedValue) {
+      dynamic castedValue;
+      BatchUserAttributeType type;
+      dynamic? rawValue = rawTypedValue["value"];
+
+      if (rawValue == null) {
+        // TODO throw exception
+        return;
+      }
+
+      String? rawType = rawTypedValue["type"];
+      switch (rawType) {
+        case "d":
+          type = BatchUserAttributeType.date;
+          int rawDate = rawValue as int;
+          castedValue =
+              DateTime.fromMillisecondsSinceEpoch(rawDate, isUtc: true);
+          break;
+        case "i":
+          type = BatchUserAttributeType.integer;
+          castedValue = rawValue as int;
+          break;
+        case "f":
+          type = BatchUserAttributeType.double;
+          castedValue = rawValue as double;
+          break;
+        case "b":
+          type = BatchUserAttributeType.boolean;
+          castedValue = rawValue as bool;
+          break;
+        case "s":
+          type = BatchUserAttributeType.string;
+          castedValue = rawValue as String;
+          break;
+        default:
+          // TODO throw exception
+          return;
+      }
+
+      attributes[key] = BatchUserAttribute(type: type, value: castedValue);
+    });
+    return attributes;
   }
 
   /// Read the saved tag collections.
@@ -370,7 +419,7 @@ class BatchUserAttribute {
 
   @override
   String toString() {
-    return ("${value.toString} (${type.toString()})");
+    return ("${value.toString()} (${type.toString()})");
   }
 }
 
