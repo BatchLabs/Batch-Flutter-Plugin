@@ -215,7 +215,7 @@ extension Bridge {
                                                     details: nil)
                         }
                         
-                        guard let bridgeValue = bridgeValue else {
+                        guard let finalBridgeValue = bridgeValue else {
                             throw BridgeError.init(code: BridgeError.ErrorCode.internalBridgeError,
                                             description: "Fetch attribute: Failed to serialize attribute for type \(bridgeType)",
                                                 details: nil)
@@ -223,7 +223,7 @@ extension Bridge {
                         
                         return [
                             "type": bridgeType as NSString,
-                            "value": bridgeValue
+                            "value": finalBridgeValue
                         ]
                     }
                     
