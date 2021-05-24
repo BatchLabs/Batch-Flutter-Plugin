@@ -1,3 +1,10 @@
+## UPCOMING
+
+**User**
+
+* Added `get attributes` and `get tagCollections` properties to read back previously set attributes and tag collections.
+* Added `get identifier`, `get language` and `get region` to read back the user identifier and language/region overrides.
+
 ## 0.0.2
 
 **Core**
