@@ -9,7 +9,7 @@ enum Action: String {
     case push_iOSRefreshToken = "push.iOS.refreshToken"
     case push_clearBadge = "push.clearBadge"
     case push_dismissNotifications = "push.dismissNotifications"
-    case push_iOSSetShowForegroundNotifications = "push.setIOSShowForegroundNotifications"
+    case push_iOSSetShowForegroundNotifications = "push.iOS.setShowForegroundNotifications"
     
     case user_getIdentifier = "user.getIdentifier"
     case user_getLanguage = "user.getLanguage"

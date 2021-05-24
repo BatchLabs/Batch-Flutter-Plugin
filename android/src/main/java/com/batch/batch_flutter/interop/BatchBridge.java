@@ -90,7 +90,7 @@ public class BatchBridge {
             case PUSH_IOS_REQUEST_PERMISSION:
             case PUSH_IOS_REQUEST_PROVISIONAL_PERMISSION:
             case PUSH_CLEAR_BADGE:
-            case PUSH_SET_IOSSHOW_FOREGROUND:
+            case PUSH_IOS_SET_SHOW_FOREGROUND:
                 // iOS only, do nothing
                 return Promise.resolved(null);
             case USER_GET_INSTALLATION_ID:
