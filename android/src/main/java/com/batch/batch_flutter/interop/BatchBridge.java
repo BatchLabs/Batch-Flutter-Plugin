@@ -453,13 +453,22 @@ public class BatchBridge {
                         BatchUserAttribute attribute = attributeEntry.getValue();
 
                         String type;
+                        Object value = attribute.value;
                         switch (attribute.type) {
                             case BOOL:
                                 type = "e";
                                 break;
-                            case DATE:
+                            case DATE: {
                                 type = "d";
+                                Date dateValue = attribute.getDateValue();
+                                if (dateValue == null) {
+                                    promise.reject(new BatchBridgeException(BatchBridgePublicErrorCode.INTERNAL_BRIDGE_ERROR,
+                                            "Fetch attribute: Could not parse date for key: " + attributeEntry.getKey()));
+                                    return;
+                                }
+                                value = dateValue.getTime();
                                 break;
+                            }
                             case STRING:
                                 type = "s";
                                 break;
@@ -476,8 +485,7 @@ public class BatchBridge {
                         }
 
                         typedBrdigeAttribute.put("type", type);
-                        // TODO: Convert dates
-                        typedBrdigeAttribute.put("value", attribute.value);
+                        typedBrdigeAttribute.put("value", value);
 
                         bridgeAttributes.put(attributeEntry.getKey(), typedBrdigeAttribute);
                     }
