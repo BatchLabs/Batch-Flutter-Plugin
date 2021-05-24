@@ -44,8 +44,8 @@ struct Bridge {
                     BatchPush.clearBadge()
                     return emptySuccessPromise()
                 case .push_iOSSetShowForegroundNotifications:
-                    //TODO
-                    return LightPromise<AnyObject?>.rejected(BridgeInternalError.notImplemented)
+                    try setShowForegroundNotifications(parameters: parameters)
+                    return emptySuccessPromise()
                 case .push_getLastKnownPushToken:
                     return LightPromise<AnyObject?>.resolved(BatchPush.lastKnownPushToken() as NSString?)
                     
@@ -79,8 +79,8 @@ struct Bridge {
                     return emptySuccessPromise()
                 case .echo:
                     return LightPromise<NSString?>.resolved(parameters["value"] as? NSString)
-                default:
-                    return LightPromise<AnyObject?>.rejected(BridgeInternalError.notImplemented)
+                //default:
+                //    return LightPromise<AnyObject?>.rejected(BridgeInternalError.notImplemented)
             }
         } catch {
             return LightPromise<AnyObject?>.rejected(error)
@@ -95,6 +95,14 @@ struct Bridge {
             installID = nil
         }
         return LightPromise<AnyObject?>.resolved(installID as NSString?)
+    }
+
+    private func setShowForegroundNotifications(parameters: BridgeParameters) throws {
+        guard let enabled = parameters["enabled"] as? Bool else {
+            throw BridgeError.makeBadArgumentError(argumentName: "enabled")
+        }
+        
+        BatchUNUserNotificationCenterDelegate.sharedInstance.showForegroundNotifications = enabled
     }
     
     /// Convinence method to get a promise resolved with nil
