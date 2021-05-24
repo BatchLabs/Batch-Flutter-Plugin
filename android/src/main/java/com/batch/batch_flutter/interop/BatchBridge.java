@@ -456,7 +456,7 @@ public class BatchBridge {
                         Object value = attribute.value;
                         switch (attribute.type) {
                             case BOOL:
-                                type = "e";
+                                type = "b";
                                 break;
                             case DATE: {
                                 type = "d";

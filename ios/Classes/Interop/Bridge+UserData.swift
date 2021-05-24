@@ -188,7 +188,7 @@ extension Bridge {
                         let bridgeType: String
                         switch userAttribute.type {
                             case BatchUserAttributeType.bool:
-                                bridgeType = "e"
+                                bridgeType = "b"
                                 bridgeValue = userAttribute.numberValue()
                                 break
                             case BatchUserAttributeType.date:
