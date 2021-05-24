@@ -17,6 +17,8 @@ class MainMenu extends StatefulWidget {
 class _MainMenuState extends State<MainMenu> {
   String _installationID = 'Unknown';
   String _lastPushToken = 'Unknown';
+  String _languageRegion = 'Language override: Unknown, Region: Unknown';
+  String _customID = 'Unknown';
 
   @override
   void initState() {
@@ -28,6 +30,8 @@ class _MainMenuState extends State<MainMenu> {
   Future<void> updateBatchInformation() async {
     String installationID;
     String lastPushToken;
+    String languageRegion;
+    String customID;
 
     try {
       installationID =
@@ -43,11 +47,27 @@ class _MainMenuState extends State<MainMenu> {
       lastPushToken = 'Failed to get Push Token';
     }
 
+    try {
+      customID = await BatchUser.instance.identifier ?? 'null Custom ID';
+    } on PlatformException {
+      customID = 'Failed to get Custom ID.';
+    }
+
+    try {
+      var language = await BatchUser.instance.language ?? 'none';
+      var region = await BatchUser.instance.region ?? 'none';
+      languageRegion = 'Language override: $language, Region: $region';
+    } on PlatformException {
+      languageRegion = 'Failed to get custom language/region.';
+    }
+
     if (!mounted) return;
 
     setState(() {
       _installationID = installationID;
       _lastPushToken = lastPushToken;
+      _languageRegion = languageRegion;
+      _customID = customID;
     });
   }
 
@@ -109,6 +129,8 @@ class _MainMenuState extends State<MainMenu> {
       children: [
         Text("Installation ID: $_installationID"),
         Text("Last Push Token: $_lastPushToken"),
+        Text("Custom ID: $_customID"),
+        Text("$_languageRegion"),
         ElevatedButton(
           child: Text("Refresh"),
           onPressed: () => updateBatchInformation(),
