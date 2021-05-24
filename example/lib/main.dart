@@ -1,3 +1,4 @@
+import 'package:batch_flutter/batch_push.dart';
 import 'package:flutter/material.dart';
 
 import 'package:provider/provider.dart';
@@ -29,6 +30,7 @@ class _BatchExampleAppState extends State<BatchExampleApp> {
   @override
   void initState() {
     super.initState();
+    BatchPush.instance.setShowForegroundNotificationsOniOS(true);
   }
 
   @override

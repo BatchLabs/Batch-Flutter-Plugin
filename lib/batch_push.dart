@@ -47,4 +47,16 @@ class BatchPush {
   void requestProvisionalNotificationAuthorization() {
     _channel.invokeMethod('push.iOS.requestProvisionalPermission');
   }
+
+  /// Toggles whether iOS should show notifications when the app is in foreground
+  /// or not.
+  ///
+  /// Note: This requires BatchUNUserNotificationCenterDelegate to be set
+  /// as your UNUserNotificationCenterDelegate when performing the native integration
+  ///
+  /// Default: false
+  void setShowForegroundNotificationsOniOS(bool showForegroundNotifications) {
+    _channel.invokeMethod('push.iOS.setShowForegroundNotifications',
+        {'enabled': showForegroundNotifications});
+  }
 }

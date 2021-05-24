@@ -1,5 +1,10 @@
 ## UPCOMING
 
+**Push**
+
+* Added `setShowForegroundNotificationsOniOS()`, which can enable foreground notification display on iOS.  
+  Note: This requires `BatchUNUserNotificationCenterDelegate` to be set as your `UNUserNotificationCenterDelegate` in the native integration.
+
 **User**
 
 * Added `get attributes` and `get tagCollections` properties to read back previously set attributes and tag collections.
