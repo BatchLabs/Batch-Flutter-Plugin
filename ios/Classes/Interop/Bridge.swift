@@ -48,12 +48,20 @@ struct Bridge {
                     return LightPromise<AnyObject?>.rejected(BridgeInternalError.notImplemented)
                 case .push_getLastKnownPushToken:
                     return LightPromise<AnyObject?>.resolved(BatchPush.lastKnownPushToken() as NSString?)
+                    
                 case .user_getInstallationID:
                     return getInstallationID()
+                case .user_getIdentifier:
+                    return LightPromise<AnyObject?>.resolved(BatchUser.identifier() as NSString?)
+                case .user_getLanguage:
+                    return LightPromise<AnyObject?>.resolved(BatchUser.language() as NSString?)
+                case .user_getRegion:
+                    return LightPromise<AnyObject?>.resolved(BatchUser.region() as NSString?)
                 case .user_fetchAttributes:
                     return userDataFetchAttributes()
                 case .user_fetchTags:
                     return userDataFetchTags()
+                    
                 case .user_edit:
                     try userDataEdit(parameters: parameters)
                     return emptySuccessPromise()
