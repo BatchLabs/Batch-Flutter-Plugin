@@ -30,6 +30,11 @@ enum Action
     USER_FETCH_ATTRIBUTES("user.fetch.attributes"),
     USER_FETCH_TAGS("user.fetch.tags"),
     DEBUG_SHOW_DEBUG_VIEW("debug.showDebugView"),
+
+    INBOX_CREATE_INSTALLATION_FETCHER("inbox.createInstallationFetcher"),
+    INBOX_CREATE_USER_FETCHER("inbox.createUserFetcher"),
+    INBOX_RELEASE_FETCHER("inbox.releaseFetcher"),
+
     /// For testing
     ECHO("echo");
 
