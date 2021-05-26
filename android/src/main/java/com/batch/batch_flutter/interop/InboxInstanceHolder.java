@@ -1,9 +1,11 @@
 package com.batch.batch_flutter.interop;
 
 import android.app.Activity;
+import android.content.Context;
 
 import androidx.annotation.NonNull;
 
+import com.batch.android.Batch;
 import com.batch.android.BatchInboxFetcher;
 import com.batch.batch_flutter.Promise;
 
@@ -11,6 +13,8 @@ import java.util.HashMap;
 import java.util.Map;
 import java.util.UUID;
 import java.util.concurrent.ConcurrentHashMap;
+
+import static com.batch.batch_flutter.interop.BatchBridge.getTypedParameter;
 
 /**
  * The InboxInstanceHolder's job is to retain {@link com.batch.android.BatchInboxFetcher} instances
@@ -24,10 +28,44 @@ class InboxInstanceHolder {
     Map<String, BatchInboxFetcher> fetchers = new ConcurrentHashMap<>();
 
     @NonNull
-    Promise<Object> doAction(String actionName, Map<String, Object> parameters, Activity activity) throws BatchBridgeException, BatchBridgeNotImplementedException {
+    Promise<Object> doAction(@NonNull Action action, @NonNull Map<String, Object> parameters, @NonNull Activity activity) throws BatchBridgeException, BatchBridgeNotImplementedException {
+        switch (action) {
+            case INBOX_CREATE_INSTALLATION_FETCHER:
+                return Promise.resolved(createInstallationFetcher(activity));
+            case INBOX_CREATE_USER_FETCHER:
+                return Promise.resolved(createUserFetcher(activity, parameters));
+            case INBOX_RELEASE_FETCHER:
+                releaseFetcher(parameters);
+                return Promise.resolved(null);
+            default:
+                throw new BatchBridgeNotImplementedException(action.toString());
+        }
     }
 
-    private createInstallationFetcher() {
-        UUID uuid = nwe U
+    @NonNull
+    private String createInstallationFetcher(@NonNull Context context) {
+        String id = makeFetcherID();
+        BatchInboxFetcher fetcher = Batch.Inbox.getFetcher(context.getApplicationContext());
+        fetchers.put(id, fetcher);
+        return id;
+    }
+
+    @NonNull
+    private String createUserFetcher(@NonNull Context context, @NonNull Map<String, Object> parameters) throws BatchBridgeException {
+        String id = makeFetcherID();
+        String user = getTypedParameter(parameters, "user", String.class);
+        String authKey = getTypedParameter(parameters, "authKey", String.class);
+        BatchInboxFetcher fetcher = Batch.Inbox.getFetcher(context.getApplicationContext(), "TODO", "TODO");
+        fetchers.put(id, fetcher);
+        return id;
+    }
+
+    private void releaseFetcher(@NonNull Map<String, Object> parameters) throws BatchBridgeException {
+        fetchers.remove(getTypedParameter(parameters, "id", String.class));
+    }
+
+    @NonNull
+    private String makeFetcherID() {
+        return UUID.randomUUID().toString();
     }
 }

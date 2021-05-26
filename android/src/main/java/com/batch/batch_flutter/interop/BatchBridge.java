@@ -36,6 +36,8 @@ public class BatchBridge {
 
     private static final String BRIDGE_VERSION = "Bridge/1.0";
 
+    private static final InboxInstanceHolder inboxInstanceHolder = new InboxInstanceHolder();
+
     static {
         System.setProperty(BRIDGE_VERSION_ENVIRONEMENT_VAR, BRIDGE_VERSION);
     }
@@ -120,6 +122,12 @@ public class BatchBridge {
             case DEBUG_SHOW_DEBUG_VIEW:
                 showDebugView(activity);
                 return Promise.resolved(null);
+
+            case INBOX_CREATE_INSTALLATION_FETCHER:
+            case INBOX_CREATE_USER_FETCHER:
+            case INBOX_RELEASE_FETCHER:
+                return inboxInstanceHolder.doAction(action, parameters, activity);
+
             case ECHO:
                 return Promise.resolved(parameters.get("value"));
             default:
@@ -128,7 +136,7 @@ public class BatchBridge {
     }
 
     @SuppressWarnings("unchecked")
-    private static <T> T getTypedParameter(Map<String, Object> parameters, String parameterName, Class<T> parameterClass) throws BatchBridgeException {
+    static <T> T getTypedParameter(Map<String, Object> parameters, String parameterName, Class<T> parameterClass) throws BatchBridgeException {
         Object result = null;
 
         if (parameters != null) {
