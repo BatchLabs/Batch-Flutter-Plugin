@@ -34,6 +34,7 @@ enum Action
     INBOX_CREATE_INSTALLATION_FETCHER("inbox.createInstallationFetcher"),
     INBOX_CREATE_USER_FETCHER("inbox.createUserFetcher"),
     INBOX_RELEASE_FETCHER("inbox.releaseFetcher"),
+    INBOX_FETCH_NEW_NOTIFICATIONS("inbox.fetchNewNotifications"),
 
     /// For testing
     ECHO("echo");

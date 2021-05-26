@@ -7,9 +7,11 @@ import androidx.annotation.NonNull;
 
 import com.batch.android.Batch;
 import com.batch.android.BatchInboxFetcher;
+import com.batch.android.BatchInboxNotificationContent;
 import com.batch.batch_flutter.Promise;
 
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 import java.util.UUID;
 import java.util.concurrent.ConcurrentHashMap;
@@ -55,7 +57,7 @@ class InboxInstanceHolder {
         String id = makeFetcherID();
         String user = getTypedParameter(parameters, "user", String.class);
         String authKey = getTypedParameter(parameters, "authKey", String.class);
-        BatchInboxFetcher fetcher = Batch.Inbox.getFetcher(context.getApplicationContext(), "TODO", "TODO");
+        BatchInboxFetcher fetcher = Batch.Inbox.getFetcher(context.getApplicationContext(), user, authKey);
         fetchers.put(id, fetcher);
         return id;
     }
@@ -67,5 +69,36 @@ class InboxInstanceHolder {
     @NonNull
     private String makeFetcherID() {
         return UUID.randomUUID().toString();
+    }
+
+    @NonNull
+    private BatchInboxFetcher getFetcherInstance(@NonNull Map<String, Object> parameters) throws BatchBridgeException {
+        BatchInboxFetcher fetcher = fetchers.get(getTypedParameter(parameters, "id", String.class));
+
+        if (fetcher == null) {
+            throw new BatchBridgeException(BatchBridgePublicErrorCode.INBOX_MISSING_NATIVE_FETCHER,
+                    "The native inbox fetcher backing this object could not be found." +
+                            "Did you call 'dispose()' on this BatchInboxFetcher and attempted to use it afterwards?",
+                    null);
+        }
+
+        return fetcher;
+    }
+
+    private Promise<Object> fetchNewNotifications(@NonNull Map<String, Object> parameters) throws BatchBridgeException {
+        final BatchInboxFetcher fetcher = getFetcherInstance(parameters);
+
+        return new Promise<>(promise -> fetcher.fetchNewNotifications(new BatchInboxFetcher.OnNewNotificationsFetchedListener() {
+            @Override
+            public void onFetchSuccess(@NonNull List<BatchInboxNotificationContent> list, boolean b, boolean b1) {
+                promise.resolve();
+            }
+
+            @Override
+            public void onFetchFailure(@NonNull String s) {
+                promise.reject(new BatchBridgeException(BatchBridgePublicErrorCode.INTERNAL_SDK_ERROR,
+                        "Inbox fetch failed with error: " + s));
+            }
+        }));
     }
 }

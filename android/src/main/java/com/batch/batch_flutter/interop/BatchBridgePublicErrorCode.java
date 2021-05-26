@@ -11,7 +11,8 @@ public enum BatchBridgePublicErrorCode {
     INTERNAL_SDK_ERROR("internalSDKError"),
     BAD_BRIDGE_ARGUMENT_TYPE("badBridgeArgumentType"),
     MISSING_SETUP("missingSetup"),
-    NOT_ATTACHED_TO_ACTIVITY("android_notAttachedToActivity");
+    NOT_ATTACHED_TO_ACTIVITY("android_notAttachedToActivity"),
+    INBOX_MISSING_NATIVE_FETCHER("inboxNoNativeFetcher");
 
     public final String code;
 
