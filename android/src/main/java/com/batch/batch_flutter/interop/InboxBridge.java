@@ -10,6 +10,7 @@ import com.batch.android.BatchInboxFetcher;
 import com.batch.android.BatchInboxNotificationContent;
 import com.batch.batch_flutter.Promise;
 
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -19,14 +20,16 @@ import java.util.concurrent.ConcurrentHashMap;
 import static com.batch.batch_flutter.interop.BatchBridge.getTypedParameter;
 
 /**
- * The InboxInstanceHolder's job is to retain {@link com.batch.android.BatchInboxFetcher} instances
- * based on an ID, so that the bridged plugin can access retained instances of the fetcher to use
+ * The InboxBridge's job is to retain {@link com.batch.android.BatchInboxFetcher} instances
+ * based on an ID, so that the bridged plugin can access retained instances of the fetcher to use.
+ * It will also handle calls and dispatch them to the appropriate fetcher, handling all inbox
+ * related calls.
  *
  * This can lead to memory leaks if the memory isn't freed, as this object will retain instances
  * indefinitely. Make sure to expose a method on the plugin side to tell this class to release a
  * fetcher.
  */
-class InboxInstanceHolder {
+class InboxBridge {
     Map<String, BatchInboxFetcher> fetchers = new ConcurrentHashMap<>();
 
     @NonNull
@@ -39,6 +42,12 @@ class InboxInstanceHolder {
             case INBOX_RELEASE_FETCHER:
                 releaseFetcher(parameters);
                 return Promise.resolved(null);
+            case INBOX_FETCH_NEW_NOTIFICATIONS:
+                return fetchNewNotifications(parameters);
+            case INBOX_FETCH_NEXT_PAGE:
+                return fetchNextPage(parameters);
+            case INBOX_GET_FETCHED_NOTIFICATIONS:
+                return getFetchedNotifications(parameters);
             default:
                 throw new BatchBridgeNotImplementedException(action.toString());
         }
@@ -90,15 +99,54 @@ class InboxInstanceHolder {
 
         return new Promise<>(promise -> fetcher.fetchNewNotifications(new BatchInboxFetcher.OnNewNotificationsFetchedListener() {
             @Override
-            public void onFetchSuccess(@NonNull List<BatchInboxNotificationContent> list, boolean b, boolean b1) {
-                promise.resolve();
+            public void onFetchSuccess(@NonNull List<BatchInboxNotificationContent> list, boolean foundNewNotifications, boolean endReached) {
+                Map<String, Object> response = new HashMap<>();
+                response.put("foundNew", foundNewNotifications);
+                response.put("endReached", endReached);
+                response.put("notifications", serializeNotificationsForBridge(list));
+                promise.resolve(response);
             }
 
             @Override
             public void onFetchFailure(@NonNull String s) {
                 promise.reject(new BatchBridgeException(BatchBridgePublicErrorCode.INTERNAL_SDK_ERROR,
-                        "Inbox fetch failed with error: " + s));
+                        "Inbox fetchNewNotifications failed with error: " + s));
             }
         }));
+    }
+
+    private Promise<Object> fetchNextPage(@NonNull Map<String, Object> parameters) throws BatchBridgeException {
+        final BatchInboxFetcher fetcher = getFetcherInstance(parameters);
+
+        return new Promise<>(promise -> fetcher.fetchNextPage(new BatchInboxFetcher.OnNextPageFetchedListener() {
+            @Override
+            public void onFetchSuccess(@NonNull List<BatchInboxNotificationContent> list, boolean endReached) {
+                Map<String, Object> response = new HashMap<>();
+                response.put("endReached", endReached);
+                response.put("notifications", serializeNotificationsForBridge(list));
+                promise.resolve(response);
+            }
+
+            @Override
+            public void onFetchFailure(@NonNull String s) {
+                promise.reject(new BatchBridgeException(BatchBridgePublicErrorCode.INTERNAL_SDK_ERROR,
+                        "Inbox fetchNextPage failed with error: " + s));
+            }
+        }));
+    }
+
+    private Promise<Object> getFetchedNotifications(@NonNull Map<String, Object> parameters) throws BatchBridgeException {
+        final BatchInboxFetcher fetcher = getFetcherInstance(parameters);
+
+        Map<String, Object> response = new HashMap<>();
+        response.put("notifications", serializeNotificationsForBridge(fetcher.getFetchedNotifications()));
+        return Promise.resolved(response);
+    }
+
+    @NonNull
+    private List<Map<String, Object>> serializeNotificationsForBridge(@NonNull List<BatchInboxNotificationContent> sourceNotifications) {
+        List<Map<String, Object>> serializedNotifications = new ArrayList<>(sourceNotifications.size());
+        //TODO: implement this
+        return serializedNotifications;
     }
 }

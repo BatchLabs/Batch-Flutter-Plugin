@@ -36,7 +36,7 @@ public class BatchBridge {
 
     private static final String BRIDGE_VERSION = "Bridge/1.0";
 
-    private static final InboxInstanceHolder inboxInstanceHolder = new InboxInstanceHolder();
+    private static final InboxBridge inboxBridge = new InboxBridge();
 
     static {
         System.setProperty(BRIDGE_VERSION_ENVIRONEMENT_VAR, BRIDGE_VERSION);
@@ -126,7 +126,10 @@ public class BatchBridge {
             case INBOX_CREATE_INSTALLATION_FETCHER:
             case INBOX_CREATE_USER_FETCHER:
             case INBOX_RELEASE_FETCHER:
-                return inboxInstanceHolder.doAction(action, parameters, activity);
+            case INBOX_FETCH_NEW_NOTIFICATIONS:
+            case INBOX_FETCH_NEXT_PAGE:
+            case INBOX_GET_FETCHED_NOTIFICATIONS:
+                return inboxBridge.doAction(action, parameters, activity);
 
             case ECHO:
                 return Promise.resolved(parameters.get("value"));
