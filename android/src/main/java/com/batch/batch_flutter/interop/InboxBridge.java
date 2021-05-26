@@ -144,9 +144,39 @@ class InboxBridge {
     }
 
     @NonNull
-    private List<Map<String, Object>> serializeNotificationsForBridge(@NonNull List<BatchInboxNotificationContent> sourceNotifications) {
-        List<Map<String, Object>> serializedNotifications = new ArrayList<>(sourceNotifications.size());
-        //TODO: implement this
+    private List<Map<String, Object>> serializeNotificationsForBridge(@NonNull List<BatchInboxNotificationContent> nativeNotifications) {
+        List<Map<String, Object>> serializedNotifications = new ArrayList<>(nativeNotifications.size());
+
+        for (BatchInboxNotificationContent nativeNotification : nativeNotifications) {
+            Map<String, Object> serializedNotification = new HashMap<>();
+            serializedNotification.put("id", nativeNotification.getNotificationIdentifier());
+
+            serializedNotification.put("body", nativeNotification.getBody());
+            final String title = nativeNotification.getTitle();
+            if (title != null) {
+                serializedNotification.put("title", title);
+            }
+
+            serializedNotification.put("isUnread", nativeNotification.isUnread());
+            serializedNotification.put("isDeleted", nativeNotification.isDeleted());
+            serializedNotification.put("date", nativeNotification.getDate().getTime());
+            int source = 0; // UNKNOWN
+            switch (nativeNotification.getSource()) {
+                case CAMPAIGN:
+                    source = 1;
+                    break;
+                case TRANSACTIONAL:
+                    source = 2;
+                    break;
+                case TRIGGER:
+                    source = 3;
+                    break;
+            }
+            serializedNotification.put("source", source);
+            serializedNotification.put("payload", nativeNotification.getRawPayload());
+            serializedNotifications.add(serializedNotification);
+        }
+
         return serializedNotifications;
     }
 }
