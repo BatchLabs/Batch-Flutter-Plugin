@@ -85,7 +85,7 @@ struct Bridge {
                      .inbox_fetchNextPage,
                      .inbox_fetchNewNotifications,
                      .inbox_getFetchedNotifications:
-                    return inboxBridge.doAction(action, parameters: parameters)
+                    return try inboxBridge.doAction(action, parameters: parameters)
                 
                 case .echo:
                     return LightPromise<NSString?>.resolved(parameters["value"] as? NSString)
