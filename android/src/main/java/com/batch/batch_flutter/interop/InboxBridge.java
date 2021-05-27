@@ -72,7 +72,7 @@ class InboxBridge {
     }
 
     private void releaseFetcher(@NonNull Map<String, Object> parameters) throws BatchBridgeException {
-        fetchers.remove(getTypedParameter(parameters, "id", String.class));
+        fetchers.remove(getTypedParameter(parameters, "fetcherID", String.class));
     }
 
     @NonNull
