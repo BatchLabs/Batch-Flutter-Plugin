@@ -68,6 +68,27 @@ class BatchInbox {
 /// You can also set a upper messages limit, after which BatchInbox will stop
 /// fetching new messages, even if you call fetchNextPage.
 abstract class BatchInboxFetcher {
+  /// Get all of the notifications that have been fetched by this fetcher instance.
+  ///
+  /// Note: This doesn't cache anything on the Flutter side, but always asks
+  /// the native code. Therefore, this is an expensive method to call: you should
+  /// cache the result on your end.
+  Future<List<BatchInboxNotificationContent>> get allNotifications;
+
+  /// Fetch new notifications.
+  /// While [fetchNextPage] is used to fetch older notifications than the ones currently loaded, this method checks for new notifications.
+  /// For example, this is the method you would call on initial load, or on a "pull to refresh".
+  /// The previously loaded notifications will be cleared to ensure consistency.
+  /// Otherwise, a gap could be created between new notifications and your current set.
+  /// Upon calling this method, please clear your cache and fill it with this
+  /// method's results and ask again for more pages if you need.
+  Future<BatchInboxFetchResult> fetchNewNotifications();
+
+  /// Fetch a page of notifications.
+  /// Calling this method when no messages have been loaded will be equivalent
+  /// to calling [fetchNewNotifications];
+  Future<BatchInboxFetchResult> fetchNextPage();
+
   /// Call this once you're finished with this fetcher to release the native
   /// object and free all memory. Usually, this should be called
   /// in your State's dispose.
@@ -124,4 +145,16 @@ class BatchInboxNotificationContent {
   ///
   /// Keys in "com.batch" are private and should not be relied on.
   final Map<String, String> payload;
+}
+
+/// Describes a fetch operation result
+class BatchInboxFetchResult {
+  BatchInboxFetchResult(this.notifications, this.hasMore);
+
+  /// Fetched notifications.
+  final List<BatchInboxNotificationContent> notifications;
+
+  /// Are more notifications available, or did we reach the end of the Inbox
+  /// feed?
+  final bool hasMore;
 }

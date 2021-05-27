@@ -4,9 +4,24 @@ import 'package:flutter/widgets.dart';
 /// Private class: Inbox fetcher base implementation
 /// <nodoc>
 @protected
-class BatchInboxFetcherBaseImpl extends BatchInboxFetcher {
-  Future<void> init() async {
-    return;
+abstract class BatchInboxFetcherBaseImpl extends BatchInboxFetcher {
+  Future<void> init();
+
+  @override
+  // TODO: implement allNotifications
+  Future<List<BatchInboxNotificationContent>> get allNotifications =>
+      throw UnimplementedError();
+
+  @override
+  Future<BatchInboxFetchResult> fetchNewNotifications() {
+    // TODO: implement fetchNewNotifications
+    throw UnimplementedError();
+  }
+
+  @override
+  Future<BatchInboxFetchResult> fetchNextPage() {
+    // TODO: implement fetchNextPage
+    throw UnimplementedError();
   }
 
   @override
