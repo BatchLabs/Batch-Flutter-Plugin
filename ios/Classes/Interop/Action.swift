@@ -22,6 +22,13 @@ enum Action: String {
     case user_trackTransaction = "user.track.transaction"
     case user_trackLocation = "user.track.location"
     
+    case inbox_createInstallationFetcher = "inbox.createInstallationFetcher"
+    case inbox_createUserFetcher = "inbox.createUserFetcher"
+    case inbox_releaseFetcher = "inbox.releaseFetcher"
+    case inbox_fetchNewNotifications = "inbox.fetchNewNotifications"
+    case inbox_fetchNextPage = "inbox.fetchNextPage"
+    case inbox_getFetchedNotifications = "inbox.getFetchedNotifications"
+    
     case debug_showDebugView = "debug.showDebugView"
     
     case echo = "echo"

@@ -5,6 +5,8 @@ import Flutter
 typealias BridgeParameters = [String: AnyObject]
 
 struct Bridge {
+    private let inboxBridge = InboxBridge()
+    
     // Bool is a temporary return value
     func call(rawAction: String, parameters: BridgeParameters) -> LightPromise<AnyObject?> {
         guard let action = Action.init(rawValue: rawAction) else {
@@ -16,7 +18,6 @@ struct Bridge {
         return doAction(action, parameters: parameters)
     }
     
-    // Bool is a temporary return value
     func doAction(_ action: Action, parameters: BridgeParameters) -> LightPromise<AnyObject?> {
         do {
             switch action {
@@ -77,6 +78,15 @@ struct Bridge {
                 case .debug_showDebugView:
                     showDebugView()
                     return emptySuccessPromise()
+                
+                case .inbox_releaseFetcher,
+                     .inbox_createInstallationFetcher,
+                     .inbox_createUserFetcher,
+                     .inbox_fetchNextPage,
+                     .inbox_fetchNewNotifications,
+                     .inbox_getFetchedNotifications:
+                    return inboxBridge.doAction(action, parameters: parameters)
+                
                 case .echo:
                     return LightPromise<NSString?>.resolved(parameters["value"] as? NSString)
                 //default:
