@@ -127,6 +127,7 @@ class _MainMenuState extends State<MainMenu> {
     var fetcher = await BatchInbox.instance.getFetcherForInstallation();
     var notifs = await fetcher.fetchNewNotifications();
     fetcher.dispose();
+    print(notifs);
   }
 
   @override
