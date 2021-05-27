@@ -1,3 +1,5 @@
+import 'package:batch_flutter/src/inbox_fetcher.dart';
+
 /// Batch Inbox module
 class BatchInbox {
   /// Batch Inbox module singleton.
@@ -5,8 +7,9 @@ class BatchInbox {
 
   /// Get an inbox fetcher for the current installation ID.
   Future<BatchInboxFetcher> getFetcherForInstallation() async {
-    //TODO Implement inbox fetcher
-    throw "Not implemented";
+    var fetcher = BatchInboxFetcherInstallationImpl();
+    await fetcher.init();
+    return fetcher;
   }
 
   /// Get an inbox fetcher for a user identifier.
@@ -20,8 +23,10 @@ class BatchInbox {
   Future<BatchInboxFetcher> getFetcherForUser(
       {required String userIdentifier,
       required String authenticationKey}) async {
-    //TODO Implement inbox fetcher
-    throw "Not implemented";
+    var fetcher = BatchInboxFetcherUserImpl(
+        user: userIdentifier, authKey: authenticationKey);
+    await fetcher.init();
+    return fetcher;
   }
 }
 
