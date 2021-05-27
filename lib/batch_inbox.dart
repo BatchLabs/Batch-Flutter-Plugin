@@ -72,3 +72,51 @@ abstract class BatchInboxFetcher {
   /// being thrown.
   void dispose();
 }
+
+/// Source of a notification. This is "what" triggered the push to be sent to the
+/// user. Push Campaign, Transactional notification, ...
+/// Unknown means that your SDK is too old to understand a new source that has
+/// been introduced after its release.
+enum BatchInboxNotificationSource { unkown, campaign, transactional, trigger }
+
+/// Describes the content of an inbox notification.
+class BatchInboxNotificationContent {
+  /// Internal constructor.
+  /// <nodoc>
+  BatchInboxNotificationContent(this.id, this.title, this.body, this.isUnread,
+      this.isDeleted, this.date, this.source, this.payload);
+
+  /// The unique notification identifier. Do not make assumptions about its format: it can change at any time.
+  final String id;
+
+  /// Notification title. Optional.
+  final String? title;
+
+  /// Notification body.
+  final String body;
+
+  /// Is the notification unread?
+  final bool isUnread;
+
+  /// Is the notification deleted?
+  final bool isDeleted;
+
+  /// Notification timestamp in UTC.
+  final DateTime date;
+
+  /// Source of the notification. This is "what" triggered the push to be sent to the
+  /// user. Push Campaign, Transactional notification, ...
+  /// Unknown means that your SDK is too old to understand a new source that has
+  /// been introduced after its release.
+  final BatchInboxNotificationSource source;
+
+  /// Raw notification payload.
+  /// This is the complete payload containing Apple, Google, Batch's internal keys
+  /// and the ones you can add using the custom payload feature.
+  ///
+  /// For consistency between iOS and Android, the payload is a String,String map
+  /// with its values encoded as JSON for complex types.
+  ///
+  /// Keys in "com.batch" are private and should not be relied on.
+  final Map<String, String> payload;
+}
