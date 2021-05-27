@@ -82,7 +82,7 @@ class InboxBridge {
 
     @NonNull
     private BatchInboxFetcher getFetcherInstance(@NonNull Map<String, Object> parameters) throws BatchBridgeException {
-        BatchInboxFetcher fetcher = fetchers.get(getTypedParameter(parameters, "id", String.class));
+        BatchInboxFetcher fetcher = fetchers.get(getTypedParameter(parameters, "fetcherID", String.class));
 
         if (fetcher == null) {
             throw new BatchBridgeException(BatchBridgePublicErrorCode.INBOX_MISSING_NATIVE_FETCHER,
