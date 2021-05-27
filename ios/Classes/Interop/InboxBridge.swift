@@ -18,10 +18,12 @@ class InboxBridge {
             case .inbox_releaseFetcher:
                 try releaseFetcher(parameters: parameters)
                 return LightPromise<AnyObject?>.resolved(nil)
-            case .inbox_fetchNextPage,
-                 .inbox_fetchNewNotifications,
-                 .inbox_getFetchedNotifications:
-                return LightPromise<AnyObject?>.rejected(BridgeInternalError.notImplemented)
+            case .inbox_fetchNewNotifications:
+                return try fetchNewNotifications(parameters: parameters)
+            case .inbox_fetchNextPage:
+                return try fetchNextPage(parameters: parameters)
+            case .inbox_getFetchedNotifications:
+                return try getAllFetchedNotifications(parameters: parameters)
             default:
                 // We should never end up here, unless the Bridge threw a non inbox method at us
                 return LightPromise<AnyObject?>.rejected(BridgeInternalError.notImplemented)
@@ -59,6 +61,69 @@ class InboxBridge {
         
         //TODO: Synchronize
         fetchers[fetcherID] = nil
+    }
+    
+    private func getAllFetchedNotifications(parameters: BridgeParameters) throws -> LightPromise<AnyObject?> {
+        let fetcher = try getFetcher(parameters)
+        let bridgeNotifs = InboxBridge.serializeNotifications(fetcher.allFetchedNotifications) as NSDictionary
+        return LightPromise<AnyObject?>.resolved(["notifications": bridgeNotifs] as NSDictionary)
+    }
+    
+    private func fetchNewNotifications(parameters: BridgeParameters) throws -> LightPromise<AnyObject?> {
+        let fetcher = try getFetcher(parameters)
+        
+        return LightPromise<AnyObject?> { resolve, reject in
+            fetcher.fetchNewNotifications { error, notifications, foundNewNotifications, endReached in
+                if let error = error {
+                    reject(BridgeError(code: BridgeError.ErrorCode.inboxError,
+                                       description: "Inbox fetchNewNotifications with error: \(error)",
+                                       details: nil))
+                    return
+                }
+                guard let notifications = notifications else {
+                    reject(BridgeError(code: BridgeError.ErrorCode.internalSDKError,
+                                       description: "Internal SDK error: no error was returned, but no inbox notifications were returned",
+                                       details: nil))
+                    return
+                }
+                
+                resolve([
+                    "notifications": InboxBridge.serializeNotifications(notifications) as NSDictionary,
+                    "endReached": NSNumber(value: endReached)
+                ] as NSDictionary)
+            }
+        }
+    }
+
+    private func fetchNextPage(parameters: BridgeParameters) throws -> LightPromise<AnyObject?> {
+        let fetcher = try getFetcher(parameters)
+        
+        return LightPromise<AnyObject?> { resolve, reject in
+            fetcher.fetchNextPage { error, notifications, endReached in
+                if let error = error {
+                    reject(BridgeError(code: BridgeError.ErrorCode.inboxError,
+                                       description: "Inbox fetchNextPage with error: \(error)",
+                                       details: nil))
+                    return
+                }
+                guard let notifications = notifications else {
+                    reject(BridgeError(code: BridgeError.ErrorCode.internalSDKError,
+                                       description: "Internal SDK error: no error was returned, but no inbox notifications were returned",
+                                       details: nil))
+                    return
+                }
+                
+                resolve([
+                    "notifications": InboxBridge.serializeNotifications(notifications) as NSDictionary,
+                    "endReached": NSNumber(value: endReached)
+                ] as NSDictionary)
+            }
+        }
+    }
+    
+    private static func serializeNotifications(_ notifications: [BatchInboxNotificationContent]) -> [String: AnyObject] {
+        //TODO: Implement
+        return [:]
     }
     
     private func makeFetcherID() -> String {

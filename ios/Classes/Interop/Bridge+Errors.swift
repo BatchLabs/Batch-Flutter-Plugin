@@ -11,6 +11,7 @@ struct BridgeError: Error {
         case internalSDKError
         case badArgumentType
         case missingSetup
+        case inboxError
     }
     
     let code: ErrorCode
