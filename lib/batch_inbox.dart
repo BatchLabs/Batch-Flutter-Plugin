@@ -103,7 +103,7 @@ abstract class BatchInboxFetcher {
 /// user. Push Campaign, Transactional notification, ...
 /// Unknown means that your SDK is too old to understand a new source that has
 /// been introduced after its release.
-enum BatchInboxNotificationSource { unkown, campaign, transactional, trigger }
+enum BatchInboxNotificationSource { unknown, campaign, transactional, trigger }
 
 /// Describes the content of an inbox notification.
 class BatchInboxNotificationContent {
@@ -149,7 +149,7 @@ class BatchInboxNotificationContent {
 
 /// Describes a fetch operation result
 class BatchInboxFetchResult {
-  BatchInboxFetchResult(this.notifications, this.hasMore);
+  BatchInboxFetchResult({required this.notifications, required this.hasMore});
 
   /// Fetched notifications.
   final List<BatchInboxNotificationContent> notifications;
@@ -157,4 +157,25 @@ class BatchInboxFetchResult {
   /// Are more notifications available, or did we reach the end of the Inbox
   /// feed?
   final bool hasMore;
+}
+
+/// Error thrown when the [BatchInboxFetcher] object receives a method call
+/// after [dispose] has been called.
+class DisposedInboxError extends Error {
+  @override
+  String toString() {
+    return "DisposedInboxError: BatchInboxFetcher instances cannot be used anymore once .dispose() has been called.";
+  }
+}
+
+/// Error thrown when an internal inbox error happens.
+class InboxInternalError extends Error {
+  InboxInternalError({required this.code});
+
+  final int code;
+
+  @override
+  String toString() {
+    return "InboxInternalError: An internal inbox error has occurred, something might be wrong with the native implementation. Code: $code";
+  }
 }
