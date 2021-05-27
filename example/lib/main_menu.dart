@@ -1,5 +1,6 @@
 import 'package:batch_flutter/batch.dart';
 import 'package:batch_flutter/batch_push.dart';
+import 'package:batch_flutter/batch_inbox.dart';
 import 'package:batch_flutter/batch_user.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
@@ -122,6 +123,12 @@ class _MainMenuState extends State<MainMenu> {
         .save();
   }
 
+  void testInbox() async {
+    var fetcher = await BatchInbox.instance.getFetcherForInstallation();
+    var notifs = await fetcher.fetchNewNotifications();
+    fetcher.dispose();
+  }
+
   @override
   Widget build(BuildContext context) {
     return Column(
@@ -169,18 +176,23 @@ class _MainMenuState extends State<MainMenu> {
           child: Text("Reset custom data"),
           onPressed: () => {resetCustomData()},
         ),
-        ElevatedButton(
-          child: Text("Opt-in"),
-          onPressed: () => {Batch.instance.optIn()},
+        Row(
+          children: [
+            ElevatedButton(
+              child: Text("Opt-in"),
+              onPressed: () => {Batch.instance.optIn()},
+            ),
+            ElevatedButton(
+              child: Text("Opt-out"),
+              onPressed: () async => {await Batch.instance.optOut()},
+            ),
+            ElevatedButton(
+              child: Text("Opt-out wipe"),
+              onPressed: () => {Batch.instance.optOutAndWipeData()},
+            ),
+          ],
         ),
-        ElevatedButton(
-          child: Text("Opt-out"),
-          onPressed: () async => {await Batch.instance.optOut()},
-        ),
-        ElevatedButton(
-          child: Text("Opt-out and wipe data"),
-          onPressed: () => {Batch.instance.optOutAndWipeData()},
-        ),
+        ElevatedButton(child: Text("Test inbox"), onPressed: () => testInbox()),
       ],
     );
   }
