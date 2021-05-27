@@ -48,6 +48,7 @@ public class BatchFlutterPlugin implements FlutterPlugin, MethodCallHandler, Act
     private MethodChannel coreChannel;
     private MethodChannel userChannel;
     private MethodChannel pushChannel;
+    private MethodChannel inboxChannel;
 
     /// Current Activity
     @VisibleForTesting
@@ -70,6 +71,8 @@ public class BatchFlutterPlugin implements FlutterPlugin, MethodCallHandler, Act
         userChannel.setMethodCallHandler(this);
         pushChannel = new MethodChannel(flutterPluginBinding.getBinaryMessenger(), "batch_flutter.push");
         pushChannel.setMethodCallHandler(this);
+        inboxChannel = new MethodChannel(flutterPluginBinding.getBinaryMessenger(), "batch_flutter.inbox");
+        inboxChannel.setMethodCallHandler(this);
     }
 
     @Override
@@ -77,6 +80,7 @@ public class BatchFlutterPlugin implements FlutterPlugin, MethodCallHandler, Act
         coreChannel.setMethodCallHandler(null);
         userChannel.setMethodCallHandler(null);
         pushChannel.setMethodCallHandler(null);
+        inboxChannel.setMethodCallHandler(null);
     }
 
     //region Method calling
