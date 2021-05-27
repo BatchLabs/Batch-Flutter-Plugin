@@ -41,7 +41,7 @@ abstract class BatchInboxFetcherBaseImpl extends BatchInboxFetcher {
 
     return BatchInboxFetchResult(
         notifications: _parseNotificationsFromResponse(response),
-        hasMore: response["hasMore"] as bool);
+        endReached: response["endReached"] as bool);
   }
 
   @override
@@ -57,7 +57,7 @@ abstract class BatchInboxFetcherBaseImpl extends BatchInboxFetcher {
 
     return BatchInboxFetchResult(
         notifications: _parseNotificationsFromResponse(response),
-        hasMore: response["hasMore"] as bool);
+        endReached: response["endReached"] as bool);
   }
 
   @override
@@ -85,7 +85,7 @@ abstract class BatchInboxFetcherBaseImpl extends BatchInboxFetcher {
 
   List<BatchInboxNotificationContent> _parseNotificationsFromResponse(
       Map<String, dynamic> response) {
-    List<Map<String, dynamic>> rawNotifications = response["notifications"];
+    List<dynamic> rawNotifications = response["notifications"];
 
     List<BatchInboxNotificationContent> notifications = [];
     rawNotifications.forEach((rawNotification) {

@@ -149,14 +149,15 @@ class BatchInboxNotificationContent {
 
 /// Describes a fetch operation result
 class BatchInboxFetchResult {
-  BatchInboxFetchResult({required this.notifications, required this.hasMore});
+  BatchInboxFetchResult(
+      {required this.notifications, required this.endReached});
 
   /// Fetched notifications.
   final List<BatchInboxNotificationContent> notifications;
 
   /// Are more notifications available, or did we reach the end of the Inbox
   /// feed?
-  final bool hasMore;
+  final bool endReached;
 }
 
 /// Error thrown when the [BatchInboxFetcher] object receives a method call
