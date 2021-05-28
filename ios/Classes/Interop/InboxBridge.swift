@@ -7,6 +7,8 @@ import Flutter
 ///    can reference to it.
 /// - Implement Inbox bridge methods
 class InboxBridge {
+    let fetchersSyncQueue = DispatchQueue(label: "com.batch.interop.inbox", attributes: [.concurrent])
+    
     var fetchers: [String: BatchInboxFetcher] = [:]
     
     func doAction(_ action: Action, parameters: BridgeParameters) throws -> LightPromise<AnyObject?> {
@@ -33,10 +35,12 @@ class InboxBridge {
     private func createInstallationFetcher() -> LightPromise<AnyObject?> {
         let fetcherID = makeFetcherID()
         
-        //TODO: Synchronize
-        fetchers[fetcherID] = BatchInbox.fetcher()
-        
-        return LightPromise<AnyObject?>.resolved(fetcherID as NSString)
+        return LightPromise<AnyObject?> { [self] resolve, _ in
+            fetchersSyncQueue.async(flags: .barrier) {
+                fetchers[fetcherID] = BatchInbox.fetcher()
+                resolve(fetcherID as NSString)
+            }
+        }
     }
     
     private func createUserFetcher(parameters: BridgeParameters) throws -> LightPromise<AnyObject?> {
@@ -50,17 +54,20 @@ class InboxBridge {
             throw BridgeError.makeBadArgumentError(argumentName: "authKey")
         }
         
-        //TODO: Synchronize
-        fetchers[fetcherID] = BatchInbox.fetcher(forUserIdentifier: user, authenticationKey: authKey)
-        
-        return LightPromise<AnyObject?>.resolved(fetcherID as NSString)
+        return LightPromise<AnyObject?> { [self] resolve, _ in
+            fetchersSyncQueue.async(flags: .barrier) {
+                fetchers[fetcherID] = BatchInbox.fetcher(forUserIdentifier: user, authenticationKey: authKey)
+                resolve(fetcherID as NSString)
+            }
+        }
     }
     
     private func releaseFetcher(parameters: BridgeParameters) throws {
         let fetcherID = try getFetcherID(parameters)
         
-        //TODO: Synchronize
-        fetchers[fetcherID] = nil
+        fetchersSyncQueue.async(flags: .barrier) {
+            self.fetchers[fetcherID] = nil
+        }
     }
     
     private func getAllFetchedNotifications(parameters: BridgeParameters) throws -> LightPromise<AnyObject?> {
@@ -122,7 +129,7 @@ class InboxBridge {
     }
     
     private static func serializeNotifications(_ notifications: [BatchInboxNotificationContent]) -> [String: AnyObject] {
-        //TODO: Implement
+        
         return [:]
     }
     
@@ -138,11 +145,13 @@ class InboxBridge {
     }
     
     private func getFetcher(_ parameters: BridgeParameters) throws -> BatchInboxFetcher {
-        guard let fetcher = try fetchers[getFetcherID(parameters)] else {
-            throw BridgeError(code: BridgeError.ErrorCode.internalBridgeError,
-                              description: "The native inbox fetcher backing this object could not be found. Did you call dispose() and attempted to use the object afterwards?",
-                              details: nil)
+        return try fetchersSyncQueue.sync {
+            guard let fetcher = try fetchers[getFetcherID(parameters)] else {
+                throw BridgeError(code: BridgeError.ErrorCode.internalBridgeError,
+                                  description: "The native inbox fetcher backing this object could not be found. Did you call dispose() and attempted to use the object afterwards?",
+                                  details: nil)
+            }
+            return fetcher
         }
-        return fetcher
     }
 }
