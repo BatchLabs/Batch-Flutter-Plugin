@@ -95,7 +95,8 @@ abstract class BatchInboxFetcherBaseImpl extends BatchInboxFetcher {
       bool isUnread = rawNotification["isUnread"] as bool;
       bool isDeleted = rawNotification["isDeleted"] as bool;
       DateTime date =
-          DateTime.fromMillisecondsSinceEpoch(rawNotification["date"] as int);
+          DateTime.fromMillisecondsSinceEpoch(rawNotification["date"] as int)
+              .toUtc();
       int rawSource = rawNotification["source"] as int;
       BatchInboxNotificationSource source =
           BatchInboxNotificationSource.unknown;
