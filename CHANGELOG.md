@@ -1,5 +1,12 @@
 ## UPCOMING
 
+**Inbox**
+
+* Added Batch Inbox support:  
+  - Fetchers can be instanciated for both Installation and User modes.
+  - `fetchNewNotifications()`, `fetchNextPage()`, `get allNotifications` and `dispose()` have been implemented.
+  - `markAsRead()`, `markAsDeleted()` and pagination configuration will come in a later beta.
+
 **Push**
 
 * Added `setShowForegroundNotificationsOniOS()`, which can enable foreground notification display on iOS.  
