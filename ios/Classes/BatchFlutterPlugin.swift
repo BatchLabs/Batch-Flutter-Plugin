@@ -7,7 +7,7 @@ fileprivate struct Consts {
     static let BridgeVersion = "Bridge/1.0"
     
     static let PluginVersionEnvironmentVar = "BATCH_PLUGIN_VERSION"
-    static let PluginVersion = "Flutter/0.0.1"
+    static let PluginVersion = "Flutter/0.0.3"
 }
 
 /// Batch's Flutter Plugin main class.
