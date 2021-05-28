@@ -72,7 +72,7 @@ class InboxBridge {
     
     private func getAllFetchedNotifications(parameters: BridgeParameters) throws -> LightPromise<AnyObject?> {
         let fetcher = try getFetcher(parameters)
-        let bridgeNotifs = InboxBridge.serializeNotifications(fetcher.allFetchedNotifications) as NSDictionary
+        let bridgeNotifs = InboxBridge.serializeNotifications(fetcher.allFetchedNotifications) as NSArray
         return LightPromise<AnyObject?>.resolved(["notifications": bridgeNotifs] as NSDictionary)
     }
     
@@ -95,7 +95,7 @@ class InboxBridge {
                 }
                 
                 resolve([
-                    "notifications": InboxBridge.serializeNotifications(notifications) as NSDictionary,
+                    "notifications": InboxBridge.serializeNotifications(notifications) as NSArray,
                     "endReached": NSNumber(value: endReached)
                 ] as NSDictionary)
             }
@@ -121,16 +121,60 @@ class InboxBridge {
                 }
                 
                 resolve([
-                    "notifications": InboxBridge.serializeNotifications(notifications) as NSDictionary,
+                    "notifications": InboxBridge.serializeNotifications(notifications) as NSArray,
                     "endReached": NSNumber(value: endReached)
                 ] as NSDictionary)
             }
         }
     }
     
-    private static func serializeNotifications(_ notifications: [BatchInboxNotificationContent]) -> [String: AnyObject] {
+    private static func serializeNotifications(_ notifications: [BatchInboxNotificationContent]) -> [NSDictionary] {
         
-        return [:]
+        return notifications.map { notification in
+            var serializedNotification = [String: AnyObject]()
+            
+            serializedNotification["id"] = notification.identifier as NSString
+            serializedNotification["body"] = notification.body as NSString
+            if let title = notification.title {
+                serializedNotification["title"] = title as NSString
+            }
+            
+            serializedNotification["isUnread"] = NSNumber(value: notification.isUnread)
+            serializedNotification["isDeleted"] = NSNumber(value: notification.isDeleted)
+            serializedNotification["date"] = NSNumber(value: Int64(floor(notification.date.timeIntervalSince1970 * 1000)))
+            
+            if let payload = serializePayloadToJSON(notification.payload) {
+                serializedNotification["payload"] = payload
+            } else {
+                serializedNotification["payload"] = "{'error':'Internal native error (-100)'}" as NSString
+            }
+            
+            let source: Int // UNKNOWN
+            switch notification.source {
+                case .campaign:
+                    source = 1
+                    break
+                case .transactional:
+                    source = 2
+                    break
+                case .trigger:
+                    source = 3
+                    break
+                default:
+                    source = 0 // UNKNOWN
+                    break
+            }
+            serializedNotification["source"] = NSNumber(value: source)
+            
+            return serializedNotification as NSDictionary
+        }
+    }
+    
+    private static func serializePayloadToJSON(_ payload: [AnyHashable: Any]) -> NSString? {
+        guard let data = try? JSONSerialization.data(withJSONObject: payload, options: []) else {
+            return nil
+        }
+        return String(data: data, encoding: .utf8) as NSString?
     }
     
     private func makeFetcherID() -> String {
