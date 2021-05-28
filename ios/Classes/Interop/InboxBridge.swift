@@ -143,7 +143,7 @@ class InboxBridge {
             serializedNotification["isDeleted"] = NSNumber(value: notification.isDeleted)
             serializedNotification["date"] = NSNumber(value: Int64(floor(notification.date.timeIntervalSince1970 * 1000)))
             
-            if let payload = serializePayloadToJSON(notification.payload) {
+            if let payload = try? serializePayload(notification.payload) {
                 serializedNotification["payload"] = payload
             } else {
                 serializedNotification["payload"] = "{'error':'Internal native error (-100)'}" as NSString
@@ -170,11 +170,20 @@ class InboxBridge {
         }
     }
     
-    private static func serializePayloadToJSON(_ payload: [AnyHashable: Any]) -> NSString? {
-        guard let data = try? JSONSerialization.data(withJSONObject: payload, options: []) else {
-            return nil
+    private static func serializePayload(_ payload: [AnyHashable: Any]) throws -> NSDictionary {
+        var serializedPayload = [AnyHashable: NSString]()
+        
+        serializedPayload = try payload.mapValues { value in
+            guard let data = try? JSONSerialization.data(withJSONObject: payload, options: []) else {
+                throw InboxBridgeError.payloadSerializationError
+            }
+            guard let jsonString = String(data: data, encoding: .utf8) as NSString? else {
+                throw InboxBridgeError.payloadSerializationError
+            }
+            return jsonString
         }
-        return String(data: data, encoding: .utf8) as NSString?
+        
+        return serializedPayload as NSDictionary
     }
     
     private func makeFetcherID() -> String {
@@ -197,5 +206,9 @@ class InboxBridge {
             }
             return fetcher
         }
+    }
+    
+    enum InboxBridgeError: Error {
+        case payloadSerializationError
     }
 }
