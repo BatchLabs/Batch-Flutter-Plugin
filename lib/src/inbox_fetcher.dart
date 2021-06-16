@@ -62,7 +62,6 @@ abstract class BatchInboxFetcherBaseImpl extends BatchInboxFetcher {
 
   @override
   void dispose() {
-    _throwIfDisposed();
     _disposed = true;
     if (_fetcherID != null) {
       _channel.invokeMethod(

@@ -1,3 +1,9 @@
+## UPCOMING
+
+**Inbox**
+
+* Calling `dispose()` on a disposed fetcher doesn't throw anymore.
+
 ## 0.0.3
 
 **Inbox**
