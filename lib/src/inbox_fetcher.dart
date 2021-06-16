@@ -61,6 +61,34 @@ abstract class BatchInboxFetcherBaseImpl extends BatchInboxFetcher {
   }
 
   @override
+  Future<void> markNotificationAsRead(
+      BatchInboxNotificationContent notification) async {
+    _throwIfDisposed();
+
+    Map<String, dynamic> parameters = _makeBaseBridgeParameters();
+    parameters["notifID"] = notification.id;
+    await _channel.invokeMethod("inbox.markAsRead", parameters);
+  }
+
+  @override
+  Future<void> markAllNotificationsAsRead() async {
+    _throwIfDisposed();
+
+    await _channel.invokeMethod(
+        "inbox.markAllAsRead", _makeBaseBridgeParameters());
+  }
+
+  @override
+  Future<void> markNotificationAsDeleted(
+      BatchInboxNotificationContent notification) async {
+    _throwIfDisposed();
+
+    Map<String, dynamic> parameters = _makeBaseBridgeParameters();
+    parameters["notifID"] = notification.id;
+    await _channel.invokeMethod("inbox.markAsDeleted", parameters);
+  }
+
+  @override
   void dispose() {
     _disposed = true;
     if (_fetcherID != null) {

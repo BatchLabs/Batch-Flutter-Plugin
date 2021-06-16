@@ -76,7 +76,7 @@ abstract class BatchInboxFetcher {
   Future<List<BatchInboxNotificationContent>> get allNotifications;
 
   /// Fetch new notifications.
-  /// While [fetchNextPage] is used to fetch older notifications than the ones currently loaded, this method checks for new notifications.
+  /// While [fetchNextPage()] is used to fetch older notifications than the ones currently loaded, this method checks for new notifications.
   /// For example, this is the method you would call on initial load, or on a "pull to refresh".
   /// The previously loaded notifications will be cleared to ensure consistency.
   /// Otherwise, a gap could be created between new notifications and your current set.
@@ -88,6 +88,32 @@ abstract class BatchInboxFetcher {
   /// Calling this method when no messages have been loaded will be equivalent
   /// to calling [fetchNewNotifications];
   Future<BatchInboxFetchResult> fetchNextPage();
+
+  /// Marks a notification as read.
+  ///
+  /// Note: Please refresh your copy of the notifications using [allNotifications]
+  /// to update the read status.
+  /// Calling [fetchNewNotifications()]/[fetchNextPage()] right away
+  /// might cause notifications to come as unread, as the server needs time to
+  /// process your request.
+  Future<void> markNotificationAsRead(
+      BatchInboxNotificationContent notification);
+
+  /// Marks all notifications as read.
+  /// Note: Please refresh your copy of the notifications using [allNotifications]
+  /// to update the read status.
+  /// Calling [fetchNewNotifications()]/[fetchNextPage()] right away
+  /// might cause notifications to come as unread, as the server needs time to
+  /// process your request.
+  Future<void> markAllNotificationsAsRead();
+
+  /// Marks a notification as deleted.
+  ///
+  /// Calling [fetchNewNotifications()]/[fetchNextPage()] right away
+  /// might cause notifications to still be present, as the server needs time to
+  /// process your request.
+  Future<void> markNotificationAsDeleted(
+      BatchInboxNotificationContent notification);
 
   /// Call this once you're finished with this fetcher to release the native
   /// object and free all memory. Usually, this should be called
