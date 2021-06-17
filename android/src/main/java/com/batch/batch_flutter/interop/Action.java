@@ -35,6 +35,9 @@ enum Action
     INBOX_FETCH_NEW_NOTIFICATIONS("inbox.fetchNewNotifications"),
     INBOX_FETCH_NEXT_PAGE("inbox.fetchNextPage"),
     INBOX_GET_FETCHED_NOTIFICATIONS("inbox.getFetchedNotifications"),
+    INBOX_MARK_AS_READ("inbox.markAsRead"),
+    INBOX_MARK_ALL_AS_READ("inbox.markAllAsRead"),
+    INBOX_MARK_AS_DELETED("inbox.markAsDeleted"),
 
     /// For testing
     ECHO("echo");

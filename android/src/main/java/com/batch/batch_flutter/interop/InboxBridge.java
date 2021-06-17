@@ -48,6 +48,12 @@ class InboxBridge {
                 return fetchNextPage(parameters);
             case INBOX_GET_FETCHED_NOTIFICATIONS:
                 return getFetchedNotifications(parameters);
+            case INBOX_MARK_AS_READ:
+                return markAsRead(parameters);
+            case INBOX_MARK_ALL_AS_READ:
+                return markAllAsRead(parameters);
+            case INBOX_MARK_AS_DELETED:
+                return markAsDeleted(parameters);
             default:
                 throw new BatchBridgeNotImplementedException(action.toString());
         }
@@ -133,6 +139,64 @@ class InboxBridge {
                         "Inbox fetchNextPage failed with error: " + s));
             }
         }));
+    }
+
+    private Promise<Object> markAsRead(@NonNull Map<String, Object> parameters) throws BatchBridgeException {
+        final BatchInboxFetcher fetcher = getFetcherInstance(parameters);
+
+        final String notificationID = getTypedParameter(parameters, "notifID", String.class);
+
+        return new Promise<>(promise -> {
+            List<BatchInboxNotificationContent> nativeNotifications = fetcher.getFetchedNotifications();
+            BatchInboxNotificationContent notificationToMark = null;
+            for (BatchInboxNotificationContent nativeNotification : nativeNotifications) {
+                if (nativeNotification.getNotificationIdentifier().equals(notificationID)) {
+                    notificationToMark = nativeNotification;
+                    break;
+                }
+            }
+
+            if (notificationToMark != null) {
+                fetcher.markAsRead(notificationToMark);
+            } else {
+                // TODO: Log but don't throw
+            }
+
+            promise.resolve(null);
+        });
+    }
+
+    private Promise<Object> markAllAsRead(@NonNull Map<String, Object> parameters) throws BatchBridgeException {
+        final BatchInboxFetcher fetcher = getFetcherInstance(parameters);
+
+        fetcher.markAllAsRead();
+
+        return Promise.resolved(null);
+    }
+
+    private Promise<Object> markAsDeleted(@NonNull Map<String, Object> parameters) throws BatchBridgeException {
+        final BatchInboxFetcher fetcher = getFetcherInstance(parameters);
+
+        final String notificationID = getTypedParameter(parameters, "notifID", String.class);
+
+        return new Promise<>(promise -> {
+            List<BatchInboxNotificationContent> nativeNotifications = fetcher.getFetchedNotifications();
+            BatchInboxNotificationContent notificationToMark = null;
+            for (BatchInboxNotificationContent nativeNotification : nativeNotifications) {
+                if (nativeNotification.getNotificationIdentifier().equals(notificationID)) {
+                    notificationToMark = nativeNotification;
+                    break;
+                }
+            }
+
+            if (notificationToMark != null) {
+                fetcher.markAsDeleted(notificationToMark);
+            } else {
+                // TODO: Log but don't throw
+            }
+
+            promise.resolve(null);
+        });
     }
 
     private Promise<Object> getFetchedNotifications(@NonNull Map<String, Object> parameters) throws BatchBridgeException {

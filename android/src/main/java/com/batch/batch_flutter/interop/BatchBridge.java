@@ -129,6 +129,9 @@ public class BatchBridge {
             case INBOX_FETCH_NEW_NOTIFICATIONS:
             case INBOX_FETCH_NEXT_PAGE:
             case INBOX_GET_FETCHED_NOTIFICATIONS:
+            case INBOX_MARK_AS_READ:
+            case INBOX_MARK_ALL_AS_READ:
+            case INBOX_MARK_AS_DELETED:
                 return inboxBridge.doAction(action, parameters, activity);
 
             case ECHO:
