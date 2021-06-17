@@ -84,7 +84,10 @@ struct Bridge {
                      .inbox_createUserFetcher,
                      .inbox_fetchNextPage,
                      .inbox_fetchNewNotifications,
-                     .inbox_getFetchedNotifications:
+                     .inbox_getFetchedNotifications,
+                     .inbox_markAsRead,
+                     .inbox_markAllAsRead,
+                     .inbox_markAsDeleted:
                     return try inboxBridge.doAction(action, parameters: parameters)
                 
                 case .echo:
