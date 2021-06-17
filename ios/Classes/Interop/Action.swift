@@ -28,6 +28,9 @@ enum Action: String {
     case inbox_fetchNewNotifications = "inbox.fetchNewNotifications"
     case inbox_fetchNextPage = "inbox.fetchNextPage"
     case inbox_getFetchedNotifications = "inbox.getFetchedNotifications"
+    case inbox_markAsRead = "inbox.markAsRead"
+    case inbox_markAllAsRead = "inbox.markAllAsRead"
+    case inbox_markAsDeleted = "inbox.markAsDeleted"
     
     case debug_showDebugView = "debug.showDebugView"
     

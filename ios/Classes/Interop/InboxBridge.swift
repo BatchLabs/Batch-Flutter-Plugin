@@ -26,6 +26,13 @@ class InboxBridge {
                 return try fetchNextPage(parameters: parameters)
             case .inbox_getFetchedNotifications:
                 return try getAllFetchedNotifications(parameters: parameters)
+            case .inbox_markAsRead:
+                return try markAsRead(parameters: parameters)
+            case .inbox_markAllAsRead:
+                try markAllAsRead(parameters: parameters)
+                return LightPromise<AnyObject?>.resolved(nil)
+            case .inbox_markAsDeleted:
+                return try markAsDeleted(parameters: parameters)
             default:
                 // We should never end up here, unless the Bridge threw a non inbox method at us
                 return LightPromise<AnyObject?>.rejected(BridgeInternalError.notImplemented)
@@ -124,6 +131,54 @@ class InboxBridge {
                     "notifications": InboxBridge.serializeNotifications(notifications) as NSArray,
                     "endReached": NSNumber(value: endReached)
                 ] as NSDictionary)
+            }
+        }
+    }
+    
+    private func markAsRead(parameters: BridgeParameters) throws -> LightPromise<AnyObject?> {
+        let fetcher = try getFetcher(parameters)
+        guard let notifID = parameters["notifID"] as? String else {
+            throw BridgeError.makeBadArgumentError(argumentName: "notifID")
+        }
+        
+        return LightPromise<AnyObject?> { resolve, reject in
+            DispatchQueue.global(qos: .userInitiated).async {
+                let nativeNotification = fetcher.allFetchedNotifications.first { $0.identifier == notifID }
+                
+                if let nativeNotification = nativeNotification {
+                    fetcher.markNotification(asRead: nativeNotification)
+                } else {
+                    // TODO: Log but don't reject
+                }
+                
+                resolve(nil);
+            }
+        }
+    }
+    
+    private func markAllAsRead(parameters: BridgeParameters) throws {
+        let fetcher = try getFetcher(parameters)
+        
+        fetcher.markAllNotificationsAsRead()
+    }
+    
+    private func markAsDeleted(parameters: BridgeParameters) throws -> LightPromise<AnyObject?> {
+        let fetcher = try getFetcher(parameters)
+        guard let notifID = parameters["notifID"] as? String else {
+            throw BridgeError.makeBadArgumentError(argumentName: "notifID")
+        }
+        
+        return LightPromise<AnyObject?> { resolve, reject in
+            DispatchQueue.global(qos: .userInitiated).async {
+                let nativeNotification = fetcher.allFetchedNotifications.first { $0.identifier == notifID }
+                
+                if let nativeNotification = nativeNotification {
+                    fetcher.markNotification(asDeleted: nativeNotification)
+                } else {
+                    // TODO: Log but don't reject
+                }
+                
+                resolve(nil);
             }
         }
     }
