@@ -37,7 +37,7 @@ class InboxBridge {
     Promise<Object> doAction(@NonNull Action action, @NonNull Map<String, Object> parameters, @NonNull Activity activity) throws BatchBridgeException, BatchBridgeNotImplementedException {
         switch (action) {
             case INBOX_CREATE_INSTALLATION_FETCHER:
-                return Promise.resolved(createInstallationFetcher(activity));
+                return Promise.resolved(createInstallationFetcher(activity, parameters));
             case INBOX_CREATE_USER_FETCHER:
                 return Promise.resolved(createUserFetcher(activity, parameters));
             case INBOX_RELEASE_FETCHER:
@@ -61,7 +61,7 @@ class InboxBridge {
     }
 
     @NonNull
-    private String createInstallationFetcher(@NonNull Context context) {
+    private String createInstallationFetcher(@NonNull Context context, @NonNull Map<String, Object> parameters) {
         String id = makeFetcherID();
         BatchInboxFetcher fetcher = Batch.Inbox.getFetcher(context.getApplicationContext());
         configureSharedFetcherParameters(fetcher, parameters);
