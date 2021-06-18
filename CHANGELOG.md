@@ -3,6 +3,8 @@
 **Inbox**
 
 * Calling `dispose()` on a disposed fetcher doesn't throw anymore.
+* Added `markAsRead()`, `markAllAsRead()` and `markAsDeleted()`.
+* Added `limit` and `maxPageSize` to `getFetcherForInstallation()` and `getFetcherForUser()`.
 
 ## 0.0.3
 
