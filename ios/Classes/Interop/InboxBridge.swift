@@ -14,7 +14,7 @@ class InboxBridge {
     func doAction(_ action: Action, parameters: BridgeParameters) throws -> LightPromise<AnyObject?> {
         switch (action) {
             case .inbox_createInstallationFetcher:
-                return createInstallationFetcher()
+                return createInstallationFetcher(parameters: parameters)
             case .inbox_createUserFetcher:
                 return try createUserFetcher(parameters: parameters)
             case .inbox_releaseFetcher:
@@ -39,12 +39,14 @@ class InboxBridge {
         }
     }
     
-    private func createInstallationFetcher() -> LightPromise<AnyObject?> {
+    private func createInstallationFetcher(parameters: BridgeParameters) -> LightPromise<AnyObject?> {
         let fetcherID = makeFetcherID()
         
-        return LightPromise<AnyObject?> { [self] resolve, _ in
+        return LightPromise<AnyObject?> { [self] resolve, reject in
             fetchersSyncQueue.async(flags: .barrier) {
-                fetchers[fetcherID] = BatchInbox.fetcher()
+                let fetcher = BatchInbox.fetcher()
+                setupCommonFetcherParameters(fetcher: fetcher, parameters: parameters)
+                fetchers[fetcherID] = fetcher
                 resolve(fetcherID as NSString)
             }
         }
@@ -52,6 +54,7 @@ class InboxBridge {
     
     private func createUserFetcher(parameters: BridgeParameters) throws -> LightPromise<AnyObject?> {
         let fetcherID = makeFetcherID()
+        
         
         guard let user = parameters["user"] as? String else {
             throw BridgeError.makeBadArgumentError(argumentName: "user")
@@ -61,11 +64,32 @@ class InboxBridge {
             throw BridgeError.makeBadArgumentError(argumentName: "authKey")
         }
         
-        return LightPromise<AnyObject?> { [self] resolve, _ in
+        return LightPromise<AnyObject?> { [self] resolve, reject in
             fetchersSyncQueue.async(flags: .barrier) {
-                fetchers[fetcherID] = BatchInbox.fetcher(forUserIdentifier: user, authenticationKey: authKey)
-                resolve(fetcherID as NSString)
+                do {
+                    guard let fetcher = BatchInbox.fetcher(forUserIdentifier: user, authenticationKey: authKey) else {
+                        throw BridgeError(code: BridgeError.ErrorCode.internalSDKError,
+                                          description: "Internal SDK error: Failed to initialize the fetcher. Make sure your user identifier and authentication key are valid and not empty.",
+                                          details: nil)
+                    }
+                    
+                    setupCommonFetcherParameters(fetcher: fetcher, parameters: parameters)
+                    fetchers[fetcherID] = fetcher
+                    resolve(fetcherID as NSString)
+                } catch {
+                    reject(error)
+                }
             }
+        }
+    }
+    
+    private func setupCommonFetcherParameters(fetcher: BatchInboxFetcher, parameters: BridgeParameters) {
+        if let maxPageSize = parameters["maxPageSize"] as? Int, maxPageSize > 0 {
+            fetcher.maxPageSize = UInt(maxPageSize)
+        }
+        
+        if let limit = parameters["limit"] as? Int, limit > 0 {
+            fetcher.limit = UInt(limit)
         }
     }
     
