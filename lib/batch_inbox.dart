@@ -6,7 +6,16 @@ class BatchInbox {
   static BatchInbox instance = new BatchInbox();
 
   /// Get an inbox fetcher for the current installation ID.
-  Future<BatchInboxFetcher> getFetcherForInstallation() async {
+  ///
+  /// The [maxPageSize] is the maximum of notifications to fetch on each call,
+  /// up to 100 messages per page. Note that the actual count of fetched
+  /// messages might differ from the value you've set here.
+  ///
+  /// Set [limit] to be the maximum number of notifications to fetch, ever.
+  /// This allows you to let Batch manage the upper limit itself, so you can
+  /// be sure not to use a crazy amount of memory.
+  Future<BatchInboxFetcher> getFetcherForInstallation(
+      {int? maxPageSize, int? limit}) async {
     var fetcher = BatchInboxFetcherInstallationImpl();
     await fetcher.init();
     return fetcher;
@@ -20,9 +29,19 @@ class BatchInbox {
   /// The [authenticationKey] is the secret used to authenticate the request.
   /// It should be computed by your backend. See the documentation for more info
   /// on how to generate it.
+  ///
+  /// The [maxPageSize] is the maximum of notifications to fetch on each call,
+  /// up to 100 messages per page. Note that the actual count of fetched
+  /// messages might differ from the value you've set here.
+  ///
+  /// Set [limit] to be the maximum number of notifications to fetch, ever.
+  /// This allows you to let Batch manage the upper limit itself, so you can
+  /// be sure not to use a crazy amount of memory.
   Future<BatchInboxFetcher> getFetcherForUser(
       {required String userIdentifier,
-      required String authenticationKey}) async {
+      required String authenticationKey,
+      int? maxPageSize,
+      int? limit}) async {
     var fetcher = BatchInboxFetcherUserImpl(
         user: userIdentifier, authKey: authenticationKey);
     await fetcher.init();

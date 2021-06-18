@@ -12,7 +12,7 @@ abstract class BatchInboxFetcherBaseImpl extends BatchInboxFetcher {
   bool _disposed = false;
   String? _fetcherID;
 
-  Future<void> init();
+  Future<void> init({int? maxPageSize, int? limit});
 
   @override
   Future<List<BatchInboxNotificationContent>> get allNotifications async {
@@ -103,6 +103,20 @@ abstract class BatchInboxFetcherBaseImpl extends BatchInboxFetcher {
     }
   }
 
+  Map<String, dynamic> _makeBaseInitParameters({int? maxPageSize, int? limit}) {
+    Map<String, dynamic> parameters = {};
+
+    if (maxPageSize != null) {
+      parameters["maxPageSize"] = maxPageSize;
+    }
+
+    if (limit != null) {
+      parameters["limit"] = limit;
+    }
+
+    return parameters;
+  }
+
   Map<String, dynamic> _makeBaseBridgeParameters() {
     if (_fetcherID == null) {
       throw InboxInternalError(code: 2);
@@ -153,9 +167,9 @@ abstract class BatchInboxFetcherBaseImpl extends BatchInboxFetcher {
 @protected
 class BatchInboxFetcherInstallationImpl extends BatchInboxFetcherBaseImpl {
   @override
-  Future<void> init() async {
-    String? fetcherID = await BatchInboxFetcherBaseImpl._channel
-        .invokeMethod('inbox.createInstallationFetcher');
+  Future<void> init({int? maxPageSize, int? limit}) async {
+    String? fetcherID = await BatchInboxFetcherBaseImpl._channel.invokeMethod(
+        'inbox.createInstallationFetcher', _makeBaseInitParameters());
     if (fetcherID == null || fetcherID.isEmpty) {
       throw InboxInternalError(code: 0);
     }
@@ -173,9 +187,15 @@ class BatchInboxFetcherUserImpl extends BatchInboxFetcherBaseImpl {
   final String authKey;
 
   @override
-  Future<void> init() async {
-    String? fetcherID = await BatchInboxFetcherBaseImpl._channel.invokeMethod(
-        'inbox.createUserFetcher', {"user": user, "authKey": authKey});
+  Future<void> init({int? maxPageSize, int? limit}) async {
+    Map<String, dynamic> parameters =
+        _makeBaseInitParameters(maxPageSize: maxPageSize, limit: limit);
+
+    parameters["user"] = user;
+    parameters["authKey"] = authKey;
+
+    String? fetcherID = await BatchInboxFetcherBaseImpl._channel
+        .invokeMethod('inbox.createUserFetcher', parameters);
     if (fetcherID == null || fetcherID.isEmpty) {
       throw InboxInternalError(code: 0);
     }
