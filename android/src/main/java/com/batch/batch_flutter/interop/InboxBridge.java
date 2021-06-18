@@ -17,6 +17,7 @@ import java.util.Map;
 import java.util.UUID;
 import java.util.concurrent.ConcurrentHashMap;
 
+import static com.batch.batch_flutter.interop.BatchBridge.getOptionalTypedParameter;
 import static com.batch.batch_flutter.interop.BatchBridge.getTypedParameter;
 
 /**
@@ -63,6 +64,7 @@ class InboxBridge {
     private String createInstallationFetcher(@NonNull Context context) {
         String id = makeFetcherID();
         BatchInboxFetcher fetcher = Batch.Inbox.getFetcher(context.getApplicationContext());
+        configureSharedFetcherParameters(fetcher, parameters);
         fetchers.put(id, fetcher);
         return id;
     }
@@ -73,8 +75,28 @@ class InboxBridge {
         String user = getTypedParameter(parameters, "user", String.class);
         String authKey = getTypedParameter(parameters, "authKey", String.class);
         BatchInboxFetcher fetcher = Batch.Inbox.getFetcher(context.getApplicationContext(), user, authKey);
+        configureSharedFetcherParameters(fetcher, parameters);
         fetchers.put(id, fetcher);
         return id;
+    }
+
+    private void configureSharedFetcherParameters(@NonNull BatchInboxFetcher fetcher, @NonNull Map<String, Object> parameters) {
+        Number maxPageSize = getOptionalTypedParameter(parameters, "maxPageSize", Number.class, null);
+        Number limit = getOptionalTypedParameter(parameters, "limit", Number.class, null);
+
+        if (maxPageSize != null) {
+            int maxPageSizeInt = maxPageSize.intValue();
+            if (maxPageSizeInt > 0) {
+                fetcher.setMaxPageSize(maxPageSizeInt);
+            }
+        }
+
+        if (limit != null) {
+            int limitInt = limit.intValue();
+            if (limitInt > 0) {
+                fetcher.setFetchLimit(limitInt);
+            }
+        }
     }
 
     private void releaseFetcher(@NonNull Map<String, Object> parameters) throws BatchBridgeException {

@@ -160,6 +160,21 @@ public class BatchBridge {
         return (T) result;
     }
 
+    @SuppressWarnings("unchecked")
+    static <T> T getOptionalTypedParameter(Map<String, Object> parameters, String parameterName, Class<T> parameterClass, T fallback) {
+        Object result = null;
+
+        if (parameters != null) {
+            result = parameters.get(parameterName);
+        }
+
+        if (result == null || !parameterClass.isInstance(result)) {
+            return fallback;
+        }
+
+        return (T) result;
+    }
+
     private static void optIn(Activity activity) {
         Batch.optIn(activity);
         Batch.onStart(activity);
