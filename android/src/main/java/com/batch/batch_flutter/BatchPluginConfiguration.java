@@ -17,6 +17,7 @@ public class BatchPluginConfiguration {
     private static final String APIKEY_MANIFEST_KEY = "com.batch.flutter.apikey";
     private static final String GAID_MANIFEST_KEY = "com.batch.flutter.use_gaid";
     private static final String ADVANCED_INFO_MANIFEST_KEY = "com.batch.flutter.use_advanced_device_information";
+    private static final String INITIAL_DND_STATE_MANIFEST_KEY = "com.batch.flutter.do_not_disturb_initial_state";
 
     private boolean didReadManifest = false;
 
@@ -26,6 +27,8 @@ public class BatchPluginConfiguration {
     private boolean canUseAdvertisingID = true;
 
     private boolean canUseAdvancedDeviceInformation = true;
+
+    private boolean initialDoNotDisturbState = false;
 
     synchronized void initFromManifest(@NonNull Context context) {
         //noinspection ConstantConditions
@@ -41,6 +44,7 @@ public class BatchPluginConfiguration {
         apiKey = manifestReader.readString(APIKEY_MANIFEST_KEY, null);
         canUseAdvertisingID = manifestReader.readBoolean(GAID_MANIFEST_KEY, true);
         canUseAdvancedDeviceInformation = manifestReader.readBoolean(ADVANCED_INFO_MANIFEST_KEY, true);
+        canUseAdvancedDeviceInformation = manifestReader.readBoolean(INITIAL_DND_STATE_MANIFEST_KEY, false);
     }
 
     boolean hasAPIKey() {
@@ -85,6 +89,15 @@ public class BatchPluginConfiguration {
 
     public BatchPluginConfiguration setCanUseAdvancedDeviceInformation(boolean canUseAdvancedDeviceInformation) {
         this.canUseAdvancedDeviceInformation = canUseAdvancedDeviceInformation;
+        return this;
+    }
+
+    public boolean getInitialDoNotDisturbState() {
+        return initialDoNotDisturbState;
+    }
+
+    public BatchPluginConfiguration setInitialDoNotDisturbState(boolean initialDoNotDisturbState) {
+        this.initialDoNotDisturbState = initialDoNotDisturbState;
         return this;
     }
 

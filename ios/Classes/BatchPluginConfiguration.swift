@@ -5,6 +5,7 @@ fileprivate struct PlistKeys {
     static let APIKey = "BatchFlutterAPIKey"
     static let canUseIDFA = "BatchFlutterCanUseIDFA"
     static let canUseAdvancedDeviceInformation = "BatchFlutterCanUseAdvancedDeviceInformation"
+    static let initialDnDState = "BatchFlutterDoNotDisturbInitialState"
 }
 
 /**
@@ -18,6 +19,7 @@ public class BatchPluginConfiguration: NSObject {
     public var APIKey: String? = nil
     public var canUseIDFA: Bool = false
     public var canUseAdvancedDeviceInformation: Bool = true
+    public var initialDoNotDisturbState: Bool = false
     
     /// Store the API Key in a different variable, so that editing "APIKey" has no effect until "apply" is called
     internal var actualAPIKey: String? = nil
@@ -38,6 +40,7 @@ public class BatchPluginConfiguration: NSObject {
         APIKey = PlistReader.readString(key: PlistKeys.APIKey)
         canUseIDFA = PlistReader.readBoolean(key: PlistKeys.canUseIDFA, fallbackValue: canUseIDFA)
         canUseAdvancedDeviceInformation = PlistReader.readBoolean(key: PlistKeys.canUseAdvancedDeviceInformation, fallbackValue: canUseAdvancedDeviceInformation)
+        initialDoNotDisturbState = PlistReader.readBoolean(key: PlistKeys.initialDnDState, fallbackValue: initialDoNotDisturbState)
     }
     
     /// Apply configuration. Returns true on success.
@@ -46,6 +49,7 @@ public class BatchPluginConfiguration: NSObject {
             actualAPIKey = APIKey
             Batch.setUseIDFA(canUseIDFA)
             Batch.setUseAdvancedDeviceInformation(canUseAdvancedDeviceInformation)
+            BatchMessaging.doNotDisturb = initialDoNotDisturbState
             return true
         } else {
             // No API key

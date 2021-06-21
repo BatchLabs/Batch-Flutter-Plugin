@@ -10,6 +10,7 @@ import androidx.annotation.VisibleForTesting;
 import androidx.core.content.ContextCompat;
 
 import com.batch.android.Batch;
+import com.batch.android.BatchMessage;
 import com.batch.android.Config;
 import com.batch.batch_flutter.interop.BatchBridge;
 import com.batch.batch_flutter.interop.BatchBridgeException;
@@ -231,10 +232,12 @@ public class BatchFlutterPlugin implements FlutterPlugin, MethodCallHandler, Act
             return true;
         }
 
-        Config batchConfig = getConfiguration(context).makeBatchConfig();
+        BatchPluginConfiguration pluginConfiguration = getConfiguration(context);
+        Config batchConfig = pluginConfiguration.makeBatchConfig();
 
         if (batchConfig != null) {
             Batch.setConfig(batchConfig);
+            Batch.Messaging.setDoNotDisturbEnabled(pluginConfiguration.getInitialDoNotDisturbState());
             didCallSetup = true;
             return true;
         } else {
