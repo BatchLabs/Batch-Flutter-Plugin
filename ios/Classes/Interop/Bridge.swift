@@ -75,6 +75,14 @@ struct Bridge {
                 case .user_trackTransaction:
                     try trackTransaction(parameters)
                     return emptySuccessPromise()
+                
+                case .messaging_showPendingMessage:
+                    showPendingMessage()
+                    return emptySuccessPromise()
+                case .messaging_setDoNotDisturbEnabled:
+                    try setDoNotDisturbEnabled(parameters: parameters)
+                    return emptySuccessPromise()
+                
                 case .debug_showDebugView:
                     showDebugView()
                     return emptySuccessPromise()

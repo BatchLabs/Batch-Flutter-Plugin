@@ -1,5 +1,9 @@
 ## UPCOMING
 
+**Messaging**
+
+* Added Do Not Disturb support.
+
 **Inbox**
 
 * Calling `dispose()` on a disposed fetcher doesn't throw anymore.
