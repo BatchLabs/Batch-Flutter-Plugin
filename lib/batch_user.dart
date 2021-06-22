@@ -85,8 +85,7 @@ class BatchUser {
         await _channel.invokeMapMethod("user.fetch.attributes");
 
     if (rawAttributes == null) {
-      //TODO: Error handling: throw an exception
-      return Map();
+      throw BatchUserInternalError(code: 1);
     }
 
     Map<String, BatchUserAttribute> attributes = {};
@@ -96,7 +95,7 @@ class BatchUser {
       dynamic? rawValue = rawTypedValue["value"];
 
       if (rawValue == null) {
-        // TODO throw exception
+        throw BatchUserInternalError(code: 2);
         return;
       }
 
@@ -125,8 +124,7 @@ class BatchUser {
           castedValue = rawValue as String;
           break;
         default:
-          // TODO throw exception
-          return;
+          throw BatchUserInternalError(code: 3);
       }
 
       attributes[key] = BatchUserAttribute(type: type, value: castedValue);
@@ -141,8 +139,7 @@ class BatchUser {
         await _channel.invokeMapMethod("user.fetch.tags");
 
     if (rawTagCollections == null) {
-      //TODO: Error handling: throw an exception
-      return Map();
+      throw BatchUserInternalError(code: 4);
     }
 
     Map<String, List<String>> castedTagCollections = {};
@@ -443,3 +440,15 @@ class BatchUserAttribute {
 
 /// User attribute types.
 enum BatchUserAttributeType { string, boolean, integer, double, date }
+
+/// Error thrown when an internal user module error happens.
+class BatchUserInternalError extends Error {
+  BatchUserInternalError({required this.code});
+
+  final int code;
+
+  @override
+  String toString() {
+    return "BatchUserInternalError: An internal BatchUser error has occurred, something might be wrong with the native implementation. Code: $code";
+  }
+}
