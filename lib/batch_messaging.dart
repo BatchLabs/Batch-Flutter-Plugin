@@ -30,7 +30,7 @@ class BatchMessaging {
 
   /// Shows the currently enqueued message, if any.
   /// This removes the message from the queue.
-  void showPendingMessage() {
-    _channel.invokeMethod('messaging.showPendingMessage');
+  void showPendingMessage() async {
+    await _channel.invokeMethod('messaging.showPendingMessage');
   }
 }
