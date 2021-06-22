@@ -1,6 +1,7 @@
 import 'package:batch_flutter/batch.dart';
 import 'package:batch_flutter/batch_push.dart';
 import 'package:batch_flutter/batch_inbox.dart';
+import 'package:batch_flutter/batch_messaging.dart';
 import 'package:batch_flutter/batch_user.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
@@ -126,8 +127,12 @@ class _MainMenuState extends State<MainMenu> {
   void testInbox() async {
     var fetcher = await BatchInbox.instance.getFetcherForInstallation();
     var notifs = await fetcher.fetchNewNotifications();
+    var notif = notifs.notifications.first;
+    fetcher.markNotificationAsRead(notif);
+    fetcher.markNotificationAsDeleted(notif);
+    fetcher.markAllNotificationsAsRead();
     fetcher.dispose();
-    print(notifs);
+    print(notifs.notifications);
   }
 
   @override
@@ -161,21 +166,43 @@ class _MainMenuState extends State<MainMenu> {
           child: Text("Open Batch Debug"),
           onPressed: () => {Batch.instance.showDebugView()},
         ),
-        ElevatedButton(
-          child: Text("Test custom event"),
-          onPressed: () => {testCustomEvent()},
-        ),
-        ElevatedButton(
-          child: Text("Test custom data"),
-          onPressed: () => {testCustomData()},
-        ),
-        ElevatedButton(
-          child: Text("Test read custom data"),
-          onPressed: () => {testReadCustomData()},
-        ),
-        ElevatedButton(
-          child: Text("Reset custom data"),
-          onPressed: () => {resetCustomData()},
+        Row(children: [
+          ElevatedButton(
+            child: Text("Test custom event"),
+            onPressed: () => {testCustomEvent()},
+          ),
+          ElevatedButton(
+            child: Text("Test custom data"),
+            onPressed: () => {testCustomData()},
+          ),
+        ]),
+        Row(children: [
+          ElevatedButton(
+            child: Text("Test read custom data"),
+            onPressed: () => {testReadCustomData()},
+          ),
+          ElevatedButton(
+            child: Text("Reset custom data"),
+            onPressed: () => {resetCustomData()},
+          ),
+        ]),
+        Row(
+          children: [
+            ElevatedButton(
+              child: Text("DnD On"),
+              onPressed: () =>
+                  {BatchMessaging.instance.setDoNotDisturbEnabled(true)},
+            ),
+            ElevatedButton(
+              child: Text("DnD Off"),
+              onPressed: () =>
+                  {BatchMessaging.instance.setDoNotDisturbEnabled(false)},
+            ),
+            ElevatedButton(
+              child: Text("Show Pending"),
+              onPressed: () => {BatchMessaging.instance.showPendingMessage()},
+            ),
+          ],
         ),
         Row(
           children: [
