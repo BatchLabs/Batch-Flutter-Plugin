@@ -172,7 +172,7 @@ class InboxBridge {
                 if let nativeNotification = nativeNotification {
                     fetcher.markNotification(asRead: nativeNotification)
                 } else {
-                    // TODO: Log but don't reject
+                    BatchFlutterLogger.logPublic(module: "Inbox", message: "Could not mark notification as read: No matching native notification. This can happen if you kept a Dart instance of a notification but are trying to use it with another fetcher, or if the fetcher has been reset inbetween.")
                 }
                 
                 resolve(nil);
@@ -199,7 +199,7 @@ class InboxBridge {
                 if let nativeNotification = nativeNotification {
                     fetcher.markNotification(asDeleted: nativeNotification)
                 } else {
-                    // TODO: Log but don't reject
+                    BatchFlutterLogger.logPublic(module: "Inbox", message: "Could not mark notification as deleted: No matching native notification. This can happen if you kept a Dart instance of a notification but are trying to use it with another fetcher, or if the fetcher has been reset inbetween.")
                 }
                 
                 resolve(nil);
