@@ -9,7 +9,7 @@ import androidx.annotation.NonNull;
  */
 public class BatchFlutterLogger {
 
-    static boolean enableDebugLogs = true;
+    public static boolean enableDebugLogs = false;
 
     private static final String TAG = "BatchFlutter";
 
