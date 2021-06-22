@@ -51,7 +51,7 @@ public class BatchFlutterPlugin: NSObject, FlutterPlugin {
                 Please make sure that you followed the integration steps, and called this method
                 in your AppDelegate's didFinishLaunchingWithOptions method.
                 """
-            //TODO: Log
+            BatchFlutterLogger.logDebug(module: "Bridge", message: errorMessage)
             flutterResult(FlutterError(code: BridgeError.ErrorCode.missingSetup.rawValue,
                                        message: errorMessage,
                                        details: nil))
@@ -66,7 +66,7 @@ public class BatchFlutterPlugin: NSObject, FlutterPlugin {
                 bridgeParameters = dictionaryArguments
             } else {
                 let errorMessage = "Bridge message root arguments were not nil, but not [String: AnyObject]."
-                //TODO: Log
+                BatchFlutterLogger.logDebug(module: "Bridge", message: errorMessage)
                 flutterResult(FlutterError(code: BridgeError.ErrorCode.badArgumentType.rawValue,
                                            message: errorMessage,
                                            details: nil))
@@ -77,7 +77,7 @@ public class BatchFlutterPlugin: NSObject, FlutterPlugin {
         bridge.call(rawAction: call.method, parameters: bridgeParameters)
             .continueOn(bridgeExecutorQueue)
             .then { bridgeResult in
-                print("Debug - Got Batch Flutter Call: \(call.method). Result: \(String(describing: bridgeResult))")
+                BatchFlutterLogger.logDebug(module: "Bridge", message: "Got Batch Flutter Call: \(call.method). Result: \(String(describing: bridgeResult))")
                 flutterResult(bridgeResult)
             }
             .catch { error in
@@ -86,9 +86,10 @@ public class BatchFlutterPlugin: NSObject, FlutterPlugin {
                         flutterResult(FlutterMethodNotImplemented)
                         return
                     } else {
-                        //TODO: Print
+                        let errorMessage = "Internal Batch native bridge error (\(internalError)). Please see the console for more info."
+                        BatchFlutterLogger.logDebug(module: "Bridge", message: errorMessage)
                         flutterResult(FlutterError(code: BridgeError.ErrorCode.unknownBridgeError.rawValue,
-                                                   message: "Internal Batch native bridge error (\(internalError)). Please see the console for more info.",
+                                                   message: errorMessage,
                                                    details: nil))
                         return
                     }
@@ -120,7 +121,7 @@ public class BatchFlutterPlugin: NSObject, FlutterPlugin {
                 Batch.start(withAPIKey: batchAPIKey)
                 BatchPush.refreshToken()
             } else {
-                // TODO: Race condition, log an error
+                BatchFlutterLogger.logDebug(module: "Bridge", message: "Attempted to start Batch without an apikey, which we had beforehand")
             }
         }
     }
@@ -156,12 +157,12 @@ public class BatchFlutterPlugin: NSObject, FlutterPlugin {
     @discardableResult
     public static func setup() -> Bool {
         if didCallSetup {
-            //TODO log
+            BatchFlutterLogger.logPublic(module: "Plugin", message: "BatchFlutterPlugin.setup() has already been called. Ignoring extra setup call.");
             return true
         }
         
         if !configuration.apply() {
-            //TODO log
+            BatchFlutterLogger.logDebug(module: "Plugin", message: "Could not setup BatchFlutterPlugin: your configuration is invalid. Did you set a non-null APIKey using the configuration var or using Info.plist keys?")
             return false
         }
         

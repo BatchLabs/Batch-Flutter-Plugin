@@ -8,7 +8,7 @@ extension Bridge {
            let rootViewController = WindowHelper.topViewController {
             rootViewController.present(debugVC, animated: true, completion: nil)
         } else {
-            //TODO: log
+            BatchFlutterLogger.logPublic(module: "Core", message: "Could not display debug view")
         }
     }
 }

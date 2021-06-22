@@ -10,8 +10,7 @@ struct Bridge {
     // Bool is a temporary return value
     func call(rawAction: String, parameters: BridgeParameters) -> LightPromise<AnyObject?> {
         guard let action = Action.init(rawValue: rawAction) else {
-            //TODO: better exception handling
-            print("Invalid action name \(rawAction)")
+            BatchFlutterLogger.logDebug(module: "Bridge", message: "Invalid action name \(rawAction)")
             return LightPromise<AnyObject?>.rejected(BridgeInternalError.notImplemented)
         }
         
