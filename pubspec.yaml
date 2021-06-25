@@ -1,7 +1,6 @@
 name: batch_flutter
 description: Batch.com Flutter Plugin
 version: 0.1.0
-author: Batch.com <support@batch.com>
 homepage: https://batch.com
 
 environment:
