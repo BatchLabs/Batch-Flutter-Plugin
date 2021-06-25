@@ -1,4 +1,4 @@
-## 0.1.0
+## 1.0.0-rc.1 / 0.1.0
 
 _First Release Candidate_
 
