@@ -17,7 +17,7 @@ class BatchInbox {
   Future<BatchInboxFetcher> getFetcherForInstallation(
       {int? maxPageSize, int? limit}) async {
     var fetcher = BatchInboxFetcherInstallationImpl();
-    await fetcher.init();
+    await fetcher.init(maxPageSize: maxPageSize, limit: limit);
     return fetcher;
   }
 
@@ -44,7 +44,7 @@ class BatchInbox {
       int? limit}) async {
     var fetcher = BatchInboxFetcherUserImpl(
         user: userIdentifier, authKey: authenticationKey);
-    await fetcher.init();
+    await fetcher.init(maxPageSize: maxPageSize, limit: limit);
     return fetcher;
   }
 }

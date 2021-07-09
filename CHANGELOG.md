@@ -1,3 +1,8 @@
+## Upcoming
+
+**Inbox**
+* Fix `limit` and `maxPageSize` staying at their default values.
+
 ## 1.0.0-rc.1 / 0.1.0
 
 _First Release Candidate_
