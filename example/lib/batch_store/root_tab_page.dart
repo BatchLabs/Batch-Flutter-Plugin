@@ -1,4 +1,5 @@
 import 'package:batch_flutter_example/batch_store/ui/cart/cart_tab.dart';
+import 'package:batch_flutter_example/batch_store/ui/settings/settings_tab.dart';
 import 'package:batch_flutter_example/batch_store/ui/shop/shop_tab.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/widgets.dart';
@@ -23,7 +24,7 @@ class _RootTabPageState extends State<RootTabPage> {
     ShopTab(),
     CartTab(),
     Text("Not implemented"),
-    Text("Not implemented"),
+    SettingsTab(),
   ];
 
   @override

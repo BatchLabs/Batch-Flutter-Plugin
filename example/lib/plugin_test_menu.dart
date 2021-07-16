@@ -9,14 +9,14 @@ import 'package:flutter/widgets.dart';
 
 import 'batch_store/root_tab_page.dart';
 
-class MainMenu extends StatefulWidget {
-  const MainMenu({Key? key}) : super(key: key);
+class PluginTestMenu extends StatefulWidget {
+  const PluginTestMenu({Key? key}) : super(key: key);
 
   @override
-  _MainMenuState createState() => _MainMenuState();
+  _PluginTestMenuState createState() => _PluginTestMenuState();
 }
 
-class _MainMenuState extends State<MainMenu> {
+class _PluginTestMenuState extends State<PluginTestMenu> {
   String _installationID = 'Unknown';
   String _lastPushToken = 'Unknown';
   String _languageRegion = 'Language override: Unknown, Region: Unknown';
@@ -137,91 +137,88 @@ class _MainMenuState extends State<MainMenu> {
 
   @override
   Widget build(BuildContext context) {
-    return Column(
-      crossAxisAlignment: CrossAxisAlignment.start,
-      children: [
-        Text("Installation ID: $_installationID"),
-        Text("Last Push Token: $_lastPushToken"),
-        Text("Custom ID: $_customID"),
-        Text("$_languageRegion"),
-        ElevatedButton(
-          child: Text("Refresh"),
-          onPressed: () => updateBatchInformation(),
+    return Scaffold(
+        appBar: AppBar(
+          title: Text("Plugin Tests"),
         ),
-        ElevatedButton(
-          child: Text("Request notif. auth. (iOS)"),
-          onPressed: () =>
-              BatchPush.instance.requestNotificationAuthorization(),
-        ),
-        ElevatedButton(
-          child: Text("Open Batch Store"),
-          onPressed: () => {
-            Navigator.push(
-              context,
-              MaterialPageRoute(builder: (context) => RootTabPage()),
-            )
-          },
-        ),
-        ElevatedButton(
-          child: Text("Open Batch Debug"),
-          onPressed: () => {Batch.instance.showDebugView()},
-        ),
-        Row(children: [
-          ElevatedButton(
-            child: Text("Test custom event"),
-            onPressed: () => {testCustomEvent()},
-          ),
-          ElevatedButton(
-            child: Text("Test custom data"),
-            onPressed: () => {testCustomData()},
-          ),
-        ]),
-        Row(children: [
-          ElevatedButton(
-            child: Text("Test read custom data"),
-            onPressed: () => {testReadCustomData()},
-          ),
-          ElevatedButton(
-            child: Text("Reset custom data"),
-            onPressed: () => {resetCustomData()},
-          ),
-        ]),
-        Row(
+        body: Column(
+          crossAxisAlignment: CrossAxisAlignment.start,
           children: [
+            Text("Installation ID: $_installationID"),
+            Text("Last Push Token: $_lastPushToken"),
+            Text("Custom ID: $_customID"),
+            Text("$_languageRegion"),
             ElevatedButton(
-              child: Text("DnD On"),
+              child: Text("Refresh"),
+              onPressed: () => updateBatchInformation(),
+            ),
+            ElevatedButton(
+              child: Text("Request notif. auth. (iOS)"),
               onPressed: () =>
-                  {BatchMessaging.instance.setDoNotDisturbEnabled(true)},
+                  BatchPush.instance.requestNotificationAuthorization(),
             ),
             ElevatedButton(
-              child: Text("DnD Off"),
-              onPressed: () =>
-                  {BatchMessaging.instance.setDoNotDisturbEnabled(false)},
+              child: Text("Open Batch Debug"),
+              onPressed: () => {Batch.instance.showDebugView()},
+            ),
+            Row(children: [
+              ElevatedButton(
+                child: Text("Test custom event"),
+                onPressed: () => {testCustomEvent()},
+              ),
+              ElevatedButton(
+                child: Text("Test custom data"),
+                onPressed: () => {testCustomData()},
+              ),
+            ]),
+            Row(children: [
+              ElevatedButton(
+                child: Text("Test read custom data"),
+                onPressed: () => {testReadCustomData()},
+              ),
+              ElevatedButton(
+                child: Text("Reset custom data"),
+                onPressed: () => {resetCustomData()},
+              ),
+            ]),
+            Row(
+              children: [
+                ElevatedButton(
+                  child: Text("DnD On"),
+                  onPressed: () =>
+                      {BatchMessaging.instance.setDoNotDisturbEnabled(true)},
+                ),
+                ElevatedButton(
+                  child: Text("DnD Off"),
+                  onPressed: () =>
+                      {BatchMessaging.instance.setDoNotDisturbEnabled(false)},
+                ),
+                ElevatedButton(
+                  child: Text("Show Pending"),
+                  onPressed: () =>
+                      {BatchMessaging.instance.showPendingMessage()},
+                ),
+              ],
+            ),
+            Row(
+              children: [
+                ElevatedButton(
+                  child: Text("Opt-in"),
+                  onPressed: () => {Batch.instance.optIn()},
+                ),
+                ElevatedButton(
+                  child: Text("Opt-out"),
+                  onPressed: () async => {await Batch.instance.optOut()},
+                ),
+                ElevatedButton(
+                  child: Text("Opt-out wipe"),
+                  onPressed: () => {Batch.instance.optOutAndWipeData()},
+                ),
+              ],
             ),
             ElevatedButton(
-              child: Text("Show Pending"),
-              onPressed: () => {BatchMessaging.instance.showPendingMessage()},
-            ),
+                child: Text("Test inbox"), onPressed: () => testInbox()),
           ],
-        ),
-        Row(
-          children: [
-            ElevatedButton(
-              child: Text("Opt-in"),
-              onPressed: () => {Batch.instance.optIn()},
-            ),
-            ElevatedButton(
-              child: Text("Opt-out"),
-              onPressed: () async => {await Batch.instance.optOut()},
-            ),
-            ElevatedButton(
-              child: Text("Opt-out wipe"),
-              onPressed: () => {Batch.instance.optOutAndWipeData()},
-            ),
-          ],
-        ),
-        ElevatedButton(child: Text("Test inbox"), onPressed: () => testInbox()),
-      ],
-    );
+        ));
   }
 }

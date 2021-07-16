@@ -37,12 +37,7 @@ class _BatchExampleAppState extends State<BatchExampleApp> {
   @override
   Widget build(BuildContext context) {
     return MaterialApp(
-      home: Scaffold(
-        appBar: AppBar(
-          title: const Text('Batch Flutter example app'),
-        ),
-        body: RootTabPage(),
-      ),
+      home: RootTabPage(),
     );
   }
 }
