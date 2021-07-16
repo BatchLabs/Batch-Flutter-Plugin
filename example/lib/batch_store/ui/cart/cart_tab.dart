@@ -10,7 +10,7 @@ class CartTab extends StatelessWidget {
   const CartTab({Key? key}) : super(key: key);
 
   void _checkout(BuildContext context) {
-    Provider.of<CartModel>(context, listen: false).clear();
+    Provider.of<CartModel>(context, listen: false).checkout();
   }
 
   @override

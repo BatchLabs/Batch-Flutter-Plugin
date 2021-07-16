@@ -1,3 +1,5 @@
+import 'package:batch_flutter_example/batch_store/event_manager.dart';
+
 import 'article.dart';
 import 'package:flutter/foundation.dart' as foundation;
 
@@ -8,7 +10,13 @@ class CartModel extends foundation.ChangeNotifier {
 
   void addArticle(Article article) {
     _articles.add(article);
+    EventManager.trackAddArticleToCart(article);
     notifyListeners();
+  }
+
+  void checkout() {
+    EventManager.trackCheckout(total);
+    clear();
   }
 
   void clear() {

@@ -1,5 +1,6 @@
 import 'package:batch_flutter_example/batch_store/data/articles_fake_datasource.dart';
 import 'package:batch_flutter_example/batch_store/data/model/article.dart';
+import 'package:batch_flutter_example/batch_store/event_manager.dart';
 import 'package:batch_flutter_example/batch_store/ui/article/article_details_page.dart';
 import 'package:batch_flutter_example/batch_store/ui/shop/shop_article_row_item.dart';
 import 'package:flutter/material.dart';
@@ -13,6 +14,7 @@ class ShopTab extends StatelessWidget {
         context,
         MaterialPageRoute(
             builder: (context) => ArticleDetailsPage(article: article)));
+    EventManager.trackArticleVisit(article);
   }
 
   @override
