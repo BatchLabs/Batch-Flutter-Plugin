@@ -169,7 +169,8 @@ class BatchInboxFetcherInstallationImpl extends BatchInboxFetcherBaseImpl {
   @override
   Future<void> init({int? maxPageSize, int? limit}) async {
     String? fetcherID = await BatchInboxFetcherBaseImpl._channel.invokeMethod(
-        'inbox.createInstallationFetcher', _makeBaseInitParameters());
+        'inbox.createInstallationFetcher',
+        _makeBaseInitParameters(maxPageSize: maxPageSize, limit: limit));
     if (fetcherID == null || fetcherID.isEmpty) {
       throw InboxInternalError(code: 0);
     }
