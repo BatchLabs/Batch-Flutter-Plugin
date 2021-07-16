@@ -1,63 +1,57 @@
 import 'package:batch_flutter/batch.dart';
+import 'package:batch_flutter_example/batch_store/data/model/subscriptions.dart';
 import 'package:batch_flutter_example/plugin_test_menu.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/widgets.dart';
+import 'package:provider/provider.dart';
 
 class SettingsTab extends StatelessWidget {
   const SettingsTab({Key? key}) : super(key: key);
 
   @override
   Widget build(BuildContext context) {
-    return ListView(
-      children: [
-        makeListSeparator(context, "Notifications"),
-        SwitchListTile(
-          title: Text('Flash sales'),
-          value: true,
-          onChanged: (value) => {
-            // TODO Implement
-          },
-        ),
-        makeListSeparator(context, "Suggestion topics"),
-        SwitchListTile(
-          title: Text('Suggested content'),
-          value: true,
-          onChanged: (value) => {
-            // TODO Implement
-          },
-        ),
-        SwitchListTile(
-          title: Text('  Fashion'),
-          value: true,
-          onChanged: (value) => {
-            // TODO Implement
-          },
-        ),
-        SwitchListTile(
-          title: Text("  Men's wear"),
-          value: true,
-          onChanged: (value) => {
-            // TODO Implement
-          },
-        ),
-        SwitchListTile(
-          title: Text('  Other'),
-          value: true,
-          onChanged: (value) => {
-            // TODO Implement
-          },
-        ),
-        makeListSeparator(context, "Advanced"),
-        ListTile(
-          title: Text('Batch Debug'),
-          onTap: () => {Batch.instance.showDebugView()},
-        ),
-        ListTile(
-          title: Text('Flutter plugin tests'),
-          onTap: () => {_openPluginTests(context)},
-        ),
-      ],
-    );
+    return Consumer<SubscriptionsModel>(
+        builder: (context, subscriptions, child) {
+      return ListView(
+        children: [
+          makeListSeparator(context, "Notifications"),
+          SwitchListTile(
+            title: Text('Flash sales'),
+            value: subscriptions.subscribedToFlashSales,
+            onChanged: (value) =>
+                {subscriptions.subscribedToFlashSales = value},
+          ),
+          makeListSeparator(context, "Suggestion topics"),
+          SwitchListTile(
+            title: Text('Suggested content'),
+            value: subscriptions.subscribedToSuggestedContent,
+            onChanged: (value) =>
+                {subscriptions.subscribedToSuggestedContent = value},
+          ),
+          SwitchListTile(
+            title: Text('  Fashion'),
+            value: subscriptions.subscribedToFashionSuggestions,
+            onChanged: (value) =>
+                {subscriptions.subscribedToFashionSuggestions = value},
+          ),
+          SwitchListTile(
+            title: Text('  Other'),
+            value: subscriptions.subscribedToOtherSuggestions,
+            onChanged: (value) =>
+                {subscriptions.subscribedToOtherSuggestions = value},
+          ),
+          makeListSeparator(context, "Advanced"),
+          ListTile(
+            title: Text('Batch Debug'),
+            onTap: () => {Batch.instance.showDebugView()},
+          ),
+          ListTile(
+            title: Text('Flutter plugin tests'),
+            onTap: () => {_openPluginTests(context)},
+          ),
+        ],
+      );
+    });
   }
 
   Widget makeListSeparator(BuildContext context, String text) {

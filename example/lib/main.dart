@@ -1,4 +1,5 @@
 import 'package:batch_flutter/batch_push.dart';
+import 'package:batch_flutter_example/batch_store/data/model/subscriptions.dart';
 import 'package:batch_flutter_example/batch_store/root_tab_page.dart';
 import 'package:flutter/material.dart';
 
@@ -16,6 +17,9 @@ void main() {
       ),
       ChangeNotifierProvider<CartModel>(
         create: (_) => CartModel()..loadModel(),
+      ),
+      ChangeNotifierProvider<SubscriptionsModel>(
+        create: (_) => SubscriptionsModel()..loadModel(),
       )
     ],
     child: BatchExampleApp(),
@@ -31,6 +35,11 @@ class _BatchExampleAppState extends State<BatchExampleApp> {
   @override
   void initState() {
     super.initState();
+
+    // Warm up the subscriptions by loading the subscriptions model.
+    Provider.of<SubscriptionsModel>(context, listen: false)
+        .writeDefaultValues();
+
     BatchPush.instance.setShowForegroundNotificationsOniOS(true);
   }
 
