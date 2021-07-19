@@ -62,6 +62,11 @@ class _InboxTabState extends State<InboxTab> {
     _fastRefresh();
   }
 
+  void _markAllAsRead() {
+    fetcher?.markAllNotificationsAsRead();
+    _fastRefresh();
+  }
+
   void _delete(BatchInboxNotificationContent notification) {
     fetcher?.markNotificationAsDeleted(notification);
     _fastRefresh();
@@ -76,23 +81,41 @@ class _InboxTabState extends State<InboxTab> {
 
   @override
   Widget build(BuildContext context) {
-    return RefreshIndicator(
-        child: ListView.separated(
-          physics: const AlwaysScrollableScrollPhysics(),
-          separatorBuilder: (context, index) => Divider(),
-          itemCount: notifications.length,
-          itemBuilder: (context, index) {
-            BatchInboxNotificationContent notification = notifications[index];
-            return InboxNotificationRowItem(
-                notification: notification,
-                onMarkAsRead: () {
-                  _markAsRead(notification);
+    return Column(
+      children: [
+        Expanded(
+          child: RefreshIndicator(
+              child: ListView.separated(
+                physics: const AlwaysScrollableScrollPhysics(),
+                separatorBuilder: (context, index) => Divider(),
+                itemCount: notifications.length,
+                itemBuilder: (context, index) {
+                  BatchInboxNotificationContent notification =
+                      notifications[index];
+                  return InboxNotificationRowItem(
+                      notification: notification,
+                      onMarkAsRead: () {
+                        _markAsRead(notification);
+                      },
+                      onDelete: () {
+                        _delete(notification);
+                      });
                 },
-                onDelete: () {
-                  _delete(notification);
-                });
-          },
+              ),
+              onRefresh: _refresh),
         ),
-        onRefresh: _refresh);
+        TextButton(
+          onPressed: _markAllAsRead,
+          child: Row(
+            // Replace with a Row for horizontal icon + text
+            children: [
+              const Icon(Icons.mark_email_read),
+              Padding(padding: const EdgeInsets.all(5)),
+              Text("Mark all as read")
+            ],
+          ),
+        ),
+      ],
+    );
   }
 }
