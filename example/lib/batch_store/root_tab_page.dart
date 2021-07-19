@@ -1,4 +1,5 @@
 import 'package:batch_flutter_example/batch_store/ui/cart/cart_tab.dart';
+import 'package:batch_flutter_example/batch_store/ui/inbox/inbox_tab.dart';
 import 'package:batch_flutter_example/batch_store/ui/settings/settings_tab.dart';
 import 'package:batch_flutter_example/batch_store/ui/shop/shop_tab.dart';
 import 'package:flutter/material.dart';
@@ -23,7 +24,7 @@ class _RootTabPageState extends State<RootTabPage> {
   final List<Widget> _tabWidgets = <Widget>[
     ShopTab(),
     CartTab(),
-    Text("Not implemented"),
+    InboxTab(),
     SettingsTab(),
   ];
 
