@@ -22,7 +22,8 @@ class CartTab extends StatelessWidget {
         return Column(
           children: [
             Expanded(
-              child: ListView.builder(
+              child: ListView.separated(
+                separatorBuilder: (context, index) => Divider(),
                 itemCount: cartArticles.length,
                 itemBuilder: (context, index) {
                   return CartArticleRowItem(
