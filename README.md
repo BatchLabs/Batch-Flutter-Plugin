@@ -11,17 +11,6 @@ The Batch Flutter Plugin requires Flutter 2 and Dart 2.12 or higher.
 
 As this plugin is built over Batch's Native SDKs, their respective Android and iOS requirements apply.
 
-# Development
-
-<div style="background-color: rgb(255, 253, 237); color: black;">
-
-`batch_flutter` is under development and isn't feature complete yet. 
-Publication on pub.dev might not happen until the first release candidate.
-
-Our roadmap is available in [ROADMAP.md](ROADMAP.md).
-
-</div>
-
 # Documentation
 - [Setup guide](https://flutter-doc-preview.batchers.vercel.app/flutter/prerequisites): start your implementation here!
 - [Help center](https://help.batch.com/en/): answers to most questions you may have during the integration
