@@ -29,7 +29,8 @@ class _InboxTabState extends State<InboxTab> {
   }
 
   void setupFetcher() async {
-    fetcher = await BatchInbox.instance.getFetcherForInstallation();
+    fetcher = await BatchInbox.instance
+        .getFetcherForInstallation(maxPageSize: 20, limit: 2000);
     _refresh();
   }
 
