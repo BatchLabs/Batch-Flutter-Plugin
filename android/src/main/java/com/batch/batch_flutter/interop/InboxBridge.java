@@ -8,6 +8,7 @@ import androidx.annotation.NonNull;
 import com.batch.android.Batch;
 import com.batch.android.BatchInboxFetcher;
 import com.batch.android.BatchInboxNotificationContent;
+import com.batch.batch_flutter.BatchFlutterLogger;
 import com.batch.batch_flutter.Promise;
 
 import java.util.ArrayList;
@@ -181,7 +182,7 @@ class InboxBridge {
             if (notificationToMark != null) {
                 fetcher.markAsRead(notificationToMark);
             } else {
-                // TODO: Log but don't throw
+                BatchFlutterLogger.e("Could not mark notification as read: No matching native notification. This can happen if you kept a Dart instance of a notification but are trying to use it with another fetcher, or if the fetcher has been reset inbetween.");
             }
 
             promise.resolve(null);
@@ -214,7 +215,7 @@ class InboxBridge {
             if (notificationToMark != null) {
                 fetcher.markAsDeleted(notificationToMark);
             } else {
-                // TODO: Log but don't throw
+                BatchFlutterLogger.e("Could not mark notification as deleted: No matching native notification. This can happen if you kept a Dart instance of a notification but are trying to use it with another fetcher, or if the fetcher has been reset inbetween.");
             }
 
             promise.resolve(null);
