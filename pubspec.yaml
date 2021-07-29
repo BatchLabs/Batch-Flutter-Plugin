@@ -1,6 +1,6 @@
 name: batch_flutter
 description: Batch.com Flutter Plugin.  Batch Flutter Plugin allows you to build meaningful communication experience in your iOS app through highly personalized push notifications and In-App messages.
-version: 1.0.0-rc.1
+version: 1.0.0-rc.2
 homepage: https://batch.com
 
 environment:

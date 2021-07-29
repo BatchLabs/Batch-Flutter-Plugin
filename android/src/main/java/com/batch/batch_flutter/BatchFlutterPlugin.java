@@ -37,7 +37,7 @@ public class BatchFlutterPlugin implements FlutterPlugin, MethodCallHandler, Act
 
     private static final String PLUGIN_VERSION_SYSTEM_PROPERTY = "batch.plugin.version";
 
-    private static final String PLUGIN_VERSION = "Flutter/0.1.0";
+    private static final String PLUGIN_VERSION = "Flutter/1.0.0-rc.2";
 
     private final static BatchPluginConfiguration configuration = new BatchPluginConfiguration();
 
