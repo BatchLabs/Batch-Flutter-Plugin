@@ -52,3 +52,5 @@ android {
         testImplementation 'org.robolectric:robolectric:4.5.1'
     }
 }
+
+apply from: 'javadoc.gradle'

@@ -20,4 +20,6 @@ Run `make doc`. You will need dartdoc for this: `flutter pub global activate dar
 
 ### iOS & Android native code
 
-iOS requires [swift-doc](https://github.com/SwiftDocOrg/swift-doc) to be installed. Run `make doc-ios`
+iOS requires [swift-doc](https://github.com/SwiftDocOrg/swift-doc) to be installed. Run `make doc-ios`.
+
+Android doesn't require anything than a standard toolchain. You might need to set Android Studio's JVM as your `JAVA_HOME`. Run `make doc-android`.

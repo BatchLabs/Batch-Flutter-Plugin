@@ -1,0 +1,24 @@
+android.libraryVariants.all { variant ->
+    task("generateJavadoc${variant.name.capitalize()}", type: Javadoc, dependsOn: ['assembleRelease']) {
+        title = "Batch Flutter Plugin - Android"
+        source = variant.javaCompile.source
+        // This is invoked from example/android so "rootProject" is deeper than this file is.
+        destinationDir = project.rootProject.file('../../api_docs/flutter-android-api-reference')
+        failOnError = false
+        
+        doFirst {
+	        classpath = files(variant.javaCompile.classpath.files, project.android.getBootClasspath())
+	    }
+	
+        options.links("http://docs.oracle.com/javase/7/docs/api/");
+        options.links("http://d.android.com/reference/");
+        exclude '**/BuildConfig.java'
+        exclude '**/R.java'
+        
+        
+        // We never want to cache this step
+        outputs.cacheIf { false }
+        outputs.upToDateWhen { false }
+    }
+
+}
