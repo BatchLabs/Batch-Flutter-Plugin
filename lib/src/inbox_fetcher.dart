@@ -134,7 +134,6 @@ abstract class BatchInboxFetcherBaseImpl extends BatchInboxFetcher {
       String? title = rawNotification["title"] as String?;
       String body = rawNotification["body"] as String;
       bool isUnread = rawNotification["isUnread"] as bool;
-      bool isDeleted = rawNotification["isDeleted"] as bool;
       DateTime date =
           DateTime.fromMillisecondsSinceEpoch(rawNotification["date"] as int)
               .toUtc();
@@ -155,7 +154,7 @@ abstract class BatchInboxFetcherBaseImpl extends BatchInboxFetcher {
       Map<String, String> payload = (rawNotification["payload"] as Map).cast();
 
       notifications.add(BatchInboxNotificationContent(
-          id, title, body, isUnread, isDeleted, date, source, payload));
+          id, title, body, isUnread, date, source, payload));
     });
 
     return notifications;

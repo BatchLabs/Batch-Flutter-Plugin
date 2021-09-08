@@ -155,7 +155,7 @@ class BatchInboxNotificationContent {
   /// Internal constructor.
   /// <nodoc>
   BatchInboxNotificationContent(this.id, this.title, this.body, this.isUnread,
-      this.isDeleted, this.date, this.source, this.payload);
+      this.date, this.source, this.payload);
 
   /// The unique notification identifier. Do not make assumptions about its format: it can change at any time.
   final String id;
@@ -168,9 +168,6 @@ class BatchInboxNotificationContent {
 
   /// Is the notification unread?
   final bool isUnread;
-
-  /// Is the notification deleted?
-  final bool isDeleted;
 
   /// Notification timestamp in UTC.
   final DateTime date;

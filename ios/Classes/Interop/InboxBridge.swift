@@ -219,7 +219,6 @@ class InboxBridge {
             }
             
             serializedNotification["isUnread"] = NSNumber(value: notification.isUnread)
-            serializedNotification["isDeleted"] = NSNumber(value: notification.isDeleted)
             serializedNotification["date"] = NSNumber(value: Int64(floor(notification.date.timeIntervalSince1970 * 1000)))
             
             if let payload = try? serializePayload(notification.payload) {

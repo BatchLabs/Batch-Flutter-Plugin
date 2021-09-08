@@ -1,3 +1,13 @@
+## 1.0.0
+
+**Initial stable release 🎉**
+
+Changes since RC:  
+
+**Inbox**
+
+* Removed `isDeleted` on `BatchInboxNotificationContent` as it doesn't work like it does on the native SDK due to plugin limitations.
+
 ## 1.0.0-rc.2
 
 **Inbox**

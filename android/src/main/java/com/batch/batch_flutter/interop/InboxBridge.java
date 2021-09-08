@@ -245,7 +245,6 @@ class InboxBridge {
             }
 
             serializedNotification.put("isUnread", nativeNotification.isUnread());
-            serializedNotification.put("isDeleted", nativeNotification.isDeleted());
             serializedNotification.put("date", nativeNotification.getDate().getTime());
             int source = 0; // UNKNOWN
             switch (nativeNotification.getSource()) {
