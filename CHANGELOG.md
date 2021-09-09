@@ -2,7 +2,7 @@
 
 **Initial stable release 🎉**
 
-Changes since RC:  
+_Changes since RC:_ 
 
 **Inbox**
 
