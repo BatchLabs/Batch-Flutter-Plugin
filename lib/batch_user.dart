@@ -48,7 +48,7 @@ class BatchUser {
   /// Track an event.
   ///
   /// The event name is required and must not be empty. It should be composed of letters,
-  /// numbers or underscores ([a-z0-9_]) and can’t be longer than 30 characters.
+  /// numbers or underscores (\[a-z0-9_\]) and can’t be longer than 30 characters.
   ///
   /// The event label is an optional string, which must not be empty or longer
   /// than 200 characters. If the label is too long, it will be ignored.
@@ -153,7 +153,7 @@ class BatchUser {
 /// Batch's user data editor.
 /// This object is used to transactionally edit user data. Calls can be chained
 /// in a builder-like fashion.
-/// Once you're done with your changes, call `save()` to persist your changes.
+/// Once you're done with your changes, call [BatchUserDataEditor.save] to persist your changes.
 abstract class BatchUserDataEditor {
   /// Set the application langauge. Overrides Batch's automatically detected value.
   ///
@@ -174,7 +174,7 @@ abstract class BatchUserDataEditor {
 
   /// Set a string attribute for a key.
   ///
-  /// Attribute's key cannot be empty. It should be made of letters, numbers or underscores ([a-z0-9_])
+  /// Attribute's key cannot be empty. It should be made of letters, numbers or underscores (\[a-z0-9_\])
   /// and can't be longer than 30 characters.
   /// String attribut values are non-empty strings and can't be longer than 64 characters.
   ///
@@ -183,7 +183,7 @@ abstract class BatchUserDataEditor {
 
   /// Set an integer attribute for a key.
   ///
-  /// Attribute's key cannot be empty. It should be made of letters, numbers or underscores ([a-z0-9_])
+  /// Attribute's key cannot be empty. It should be made of letters, numbers or underscores (\[a-z0-9_\])
   /// and can't be longer than 30 characters.
   ///
   /// Any attribute with an invalid key or value will be ignored.
@@ -191,7 +191,7 @@ abstract class BatchUserDataEditor {
 
   /// Set a double attribute for a key.
   ///
-  /// Attribute's key cannot be empty. It should be made of letters, numbers or underscores ([a-z0-9_])
+  /// Attribute's key cannot be empty. It should be made of letters, numbers or underscores (\[a-z0-9_\])
   /// and can't be longer than 30 characters.
   ///
   /// Any attribute with an invalid key or value will be ignored.
@@ -199,7 +199,7 @@ abstract class BatchUserDataEditor {
 
   /// Set a boolean attribute for a key.
   ///
-  /// Attribute's key cannot be empty. It should be made of letters, numbers or underscores ([a-z0-9_])
+  /// Attribute's key cannot be empty. It should be made of letters, numbers or underscores (\[a-z0-9_\])
   /// and can't be longer than 30 characters.
   ///
   /// Any attribute with an invalid key or value will be ignored.
@@ -207,7 +207,7 @@ abstract class BatchUserDataEditor {
 
   /// Set a Date attribute for a key.
   ///
-  /// Attribute's key cannot be empty. It should be made of letters, numbers or underscores ([a-z0-9_])
+  /// Attribute's key cannot be empty. It should be made of letters, numbers or underscores (\[a-z0-9_\])
   /// and can't be longer than 30 characters.
   ///
   /// Date attribute values are sent in UTC to Batch. If you notice that the reported
@@ -229,7 +229,7 @@ abstract class BatchUserDataEditor {
   /// If the collection doesn't exist, it will be created.
   ///
   /// The tag collection name must be a string of letters, numbers or
-  /// underscores (`[a-z0-9_]`) and can't be longer than 30 characters.
+  /// underscores (\[a-z0-9_\]) and can't be longer than 30 characters.
   ///
   /// The tag cannot be empty or longer than 64 characters.
   BatchUserDataEditor addTag(String collection, String tag);
@@ -239,7 +239,7 @@ abstract class BatchUserDataEditor {
   /// If the collection is empty, it will be deleted.
   ///
   /// The tag collection name must be a string of letters, numbers or
-  /// underscores (`[a-z0-9_]`) and can't be longer than 30 characters.
+  /// underscores (\[a-z0-9_\]) and can't be longer than 30 characters.
   ///
   /// If the tag doesn't exist, this method will silently do nothing.
   BatchUserDataEditor removeTag(String collection, String tag);
@@ -247,7 +247,7 @@ abstract class BatchUserDataEditor {
   /// Removes all tags from a collection.
   ///
   /// The tag collection name must be a string of letters, numbers or
-  /// underscores (`[a-z0-9_]`) and can't be longer than 30 characters.
+  /// underscores (\[a-z0-9_\]) and can't be longer than 30 characters.
   BatchUserDataEditor clearTagCollection(String collection);
 
   /// Removes all tags.
@@ -265,7 +265,7 @@ abstract class BatchUserDataEditor {
 /// depending on the underlying SDK version your project is using.
 ///
 /// Keys should be strings composed of letters, numbers or underscores
-/// ([a-z0-9_]) and can't be longer than 30 characters.
+/// (\[a-z0-9_\]) and can't be longer than 30 characters.
 class BatchEventData {
   static final RegExp _attributeKeyRegexp = RegExp("^[a-zA-Z0-9_]{1,30}\$");
   static const int _maxStringLength = 64;
@@ -294,7 +294,7 @@ class BatchEventData {
   /// Add a string attribute for the given key.
   ///
   /// The attribute key should be a string composed of letters, numbers
-  /// or underscores ([a-z0-9_]) and can't be longer than 30 characters.
+  /// or underscores (\[a-z0-9_\]) and can't be longer than 30 characters.
   ///
   /// The attribute string value can't be empty or longer than 64 characters.
   /// For better results, you should trim/lowercase your strings
@@ -310,7 +310,7 @@ class BatchEventData {
   /// Add a boolean attribute for the given key.
   ///
   /// The attribute key should be a string composed of letters, numbers
-  /// or underscores ([a-z0-9_]) and can't be longer than 30 characters.
+  /// or underscores (\[a-z0-9_\]) and can't be longer than 30 characters.
   BatchEventData putBoolean(String key, bool value) {
     if (_validateAttributeKey(key)) {
       _attributes[key.toLowerCase()] =
@@ -322,7 +322,7 @@ class BatchEventData {
   /// Add an integer attribute for the given key.
   ///
   /// The attribute key should be a string composed of letters, numbers
-  /// or underscores ([a-z0-9_]) and can't be longer than 30 characters.
+  /// or underscores (\[a-z0-9_\]) and can't be longer than 30 characters.
   BatchEventData putInteger(String key, int value) {
     if (_validateAttributeKey(key)) {
       _attributes[key.toLowerCase()] =
@@ -334,7 +334,7 @@ class BatchEventData {
   /// Add a double attribute for the given key.
   ///
   /// The attribute key should be a string composed of letters, numbers
-  /// or underscores ([a-z0-9_]) and can't be longer than 30 characters.
+  /// or underscores (\[a-z0-9_\]) and can't be longer than 30 characters.
   BatchEventData putDouble(String key, double value) {
     if (_validateAttributeKey(key)) {
       _attributes[key.toLowerCase()] =
@@ -346,7 +346,7 @@ class BatchEventData {
   /// Add a DateTime attribute for the given key.
   ///
   /// The attribute key should be a string composed of letters, numbers
-  /// or underscores ([a-z0-9_]) and can't be longer than 30 characters.
+  /// or underscores (\[a-z0-9_\]) and can't be longer than 30 characters.
   ///
   /// Date attribute values are sent in UTC to Batch. If you notice that the reported
   /// time may be off, try making an UTC DateTime for consistency.

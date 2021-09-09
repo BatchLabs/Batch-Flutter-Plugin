@@ -69,7 +69,7 @@ class BatchInbox {
 /// some of the messages returned by the server
 /// (such as duplicate notifications, etc...).
 ///
-/// Please MAKE SURE to call [dispose()] once you're done with the fetcher
+/// Please MAKE SURE to call [BatchInboxFetcher.dispose] once you're done with the fetcher
 /// (for example, when the user navigates away).
 /// This should usually be done in your State's dispose method.
 /// Failure to do so will leak memory, as Batch will not know that the associated
@@ -203,7 +203,7 @@ class BatchInboxFetchResult {
 }
 
 /// Error thrown when the [BatchInboxFetcher] object receives a method call
-/// after [dispose] has been called.
+/// after [BatchInboxFetcher.dispose] has been called.
 class DisposedInboxError extends Error {
   @override
   String toString() {
