@@ -92,11 +92,10 @@ class BatchUser {
     rawAttributes.forEach((key, rawTypedValue) {
       dynamic castedValue;
       BatchUserAttributeType type;
-      dynamic? rawValue = rawTypedValue["value"];
+      dynamic rawValue = rawTypedValue["value"];
 
       if (rawValue == null) {
         throw BatchUserInternalError(code: 2);
-        return;
       }
 
       String? rawType = rawTypedValue["type"];

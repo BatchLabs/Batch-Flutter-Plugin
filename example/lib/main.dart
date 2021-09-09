@@ -7,7 +7,6 @@ import 'package:provider/provider.dart';
 
 import 'batch_store/data/model/app_state_model.dart';
 import 'batch_store/data/model/cart.dart';
-import 'plugin_test_menu.dart';
 
 void main() {
   runApp(MultiProvider(
