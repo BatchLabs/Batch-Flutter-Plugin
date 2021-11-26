@@ -1,3 +1,13 @@
+## UPCOMING
+
+**Plugin**
+
+* Update Batch to 1.18.0
+
+**User**
+
+* Added support for the URL attribute and event data type.
+
 ## 1.0.0
 
 **Initial stable release 🎉**
