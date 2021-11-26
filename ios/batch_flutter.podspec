@@ -4,7 +4,7 @@
 #
 Pod::Spec.new do |s|
   s.name             = 'batch_flutter'
-  s.version          = '0.0.1'
+  s.version          = '0.0.2'
   s.summary          = 'Batch.com Flutter Plugin'
   s.homepage         = 'https://batch.com'
   s.license          = { :type => 'MIT', :file => '../LICENSE' }
@@ -14,7 +14,7 @@ Pod::Spec.new do |s|
   s.source           = { :path => '.' }
   s.source_files = 'Classes/**/*'
   s.dependency 'Flutter'
-  s.dependency 'Batch', '~> 1.17.0'
+  s.dependency 'Batch', '~> 1.18.0'
 
   # Flutter.framework does not contain a i386 slice.
   s.pod_target_xcconfig = { 'DEFINES_MODULE' => 'YES', 'EXCLUDED_ARCHS[sdk=iphonesimulator*]' => 'i386' }
