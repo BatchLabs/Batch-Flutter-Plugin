@@ -122,6 +122,10 @@ class BatchUser {
           type = BatchUserAttributeType.string;
           castedValue = rawValue as String;
           break;
+        case "u":
+          type = BatchUserAttributeType.url;
+          castedValue = Uri.parse(rawValue as String);
+          break;
         default:
           throw BatchUserInternalError(code: 3);
       }
@@ -204,6 +208,16 @@ abstract class BatchUserDataEditor {
   ///
   /// Any attribute with an invalid key or value will be ignored.
   BatchUserDataEditor setBooleanAttribute(String key, bool value);
+
+  /// Set a URL attribute for a key.
+  ///
+  /// Attribute's key cannot be empty. It should be made of letters, numbers or underscores (\[a-z0-9_\])
+  /// and can't be longer than 30 characters.
+  ///
+  /// While the value is an Uri instance, it must be a valid URL.
+  ///
+  /// Any attribute with an invalid key or value will be ignored.
+  BatchUserDataEditor setUrlAttribute(String key, Uri value);
 
   /// Set a Date attribute for a key.
   ///
@@ -303,6 +317,20 @@ class BatchEventData {
     if (_validateAttributeKey(key)) {
       _attributes[key.toLowerCase()] =
           TypedAttribute(type: TypedAttributeType.string, value: value);
+    }
+    return this;
+  }
+
+  /// Add a URL attribute for the given key.
+  ///
+  /// The attribute key should be a string composed of letters, numbers
+  /// or underscores (\[a-z0-9_\]) and can't be longer than 30 characters.
+  ///
+  /// While the value is an Uri instance, it must be a valid URL.
+  BatchEventData putUrl(String key, Uri value) {
+    if (_validateAttributeKey(key)) {
+      _attributes[key.toLowerCase()] =
+          TypedAttribute(type: TypedAttributeType.url, value: value.toString());
     }
     return this;
   }
@@ -431,6 +459,13 @@ class BatchUserAttribute {
     return null;
   }
 
+  Uri? getUriValue() {
+    if (type == BatchUserAttributeType.url) {
+      return value;
+    }
+    return null;
+  }
+
   @override
   String toString() {
     return ("${value.toString()} (${type.toString()})");
@@ -438,7 +473,7 @@ class BatchUserAttribute {
 }
 
 /// User attribute types.
-enum BatchUserAttributeType { string, boolean, integer, double, date }
+enum BatchUserAttributeType { string, boolean, integer, double, date, url }
 
 /// Error thrown when an internal user module error happens.
 class BatchUserInternalError extends Error {

@@ -265,6 +265,21 @@ class BatchUserDataEditorImpl implements BatchUserDataEditor {
   }
 
   @override
+  BatchUserDataEditor setUrlAttribute(String key, Uri value) {
+    if (!_ensureValidAttributeKey(key)) {
+      return this;
+    }
+
+    _enqueueOperation(UserDataOperationKind.setAttribute, {
+      "key": key,
+      "type": "url",
+      "value": value.toString(),
+    });
+
+    return this;
+  }
+
+  @override
   BatchUserDataEditor removeAttribute(String key) {
     if (!_ensureValidAttributeKey(key)) {
       return this;
