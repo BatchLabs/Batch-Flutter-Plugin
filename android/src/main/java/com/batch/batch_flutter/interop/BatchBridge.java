@@ -18,6 +18,8 @@ import com.batch.android.json.JSONObject;
 import com.batch.batch_flutter.BatchFlutterLogger;
 import com.batch.batch_flutter.Promise;
 
+import java.net.URI;
+import java.net.URISyntaxException;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.HashMap;
@@ -273,6 +275,12 @@ public class BatchBridge {
                             case "string":
                                 editor.setAttribute(key, getTypedParameter(operationDescription, "value", String.class));
                                 break;
+                            case "url":
+                                try {
+                                    editor.setAttribute(key, new URI(getTypedParameter(operationDescription, "value", String.class)));
+                                } catch (URISyntaxException e) {
+                                    Log.e("Batch Bridge", "Invalid SET_ATTRIBUTE url value: couldn't parse value", e);
+                                }
                             case "date":
                                 editor.setAttribute(key, new Date(getTypedParameter(operationDescription, "value", Number.class).longValue()));
                                 break;
@@ -409,6 +417,13 @@ public class BatchBridge {
                 } else if ("d".equals(type)) {
                     long timestamp = getTypedParameter(entryMapValue, "value", Number.class).longValue();
                     batchEventData.put(entryStringKey, new Date(timestamp));
+                } else if ("u".equals(type)) {
+                    String rawURI = getTypedParameter(entryMapValue, "value", String.class);
+                    try {
+                        batchEventData.put(entryStringKey, new URI(rawURI));
+                    } catch (URISyntaxException e) {
+                        throw new BatchBridgeException(BatchBridgePublicErrorCode.INTERNAL_BRIDGE_ERROR, "Bad URL event data syntax", null, e);
+                    }
                 } else {
                     throw new BatchBridgeException(BatchBridgePublicErrorCode.INTERNAL_BRIDGE_ERROR, "Unknown event_data.attributes type");
                 }
@@ -500,6 +515,16 @@ public class BatchBridge {
                             }
                             case STRING:
                                 type = "s";
+                                URI uriValue = attribute.getUriValue();
+                                if (uriValue == null) {
+                                    promise.reject(new BatchBridgeException(BatchBridgePublicErrorCode.INTERNAL_BRIDGE_ERROR,
+                                            "Fetch attribute: Could not parse URI for key: " + attributeEntry.getKey()));
+                                    return;
+                                }
+                                value = uriValue.toString();
+                                break;
+                            case URL:
+                                type= "u";
                                 break;
                             case LONGLONG:
                                 type = "i";
