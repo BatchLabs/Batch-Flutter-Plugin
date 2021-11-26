@@ -23,6 +23,7 @@ extension Bridge {
         case string
         case date
         case boolean
+        case url
     }
     
     func userDataEdit(parameters: BridgeParameters) throws {
@@ -146,6 +147,12 @@ extension Bridge {
                             }
                             try? userDataEditor.set(attribute: stringValue, forKey: key)
                             break
+                        case .url:
+                            guard let stringValue = value as? String, let urlValue = URL(string: stringValue) else {
+                                throw BridgeError.makeBadArgumentError(argumentName: errorArgumentName)
+                            }
+                            try? userDataEditor.set(attribute: urlValue, forKey: key)
+                            break
                         case .date:
                             guard let rawTimestamp = value as? Int64 else {
                                 throw BridgeError.makeBadArgumentError(argumentName: errorArgumentName)
@@ -208,6 +215,10 @@ extension Bridge {
                             case BatchUserAttributeType.double:
                                 bridgeType = "f"
                                 bridgeValue = userAttribute.numberValue()
+                                break
+                            case BatchUserAttributeType.URL:
+                                bridgeType = "u"
+                                bridgeValue = userAttribute.urlValue()?.absoluteString as NSString?
                                 break
                             default:
                                 throw BridgeError.init(code: BridgeError.ErrorCode.internalBridgeError,

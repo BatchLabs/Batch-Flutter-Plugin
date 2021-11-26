@@ -69,6 +69,12 @@ extension Bridge {
                     }
                     eventData.put(value, forKey: key)
                     break
+                case "u":
+                    guard let value = typedValue["value"] as? String, let urlValue = URL(string: value) else {
+                        throw BridgeError.makeBadArgumentError(argumentName: argumentErrorDescription)
+                    }
+                    eventData.put(urlValue, forKey: key)
+                    break
                 case "b":
                     guard let value = typedValue["value"] as? Bool else {
                         throw BridgeError.makeBadArgumentError(argumentName: argumentErrorDescription)
