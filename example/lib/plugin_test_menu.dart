@@ -78,6 +78,7 @@ class _PluginTestMenuState extends State<PluginTestMenu> {
     eventData.putDate("date", DateTime.now());
     eventData.putInteger("int", 1);
     eventData.putDouble("double", 2.3);
+    eventData.putUrl("url", Uri.parse("https://batch.com/about"));
     eventData.addTag("tag1");
     eventData.addTag("tag1").addTag("tag2");
     BatchUser.instance
@@ -96,6 +97,7 @@ class _PluginTestMenuState extends State<PluginTestMenu> {
         .setDateTimeAttribute("date", DateTime.now())
         .setIntegerAttribute("int", 1)
         .setDoubleAttribute("double", 2.3)
+        .setUrlAttribute("url", Uri.parse("https://batch.com/about"))
         .addTag("push_optin", "foot")
         .addTag("push_optin", "rugby")
         .setLanguage("pt")
