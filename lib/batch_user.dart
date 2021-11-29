@@ -214,7 +214,8 @@ abstract class BatchUserDataEditor {
   /// Attribute's key cannot be empty. It should be made of letters, numbers or underscores (\[a-z0-9_\])
   /// and can't be longer than 30 characters.
   ///
-  /// While the value is an Uri instance, it must be a valid URL.
+  /// While the value is an Uri instance, it must be a valid URL and
+  /// must not be longer than 2048 characters.
   ///
   /// Any attribute with an invalid key or value will be ignored.
   BatchUserDataEditor setUrlAttribute(String key, Uri value);
@@ -326,7 +327,8 @@ class BatchEventData {
   /// The attribute key should be a string composed of letters, numbers
   /// or underscores (\[a-z0-9_\]) and can't be longer than 30 characters.
   ///
-  /// While the value is an Uri instance, it must be a valid URL.
+  /// While the value is an Uri instance, it must be a valid URL and
+  /// not be longer than 2048 characters.
   BatchEventData putUrl(String key, Uri value) {
     if (_validateAttributeKey(key)) {
       _attributes[key.toLowerCase()] =
