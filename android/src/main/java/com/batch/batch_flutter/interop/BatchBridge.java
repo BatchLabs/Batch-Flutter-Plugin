@@ -524,7 +524,7 @@ public class BatchBridge {
                                 value = uriValue.toString();
                                 break;
                             case URL:
-                                type= "u";
+                                type = "u";
                                 break;
                             case LONGLONG:
                                 type = "i";
