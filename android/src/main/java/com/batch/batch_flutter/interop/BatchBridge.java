@@ -281,6 +281,7 @@ public class BatchBridge {
                                 } catch (URISyntaxException e) {
                                     Log.e("Batch Bridge", "Invalid SET_ATTRIBUTE url value: couldn't parse value", e);
                                 }
+                                break;
                             case "date":
                                 editor.setAttribute(key, new Date(getTypedParameter(operationDescription, "value", Number.class).longValue()));
                                 break;
@@ -515,6 +516,9 @@ public class BatchBridge {
                             }
                             case STRING:
                                 type = "s";
+                                break;
+                            case URL:
+                                type = "u";
                                 URI uriValue = attribute.getUriValue();
                                 if (uriValue == null) {
                                     promise.reject(new BatchBridgeException(BatchBridgePublicErrorCode.INTERNAL_BRIDGE_ERROR,
@@ -522,9 +526,6 @@ public class BatchBridge {
                                     return;
                                 }
                                 value = uriValue.toString();
-                                break;
-                            case URL:
-                                type = "u";
                                 break;
                             case LONGLONG:
                                 type = "i";
