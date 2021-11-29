@@ -2,7 +2,7 @@
 
 **Plugin**
 
-* Update Batch to 1.18.0
+* Update Batch to 1.18
 
 **User**
 
