@@ -10,6 +10,13 @@
 
 @implementation BatchFlutterPluginTrampoline
 + (void)registerWithRegistrar:(NSObject<FlutterPluginRegistrar>*)registrar {
-  [BatchFlutterPlugin registerWithRegistrar:registrar];
+    // Do not register if [registrat messenger] is nil, even though
+    // it is never supposed to be according to the headers: it can be.
+    // Workaround for a Flutter bug: https://github.com/flutter/flutter/issues/67624#issuecomment-801971172
+    if ([registrar messenger] == nil) {
+        // Flutter won't start, skip Batch's registration
+        return;
+    }
+    [BatchFlutterPlugin registerWithRegistrar:registrar];
 }
 @end

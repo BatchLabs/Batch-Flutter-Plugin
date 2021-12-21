@@ -3,6 +3,8 @@
 **Plugin**
 
 * Update Batch iOS to 1.18.1
+* Work around a [Flutter issue](https://github.com/flutter/flutter/issues/67624#issuecomment-801971172) where a wrong nullability annotation resulted in a debug app crashing when started from the home screen.
+  The scenario is still unsupported by Flutter, but the app will not crash anymore.
 
 ## 1.1.0
 
