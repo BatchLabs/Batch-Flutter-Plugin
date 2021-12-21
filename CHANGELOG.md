@@ -1,3 +1,9 @@
+## Upcoming
+
+**Plugin**
+
+* Update Batch iOS to 1.18.1
+
 ## 1.1.0
 
 **Plugin**
