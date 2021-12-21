@@ -5,7 +5,9 @@
 - Bump versions in:
   - Changelog.md
   - pubspec.yaml
+  - batch_flutter.podspec
   - Plugin version env vars: Search for "Flutter/". There should be two constants: one for Android, one for iOS. Bump the version there.
+- Run `pod update` in `example/ios`
 - Tag the commit
 - Merge `dev` into `master`
 - Make the Github release
