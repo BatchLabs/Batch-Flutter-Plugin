@@ -28,3 +28,9 @@ build/
 *.ipr
 *.iws
 .idea/
+
+# Sample stuff
+/example/android/app/google-services.json
+/example/android/key.properties
+/example/android/GeneratedPluginRegistrant.java
+/example/android/local.properties
