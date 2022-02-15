@@ -12,7 +12,6 @@ public class ExampleApplication extends Application {
         BatchFlutterLogger.enableDebugLogs = true;
         BatchFlutterPlugin.getConfiguration(this)
                 .setAPIKey("60802CE500701B1E2399E1FC31E33E")
-                .setCanUseAdvancedDeviceInformation(true)
                 .setCanUseAdvertisingID(true);
         BatchFlutterPlugin.setup(this);
     }
