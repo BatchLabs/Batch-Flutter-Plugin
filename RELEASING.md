@@ -12,4 +12,5 @@
 - Merge `dev` into `master`
 - Make the Github release
 - Update the documentation with the new changelog
+- Clone the repository in a temporary folder so that no temporary artifact is pushed (pub publish doesn't honor gitignore well)
 - Run `dart pub publish`
