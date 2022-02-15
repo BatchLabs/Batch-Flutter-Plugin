@@ -2,7 +2,8 @@
 
 **Plugin**
 
-* Updated dependencies so that the project can be built using Flutter 2.10.
+* Updated dependencies so that the project can be built using Flutter 2.10.  
+  Bumping your Android project's `compileSdkVersion` to `31` might be required.
 
 ## 1.1.2
 
