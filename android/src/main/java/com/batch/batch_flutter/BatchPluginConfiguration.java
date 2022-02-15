@@ -44,7 +44,7 @@ public class BatchPluginConfiguration {
         apiKey = manifestReader.readString(APIKEY_MANIFEST_KEY, null);
         canUseAdvertisingID = manifestReader.readBoolean(GAID_MANIFEST_KEY, true);
         canUseAdvancedDeviceInformation = manifestReader.readBoolean(ADVANCED_INFO_MANIFEST_KEY, true);
-        canUseAdvancedDeviceInformation = manifestReader.readBoolean(INITIAL_DND_STATE_MANIFEST_KEY, false);
+        initialDoNotDisturbState = manifestReader.readBoolean(INITIAL_DND_STATE_MANIFEST_KEY, false);
     }
 
     boolean hasAPIKey() {

@@ -1,3 +1,10 @@
+## UPCOMING
+
+**Plugin**
+
+* Android: Fixed an issue where Batch's "advanced device information" was disabled by default and not configurable using the Manifest.
+* Android: Manifest configuration of the initial Do Not Disturb state now works as expected.
+
 ## 1.1.1
 
 **Plugin**
