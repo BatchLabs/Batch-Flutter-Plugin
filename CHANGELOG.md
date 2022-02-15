@@ -1,3 +1,9 @@
+## 1.1.3
+
+**Plugin**
+
+* Updated dependencies so that the project can be built using Flutter 2.10.
+
 ## 1.1.2
 
 **Plugin**
