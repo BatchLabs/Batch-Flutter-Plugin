@@ -2,7 +2,7 @@
 
 **Plugin**
 
-* Android: Move away from jCenter and use Maven Central
+* Android: Move away from jCenter and use Maven Central.
 
 ## 1.1.3
 
