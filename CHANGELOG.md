@@ -1,4 +1,4 @@
-## UPCOMING
+## 1.1.4
 
 **Plugin**
 
