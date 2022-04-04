@@ -6,6 +6,10 @@
   Bumping your Android project's `compileSdkVersion` to `31` might be required.
   Xcode 13.3 required if your project uses bitcode.
 
+**Inbox**
+
+* Silent notifications are now filtered on Android rather than throwing an exception when fetched.
+
 ## 1.1.4
 
 **Plugin**
