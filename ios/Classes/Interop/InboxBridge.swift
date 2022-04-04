@@ -43,7 +43,7 @@ class InboxBridge {
         let fetcherID = makeFetcherID()
         
         return LightPromise<AnyObject?> { [self] resolve, reject in
-            fetchersSyncQueue.async(flags: .barrier) {
+            fetchersSyncQueue.async(flags: .barrier) { [self] in
                 let fetcher = BatchInbox.fetcher()
                 setupCommonFetcherParameters(fetcher: fetcher, parameters: parameters)
                 fetchers[fetcherID] = fetcher
@@ -65,7 +65,7 @@ class InboxBridge {
         }
         
         return LightPromise<AnyObject?> { [self] resolve, reject in
-            fetchersSyncQueue.async(flags: .barrier) {
+            fetchersSyncQueue.async(flags: .barrier) { [self] in
                 do {
                     guard let fetcher = BatchInbox.fetcher(forUserIdentifier: user, authenticationKey: authKey) else {
                         throw BridgeError(code: BridgeError.ErrorCode.internalSDKError,
@@ -209,12 +209,13 @@ class InboxBridge {
     
     private static func serializeNotifications(_ notifications: [BatchInboxNotificationContent]) -> [NSDictionary] {
         
-        return notifications.map { notification in
+        return notifications.filter{ !$0.isSilent }.map { notification in
             var serializedNotification = [String: AnyObject]()
             
             serializedNotification["id"] = notification.identifier as NSString
-            serializedNotification["body"] = notification.body as NSString
-            if let title = notification.title {
+            // Body should never be nil, as we filtered silent notifications
+            serializedNotification["body"] = (notification.message?.body ?? "") as NSString
+            if let title = notification.message?.title {
                 serializedNotification["title"] = title as NSString
             }
             
