@@ -1,3 +1,44 @@
+# Pub specific, stuff that is in gitignore but doesn't work for some reason
 google-services.json
 key.properties
 local.properties
+
+## Gitignore. If you update gitignore, update this
+
+.DS_Store
+.dart_tool/
+
+.packages
+.pub/
+
+build/
+/.gradle
+
+# API Documentations
+/api_docs/flutter-api-reference
+/api_docs/flutter-android-api-reference
+/api_docs/flutter-ios-api-reference
+
+# Miscellaneous
+*.class
+*.log
+*.pyc
+*.swp
+.DS_Store
+.atom/
+.buildlog/
+.history
+.svn/
+
+# IntelliJ related
+*.iml
+*.ipr
+*.iws
+.idea/
+
+# Sample stuff
+/example/android/app/google-services.json
+/example/android/key.properties
+/example/android/GeneratedPluginRegistrant.java
+/example/android/local.properties
+

@@ -1,3 +1,5 @@
+## If you update this file, copy the changes to .pubignore
+
 .DS_Store
 .dart_tool/
 
