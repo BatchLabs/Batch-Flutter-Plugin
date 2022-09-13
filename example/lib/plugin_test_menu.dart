@@ -5,7 +5,6 @@ import 'package:batch_flutter/batch_messaging.dart';
 import 'package:batch_flutter/batch_user.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
-import 'package:flutter/widgets.dart';
 
 class PluginTestMenu extends StatefulWidget {
   const PluginTestMenu({Key? key}) : super(key: key);

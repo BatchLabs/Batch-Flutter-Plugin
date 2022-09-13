@@ -3,7 +3,6 @@ import 'package:batch_flutter_example/batch_store/ui/inbox/inbox_tab.dart';
 import 'package:batch_flutter_example/batch_store/ui/settings/settings_tab.dart';
 import 'package:batch_flutter_example/batch_store/ui/shop/shop_tab.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter/widgets.dart';
 
 class RootTabPage extends StatefulWidget {
   RootTabPage({Key? key}) : super(key: key);

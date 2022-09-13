@@ -2,7 +2,6 @@ import 'package:batch_flutter/batch.dart';
 import 'package:batch_flutter_example/batch_store/data/model/subscriptions.dart';
 import 'package:batch_flutter_example/plugin_test_menu.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter/widgets.dart';
 import 'package:provider/provider.dart';
 
 class SettingsTab extends StatelessWidget {

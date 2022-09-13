@@ -1,6 +1,5 @@
 import 'package:batch_flutter/batch_inbox.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter/widgets.dart';
 
 typedef InboxMarkAsReadCallback = void Function();
 typedef InboxDeleteCallback = void Function();
