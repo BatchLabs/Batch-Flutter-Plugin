@@ -23,18 +23,21 @@ class BatchPush {
     return await _channel.invokeMethod('push.getLastKnownPushToken');
   }
 
-  /// Call this method to trigger the iOS popup that asks the user if they want
-  /// to allow notifications to be displayed, then get a Push token.
-  /// The default registration is made with Badge, Sound and Alert.
+  /// Call this method to trigger the iOS/Android 13 popup that asks the user if they want
+  /// to allow notifications to be displayed.
   /// You should call this at a strategic moment, like at the end of your onboarding.
   ///
-  /// Batch will automatically ask for a push token if the user replies positively.
+  ///
+  /// iOS specific: You will then be able to get a push token: Batch will
+  /// automatically ask for a push token if the user replies positively.
+  /// The default registration is made with Badge, Sound and Alert.
   void requestNotificationAuthorization() {
-    _channel.invokeMethod('push.iOS.requestPermission');
+    _channel.invokeMethod('push.requestPermission');
   }
 
   /// Call this method to ask iOS for a provisional notification authorization.
-  /// Batch will then automatically ask for a push token.
+  /// Batch will then automatically ask for a push token. This does not do anything
+  /// on Android.
   ///
   /// Provisional authorization will NOT show a popup asking for user authorization,
   /// but notifications will NOT be displayed on the lock screen, or as a banner

@@ -90,8 +90,10 @@ public class BatchBridge {
             case PUSH_DISMISS_NOTIFICATIONS:
                 dismissNotifications();
                 return Promise.resolved(null);
+            case PUSH_REQUEST_PERMISSION:
+                Batch.Push.requestNotificationPermission(activity);
+                return Promise.resolved(null);
             case PUSH_IOS_REFRESH_TOKEN:
-            case PUSH_IOS_REQUEST_PERMISSION:
             case PUSH_IOS_REQUEST_PROVISIONAL_PERMISSION:
             case PUSH_CLEAR_BADGE:
             case PUSH_IOS_SET_SHOW_FOREGROUND:

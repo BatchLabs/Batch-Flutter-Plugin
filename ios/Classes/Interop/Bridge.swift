@@ -31,7 +31,7 @@ struct Bridge {
                 case .push_iOSRefreshToken:
                     BatchPush.refreshToken()
                     return emptySuccessPromise()
-                case .push_iOSRequestPermission:
+                case .push_RequestPermission:
                     BatchPush.requestNotificationAuthorization()
                     return emptySuccessPromise()
                 case .push_iOSRequestProvisionalPermission:
