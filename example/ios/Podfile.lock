@@ -1,10 +1,10 @@
 PODS:
-  - Batch (1.19.0)
-  - batch_flutter (0.0.4):
-    - Batch (~> 1.19.0)
+  - Batch (1.19.2)
+  - batch_flutter (0.0.5):
+    - Batch (~> 1.19.2)
     - Flutter
-  - batch_flutter/Tests (0.0.4):
-    - Batch (~> 1.19.0)
+  - batch_flutter/Tests (0.0.5):
+    - Batch (~> 1.19.2)
     - Flutter
   - BatchExtension (3.0.3)
   - Flutter (1.0.0)
@@ -32,10 +32,10 @@ EXTERNAL SOURCES:
     :path: ".symlinks/plugins/shared_preferences_ios/ios"
 
 SPEC CHECKSUMS:
-  Batch: 9e55d8217609dfe8f11cd5e78ca88ebffd9e5115
-  batch_flutter: a6141ddaa9a76f204da0ea017f5d0a77ecc8009e
+  Batch: 9c0096b1149eaeee1d084c62ac60edd5d764dccd
+  batch_flutter: 963fd7712365d4cbeb4a9dcb9271a4726965d8d9
   BatchExtension: 49d5c330811e2afdd4a144a3a4917ac07b8e82f3
-  Flutter: 50d75fe2f02b26cc09d224853bb45737f8b3214a
+  Flutter: f04841e97a9d0b0a8025694d0796dd46242b2854
   shared_preferences_ios: 548a61f8053b9b8a49ac19c1ffbc8b92c50d68ad
 
 PODFILE CHECKSUM: 90949cdf177c644cf68dd6e233b49572e678953b
