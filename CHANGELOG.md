@@ -1,3 +1,15 @@
+## 1.3.0
+
+**Plugin**
+
+* Updated Batch to 1.19.2.
+  Bumping your Android project's `compileSdkVersion` to `33` might be required.
+  Xcode 13.3 required if your project uses bitcode.
+
+**Push**
+
+* Added Android implementation of the `batch.push.requestNotificationAuthorization()` API. This allows you to request for the [new notification permission introduced](https://developer.android.com/about/versions/13/changes/notification-permission) in Android 13. See the documentation for more info.
+
 ## 1.2.0
 
 **Plugin**
