@@ -1,7 +1,6 @@
 import 'package:batch_flutter_example/batch_store/data/model/article.dart';
 import 'package:batch_flutter_example/batch_store/data/model/cart.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter/widgets.dart';
 import 'package:provider/provider.dart';
 
 import 'cart_article_row_item.dart';

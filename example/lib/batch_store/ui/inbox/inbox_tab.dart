@@ -1,7 +1,6 @@
 import 'package:batch_flutter/batch_inbox.dart';
 import 'package:batch_flutter_example/batch_store/ui/inbox/inbox_notification_row_item.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter/widgets.dart';
 
 class InboxTab extends StatefulWidget {
   @override
@@ -21,7 +20,7 @@ class _InboxTabState extends State<InboxTab> {
     super.initState();
 
     // Show the refresh indicator on initial load
-    WidgetsBinding.instance?.addPostFrameCallback((Duration duration) {
+    WidgetsBinding.instance.addPostFrameCallback((Duration duration) {
       this._refreshIndicatorKey.currentState?.show();
     });
 
