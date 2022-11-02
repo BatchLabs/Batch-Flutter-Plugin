@@ -159,7 +159,7 @@ class BatchUser {
 /// in a builder-like fashion.
 /// Once you're done with your changes, call [BatchUserDataEditor.save] to persist your changes.
 abstract class BatchUserDataEditor {
-  /// Set the application langauge. Overrides Batch's automatically detected value.
+  /// Set the application language. Overrides Batch's automatically detected value.
   ///
   /// `null` deletes the override: Batch will autodetect the user language.
   BatchUserDataEditor setLanguage(String? language);
