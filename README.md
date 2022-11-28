@@ -12,9 +12,9 @@ The Batch Flutter Plugin requires Flutter 2 and Dart 2.12 or higher.
 As this plugin is built over Batch's Native SDKs, their respective Android and iOS requirements apply.
 
 # Documentation
-- [Setup guide](https://flutter-doc-preview.batchers.vercel.app/flutter/prerequisites): start your implementation here!
+- [Setup guide](https://doc.batch.com/flutter/prerequisites): start your implementation here!
 - [Help center](https://help.batch.com/en/): answers to most questions you may have during the integration
-- [API reference](https://flutter-doc-preview.batchers.vercel.app/flutter-dart-api-reference/index.html): this documents each of the classes and methods in the Batch Flutter Plugin
+- [API reference](https://doc.batch.com/flutter-dart-api-reference/index.html): this documents each of the classes and methods in the Batch Flutter Plugin
 
 You may also find this guide useful to review after integration to make sure you're ready to go live: [How can I test the integration on iOS?](https://help.batch.com/en/articles/2669866-how-can-i-test-the-integration-on-ios) / [How can I test the integration on Android?](https://help.batch.com/en/articles/2672749-how-can-i-test-the-integration-on-android)
 
