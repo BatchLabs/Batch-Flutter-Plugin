@@ -21,7 +21,7 @@ class ShopTab extends StatelessWidget {
     List<Article> allArticles = ArticlesFakeDatasource.allArticles;
     return GridView.builder(
         gridDelegate:
-            SliverGridDelegateWithMaxCrossAxisExtent(maxCrossAxisExtent: 200),
+            SliverGridDelegateWithMaxCrossAxisExtent(maxCrossAxisExtent: 300),
         itemCount: allArticles.length,
         itemBuilder: (BuildContext context, int index) {
           final Article article = allArticles[index];
