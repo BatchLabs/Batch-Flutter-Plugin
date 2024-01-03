@@ -154,6 +154,10 @@ class BatchUser {
   }
 }
 
+/// Email subscription state
+enum BatchEmailSubscriptionState { subscribed, unsubscribed }
+
+
 /// Batch's user data editor.
 /// This object is used to transactionally edit user data. Calls can be chained
 /// in a builder-like fashion.
@@ -175,6 +179,18 @@ abstract class BatchUserDataEditor {
   /// When pushing using an identifier, all installations with that identifier will get the Push,
   /// which can cause some privacy issues if done wrong.
   BatchUserDataEditor setIdentifier(String? identifier);
+
+  /// Set the user email address.
+  ///
+  /// This requires to have a custom user ID registered
+  /// or to call the `setIdentifier` method on the editor instance beforehand.
+  /// Null to erase. Addresses must be valid.
+  BatchUserDataEditor setEmail(String? email);
+
+  /// Set the user email marketing subscription state
+  ///
+  /// Use enum BatchEmailSubscriptionState.subscribed or BatchEmailSubscriptionState.unsubscribed
+  BatchUserDataEditor setEmailMarketingSubscriptionState(BatchEmailSubscriptionState state);
 
   /// Set a string attribute for a key.
   ///

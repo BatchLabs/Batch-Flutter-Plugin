@@ -8,6 +8,8 @@ extension Bridge {
         case setLanguage = "SET_LANGUAGE"
         case setRegion = "SET_REGION"
         case setIdentifier = "SET_IDENTIFIER"
+        case setEmail = "SET_EMAIL"
+        case setEmailMarketingSubscription = "SET_EMAIL_MARKETING_SUBSCRIPTION"
         case setAttribute = "SET_ATTRIBUTE"
         case removeAttribute = "REMOVE_ATTRIBUTE"
         case clearAttributes = "CLEAR_ATTRIBUTES"
@@ -54,6 +56,31 @@ extension Bridge {
                             throw BridgeError.makeBadArgumentError(argumentName: rawOperation + ".value")
                         }
                         userDataEditor.setIdentifier(value)
+                    }
+                    break;
+                case .setEmail:
+                    let rawValue = operationDescription["value"]
+                    if rawValue == nil || rawValue is NSNull {
+                        try? userDataEditor.setEmail(nil)
+                    } else {
+                        guard let value = rawValue as? String else {
+                            throw BridgeError.makeBadArgumentError(argumentName: rawOperation + ".value")
+                        }
+                        try? userDataEditor.setEmail(value)
+                    }
+                    break;
+                case .setEmailMarketingSubscription:
+                    let rawValue = operationDescription["value"]
+                    guard let value = rawValue as? String else {
+                        throw BridgeError.makeBadArgumentError(argumentName: rawOperation + ".value")
+                    }
+                    print(value)
+                    if (value == "subscribed") {
+                        userDataEditor.setEmailMarketingSubscriptionState(.subscribed)
+                    } else if (value == "unsubscribed") {
+                        userDataEditor.setEmailMarketingSubscriptionState(.unsubscribed)
+                    } else {
+                        throw BridgeError.makeBadArgumentError(argumentName: rawOperation + ".value")
                     }
                     break;
                 case .setLanguage:
