@@ -1,22 +1,23 @@
 PODS:
-  - Batch (1.19.2)
+  - Batch (1.20.0)
   - batch_flutter (0.0.5):
-    - Batch (~> 1.19.2)
+    - Batch (~> 1.20.0)
     - Flutter
   - batch_flutter/Tests (0.0.5):
-    - Batch (~> 1.19.2)
+    - Batch (~> 1.20.0)
     - Flutter
   - BatchExtension (3.0.3)
   - Flutter (1.0.0)
-  - shared_preferences_ios (0.0.1):
+  - shared_preferences_foundation (0.0.1):
     - Flutter
+    - FlutterMacOS
 
 DEPENDENCIES:
   - batch_flutter (from `.symlinks/plugins/batch_flutter/ios`)
   - batch_flutter/Tests (from `.symlinks/plugins/batch_flutter/ios`)
   - BatchExtension
   - Flutter (from `Flutter`)
-  - shared_preferences_ios (from `.symlinks/plugins/shared_preferences_ios/ios`)
+  - shared_preferences_foundation (from `.symlinks/plugins/shared_preferences_foundation/darwin`)
 
 SPEC REPOS:
   trunk:
@@ -28,15 +29,15 @@ EXTERNAL SOURCES:
     :path: ".symlinks/plugins/batch_flutter/ios"
   Flutter:
     :path: Flutter
-  shared_preferences_ios:
-    :path: ".symlinks/plugins/shared_preferences_ios/ios"
+  shared_preferences_foundation:
+    :path: ".symlinks/plugins/shared_preferences_foundation/darwin"
 
 SPEC CHECKSUMS:
-  Batch: 9c0096b1149eaeee1d084c62ac60edd5d764dccd
-  batch_flutter: 963fd7712365d4cbeb4a9dcb9271a4726965d8d9
+  Batch: a9946fcb8c9132c86e7c3e1245532e41d32ade5b
+  batch_flutter: b604625d295a26282bedad077dae607758646750
   BatchExtension: 49d5c330811e2afdd4a144a3a4917ac07b8e82f3
   Flutter: f04841e97a9d0b0a8025694d0796dd46242b2854
-  shared_preferences_ios: 548a61f8053b9b8a49ac19c1ffbc8b92c50d68ad
+  shared_preferences_foundation: 5b919d13b803cadd15ed2dc053125c68730e5126
 
 PODFILE CHECKSUM: 17700ccd4c3daf95a2f6f45716a2dd4688334329
 
