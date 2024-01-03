@@ -38,6 +38,7 @@ enum Action
     INBOX_MARK_AS_READ("inbox.markAsRead"),
     INBOX_MARK_ALL_AS_READ("inbox.markAllAsRead"),
     INBOX_MARK_AS_DELETED("inbox.markAsDeleted"),
+    INBOX_DISPLAY_LANDING("inbox.displayLandingMessage"),
 
     /// For testing
     ECHO("echo");

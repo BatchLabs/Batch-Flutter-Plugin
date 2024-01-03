@@ -134,6 +134,13 @@ abstract class BatchInboxFetcher {
   Future<void> markNotificationAsDeleted(
       BatchInboxNotificationContent notification);
 
+  /// Display the landing message attached to a BatchInboxNotificationContent.
+  /// Do nothing if no message is attached.
+  ///
+  /// Note that this method will work even if Batch is in do not disturb mode.
+  Future<void> displayNotificationLandingMessage(
+      BatchInboxNotificationContent notification);
+
   /// Call this once you're finished with this fetcher to release the native
   /// object and free all memory. Usually, this should be called
   /// in your State's dispose.
@@ -155,7 +162,7 @@ class BatchInboxNotificationContent {
   /// Internal constructor.
   /// <nodoc>
   BatchInboxNotificationContent(this.id, this.title, this.body, this.isUnread,
-      this.date, this.source, this.payload);
+      this.date, this.source, this.payload, this.hasLandingMessage);
 
   /// The unique notification identifier. Do not make assumptions about its format: it can change at any time.
   final String id;
@@ -187,6 +194,9 @@ class BatchInboxNotificationContent {
   ///
   /// Keys in "com.batch" are private and should not be relied on.
   final Map<String, String> payload;
+
+  /// Whether the notification content has a landing message attached.
+  final bool hasLandingMessage;
 }
 
 /// Describes a fetch operation result

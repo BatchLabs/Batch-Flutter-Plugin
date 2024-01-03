@@ -94,7 +94,8 @@ struct Bridge {
                      .inbox_getFetchedNotifications,
                      .inbox_markAsRead,
                      .inbox_markAllAsRead,
-                     .inbox_markAsDeleted:
+                     .inbox_markAsDeleted,
+                     .inbox_displayLandingMessage:
                     return try inboxBridge.doAction(action, parameters: parameters)
                 
                 case .echo:

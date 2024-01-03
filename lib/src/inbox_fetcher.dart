@@ -88,6 +88,17 @@ abstract class BatchInboxFetcherBaseImpl extends BatchInboxFetcher {
     await _channel.invokeMethod("inbox.markAsDeleted", parameters);
   }
 
+
+  @override
+  Future<void> displayNotificationLandingMessage(
+      BatchInboxNotificationContent notification) async {
+    _throwIfDisposed();
+
+    Map<String, dynamic> parameters = _makeBaseBridgeParameters();
+    parameters["notifID"] = notification.id;
+    await _channel.invokeMethod("inbox.displayLandingMessage", parameters);
+  }
+
   @override
   void dispose() {
     _disposed = true;
@@ -138,6 +149,7 @@ abstract class BatchInboxFetcherBaseImpl extends BatchInboxFetcher {
           DateTime.fromMillisecondsSinceEpoch(rawNotification["date"] as int)
               .toUtc();
       int rawSource = rawNotification["source"] as int;
+      bool hasLandingMessage = rawNotification["hasLandingMessage"] as bool;
       BatchInboxNotificationSource source =
           BatchInboxNotificationSource.unknown;
       switch (rawSource) {
@@ -154,7 +166,7 @@ abstract class BatchInboxFetcherBaseImpl extends BatchInboxFetcher {
       Map<String, String> payload = (rawNotification["payload"] as Map).cast();
 
       notifications.add(BatchInboxNotificationContent(
-          id, title, body, isUnread, date, source, payload));
+          id, title, body, isUnread, date, source, payload, hasLandingMessage));
     });
 
     return notifications;
