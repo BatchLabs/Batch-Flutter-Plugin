@@ -56,6 +56,8 @@ class InboxBridge {
                 return markAllAsRead(parameters);
             case INBOX_MARK_AS_DELETED:
                 return markAsDeleted(parameters);
+            case INBOX_DISPLAY_LANDING:
+                return displayLandingMessage(activity, parameters);
             default:
                 throw new BatchBridgeNotImplementedException(action.toString());
         }
@@ -221,6 +223,29 @@ class InboxBridge {
             promise.resolve(null);
         });
     }
+    private Promise<Object> displayLandingMessage(@NonNull Context context, @NonNull Map<String, Object> parameters) throws BatchBridgeException {
+        final BatchInboxFetcher fetcher = getFetcherInstance(parameters);
+
+        final String notificationID = getTypedParameter(parameters, "notifID", String.class);
+
+        return new Promise<>(promise -> {
+            List<BatchInboxNotificationContent> nativeNotifications = fetcher.getFetchedNotifications();
+            BatchInboxNotificationContent notificationToDisplay = null;
+            for (BatchInboxNotificationContent nativeNotification : nativeNotifications) {
+                if (nativeNotification.getNotificationIdentifier().equals(notificationID)) {
+                    notificationToDisplay = nativeNotification;
+                    break;
+                }
+            }
+
+            if (notificationToDisplay != null) {
+                notificationToDisplay.displayLandingMessage(context);
+            } else {
+                BatchFlutterLogger.e("Could not display the landing message: No matching native notification. This can happen if you kept a Dart instance of a notification but are trying to use it with another fetcher, or if the fetcher has been reset inbetween.");
+            }
+            promise.resolve(null);
+        });
+    }
 
     private Promise<Object> getFetchedNotifications(@NonNull Map<String, Object> parameters) throws BatchBridgeException {
         final BatchInboxFetcher fetcher = getFetcherInstance(parameters);
@@ -264,6 +289,7 @@ class InboxBridge {
             }
             serializedNotification.put("source", source);
             serializedNotification.put("payload", nativeNotification.getRawPayload());
+            serializedNotification.put("hasLandingMessage", nativeNotification.hasLandingMessage());
             serializedNotifications.add(serializedNotification);
         }
 

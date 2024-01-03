@@ -31,7 +31,8 @@ enum Action: String {
     case inbox_markAsRead = "inbox.markAsRead"
     case inbox_markAllAsRead = "inbox.markAllAsRead"
     case inbox_markAsDeleted = "inbox.markAsDeleted"
-    
+    case inbox_displayLandingMessage = "inbox.displayLandingMessage"
+
     case messaging_setDoNotDisturbEnabled = "messaging.setDoNotDisturbEnabled"
     case messaging_showPendingMessage = "messaging.showPendingMessage"
     

@@ -136,6 +136,7 @@ public class BatchBridge {
             case INBOX_MARK_AS_READ:
             case INBOX_MARK_ALL_AS_READ:
             case INBOX_MARK_AS_DELETED:
+            case INBOX_DISPLAY_LANDING:
                 return inboxBridge.doAction(action, parameters, activity);
 
             case ECHO:
