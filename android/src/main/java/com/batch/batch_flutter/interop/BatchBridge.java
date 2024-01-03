@@ -8,6 +8,7 @@ import androidx.annotation.NonNull;
 
 import com.batch.android.Batch;
 import com.batch.android.BatchAttributesFetchListener;
+import com.batch.android.BatchEmailSubscriptionState;
 import com.batch.android.BatchEventData;
 import com.batch.android.BatchMessage;
 import com.batch.android.BatchOptOutResultListener;
@@ -268,6 +269,28 @@ public class BatchBridge {
                         }
 
                         editor.setIdentifier((String) value);
+                        break;
+                    }
+                    case "SET_EMAIL": {
+                        Object value = operationDescription.get("value");
+
+                        if (value != null && !(value instanceof String)) {
+                            // Invalid value, continue. NULL is allowed though
+                            continue;
+                        }
+
+                        editor.setEmail((String) value);
+                        break;
+                    }
+                    case "SET_EMAIL_MARKETING_SUBSCRIPTION": {
+                        Object value = operationDescription.get("value");
+                        if ("subscribed".equals(value)) {
+                            editor.setEmailMarketingSubscriptionState(BatchEmailSubscriptionState.SUBSCRIBED);
+                        } else if ("unsubscribed".equals(value)) {
+                            editor.setEmailMarketingSubscriptionState(BatchEmailSubscriptionState.UNSUBSCRIBED);
+                        } else {
+                            Log.e("Batch Bridge", "Invalid SET_EMAIL_MARKETING_SUBSCRIPTION value: it can only be `subscribed` or `unsubscribed`.");
+                        }
                         break;
                     }
                     case "SET_ATTRIBUTE":

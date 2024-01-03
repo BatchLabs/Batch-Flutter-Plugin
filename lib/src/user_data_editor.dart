@@ -11,6 +11,8 @@ enum UserDataOperationKind {
   setLanguage,
   setRegion,
   setIdentifier,
+  setEmail,
+  setEmailMarketingSubscriptionState,
   setAttribute,
   removeAttribute,
   clearAttributes,
@@ -29,6 +31,10 @@ extension UserDataOperationKindBridge on UserDataOperationKind {
         return "SET_REGION";
       case UserDataOperationKind.setIdentifier:
         return "SET_IDENTIFIER";
+      case UserDataOperationKind.setEmail:
+        return "SET_EMAIL";
+      case UserDataOperationKind.setEmailMarketingSubscriptionState:
+        return "SET_EMAIL_MARKETING_SUBSCRIPTION";
       case UserDataOperationKind.setAttribute:
         return "SET_ATTRIBUTE";
       case UserDataOperationKind.removeAttribute:
@@ -123,6 +129,29 @@ class BatchUserDataEditorImpl implements BatchUserDataEditor {
       "value": identifier,
     });
 
+    return this;
+  }
+
+  @override
+  BatchUserDataEditor setEmail(String? address) {
+    if (address != null && address.length == 0) {
+      BatchLogger.public(
+          "BatchUserDataEditor - Email cannot be empty. If " +
+              "you meant to un-set the email, please use null.");
+      return this;
+    }
+
+    _enqueueOperation(UserDataOperationKind.setEmail, {
+      "value": address,
+    });
+    return this;
+  }
+
+  @override
+  BatchUserDataEditor setEmailMarketingSubscriptionState(BatchEmailSubscriptionState state) {
+    _enqueueOperation(UserDataOperationKind.setEmailMarketingSubscriptionState, {
+      "value": state.name,
+    });
     return this;
   }
 
