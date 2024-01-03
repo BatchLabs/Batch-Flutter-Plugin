@@ -91,6 +91,8 @@ class _PluginTestMenuState extends State<PluginTestMenu> {
     BatchUserDataEditor editor = BatchUser.instance.newEditor();
     editor
         .setIdentifier("test_user")
+        .setEmail("john.doe@batch.com")
+        .setEmailMarketingSubscriptionState(BatchEmailSubscriptionState.subscribed)
         .setBooleanAttribute("bootl", true)
         .setStringAttribute("string", "bar")
         .setDateTimeAttribute("date", DateTime.now())
