@@ -33,6 +33,8 @@ class InboxBridge {
                 return LightPromise<AnyObject?>.resolved(nil)
             case .inbox_markAsDeleted:
                 return try markAsDeleted(parameters: parameters)
+            case .inbox_displayLandingMessage:
+                return try displayLandingMessage(parameters: parameters)
             default:
                 // We should never end up here, unless the Bridge threw a non inbox method at us
                 return LightPromise<AnyObject?>.rejected(BridgeInternalError.notImplemented)
@@ -206,6 +208,25 @@ class InboxBridge {
             }
         }
     }
+
+    private func displayLandingMessage(parameters: BridgeParameters) throws -> LightPromise<AnyObject?> {
+        let fetcher = try getFetcher(parameters)
+        guard let notifID = parameters["notifID"] as? String else {
+            throw BridgeError.makeBadArgumentError(argumentName: "notifID")
+        }
+
+        return LightPromise<AnyObject?> { resolve, reject in
+            DispatchQueue.main.async {
+               let nativeNotification = fetcher.allFetchedNotifications.first { $0.identifier == notifID }
+                if let nativeNotification = nativeNotification {
+                    nativeNotification.displayLandingMessage()
+                } else {
+                    BatchFlutterLogger.logPublic(module: "Inbox", message: "Could not display the landing message: No matching native notification. This can happen if you kept a Dart instance of a notification but are trying to use it with another fetcher, or if the fetcher has been reset inbetween.")
+                }
+                resolve(nil);
+            }
+        }
+    }
     
     private static func serializeNotifications(_ notifications: [BatchInboxNotificationContent]) -> [NSDictionary] {
         
@@ -244,7 +265,7 @@ class InboxBridge {
                     break
             }
             serializedNotification["source"] = NSNumber(value: source)
-            
+            serializedNotification["hasLandingMessage"] = NSNumber(value: notification.hasLandingMessage)
             return serializedNotification as NSDictionary
         }
     }
