@@ -1,3 +1,23 @@
+## UPCOMING
+
+**Plugin**
+
+* Dart 2.15+ is now required.
+* Updated Batch to 1.21.0. 
+* Batch now compiles with and targets SDK 34 (Android 14). 
+* Xcode 15.1 required if your project uses bitcode.
+
+**User**
+
+* Added `setEmail(String? email)` method to `BatchUserDataEditor`. This requires to have a user identifier registered or to call the `setIdentifier` method on the editor instance beforehand.
+* Added `setEmailMarketingSubscriptionState(BatchEmailSubscriptionState state)` method to `BatchUserDataEditor`. 
+
+**Inbox**
+
+* Added `hasLandingMessage` property to `BatchInboxNotificationContent`.
+* Added `displayNotificationLandingMessage(BatchInboxNotificationContent notification)` method to `BatchInboxFetcher`.  
+
+  
 ## 1.3.0
 
 **Plugin**
