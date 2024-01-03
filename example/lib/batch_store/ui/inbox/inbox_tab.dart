@@ -72,6 +72,10 @@ class _InboxTabState extends State<InboxTab> {
     _fastRefresh();
   }
 
+  void _displayLandingMessage(BatchInboxNotificationContent notification) {
+    fetcher?.displayNotificationLandingMessage(notification);
+  }
+
   @override
   void dispose() {
     super.dispose();
@@ -99,7 +103,10 @@ class _InboxTabState extends State<InboxTab> {
                       },
                       onDelete: () {
                         _delete(notification);
-                      });
+                      },
+                      onDisplayLandingMessage: () {
+                        _displayLandingMessage(notification);
+                    });
                 },
               ),
               onRefresh: _refresh),
