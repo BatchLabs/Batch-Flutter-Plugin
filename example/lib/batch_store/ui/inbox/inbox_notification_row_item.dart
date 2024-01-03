@@ -3,16 +3,19 @@ import 'package:flutter/material.dart';
 
 typedef InboxMarkAsReadCallback = void Function();
 typedef InboxDeleteCallback = void Function();
+typedef InboxDisplayLandingCallback = void Function();
 
 class InboxNotificationRowItem extends StatelessWidget {
   const InboxNotificationRowItem(
       {required this.notification,
       required this.onMarkAsRead,
+      required this.onDisplayLandingMessage,
       required this.onDelete});
 
   final BatchInboxNotificationContent notification;
   final InboxMarkAsReadCallback onMarkAsRead;
   final InboxDeleteCallback onDelete;
+  final InboxDisplayLandingCallback onDisplayLandingMessage;
 
   static const int menuMarkAsReadItem = 1;
   static const int menuDeleteItem = 2;
@@ -51,39 +54,44 @@ class InboxNotificationRowItem extends StatelessWidget {
   Widget build(BuildContext context) {
     return Container(
       margin: const EdgeInsets.symmetric(vertical: 20, horizontal: 10),
-      child: Row(
-        children: [
-          Expanded(
-            child: Column(
-              crossAxisAlignment: CrossAxisAlignment.start,
-              children: [
-                Row(
-                  children: [
-                    Expanded(
-                      child: Text(
-                        notification.title ?? "",
-                        style: _notificationTitleStyle,
+      child: GestureDetector(
+        behavior: HitTestBehavior.opaque,
+        onTap: onDisplayLandingMessage,
+        child: Row(
+          children: [
+            Expanded(
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  Row(
+                    children: [
+                      Expanded(
+                        child: Text(
+                          notification.title ?? "",
+                          style: _notificationTitleStyle,
+                        ),
                       ),
-                    ),
-                    if (notification.isUnread)
-                      Container(
-                          height: 8,
-                          width: 8,
-                          decoration: BoxDecoration(
-                              color: Colors.blue, shape: BoxShape.circle)),
-                  ],
-                ),
-                Padding(padding: const EdgeInsets.symmetric(vertical: 6)),
-                Text(notification.body),
-              ],
+                      if (notification.isUnread)
+                        Container(
+                            height: 8,
+                            width: 8,
+                            decoration: BoxDecoration(
+                                color: Colors.blue, shape: BoxShape.circle)),
+                      if (notification.hasLandingMessage) Icon(Icons.attachment_sharp,)
+                    ],
+                  ),
+                  Padding(padding: const EdgeInsets.symmetric(vertical: 6)),
+                  Text(notification.body),
+                ],
+              ),
             ),
-          ),
-          PopupMenuButton(
-              itemBuilder: (context) {
-                return makePopupMenu(context);
-              },
-              onSelected: performPopupMenuAction),
-        ],
+            PopupMenuButton(
+                itemBuilder: (context) {
+                  return makePopupMenu(context);
+                },
+                onSelected: performPopupMenuAction),
+          ],
+        ),
       ),
     );
   }
