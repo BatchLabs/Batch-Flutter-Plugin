@@ -13,6 +13,7 @@ enum UserDataOperationKind {
   setIdentifier,
   setEmail,
   setEmailMarketingSubscriptionState,
+  setAttributionId,
   setAttribute,
   removeAttribute,
   clearAttributes,
@@ -35,6 +36,8 @@ extension UserDataOperationKindBridge on UserDataOperationKind {
         return "SET_EMAIL";
       case UserDataOperationKind.setEmailMarketingSubscriptionState:
         return "SET_EMAIL_MARKETING_SUBSCRIPTION";
+      case UserDataOperationKind.setAttributionId:
+        return "SET_ATTRIBUTION_ID";
       case UserDataOperationKind.setAttribute:
         return "SET_ATTRIBUTE";
       case UserDataOperationKind.removeAttribute:
@@ -151,6 +154,20 @@ class BatchUserDataEditorImpl implements BatchUserDataEditor {
   BatchUserDataEditor setEmailMarketingSubscriptionState(BatchEmailSubscriptionState state) {
     _enqueueOperation(UserDataOperationKind.setEmailMarketingSubscriptionState, {
       "value": state.name,
+    });
+    return this;
+  }
+
+  @override
+  BatchUserDataEditor setAttributionIdentifier(String? identifier) {
+    if (identifier != null && identifier.length == 0) {
+      BatchLogger.public(
+          "BatchUserDataEditor - Attribution identifier cannot be empty. If " +
+              "you meant to un-set the attribution identifier, please use null.");
+      return this;
+    }
+    _enqueueOperation(UserDataOperationKind.setAttributionId, {
+      "value": identifier,
     });
     return this;
   }

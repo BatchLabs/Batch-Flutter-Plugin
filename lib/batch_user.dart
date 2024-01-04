@@ -192,11 +192,18 @@ abstract class BatchUserDataEditor {
   /// Use enum BatchEmailSubscriptionState.subscribed or BatchEmailSubscriptionState.unsubscribed
   BatchUserDataEditor setEmailMarketingSubscriptionState(BatchEmailSubscriptionState state);
 
+  /// Set the user attribution identifier
+  ///
+  /// Since automatic collection of the advertising ID has been removed
+  /// from native SDKs, you can now collect it from your side and pass it to Batch.
+  /// Must be a valid IDFA or GAID. Null to erase.
+  BatchUserDataEditor setAttributionIdentifier(String? email);
+
   /// Set a string attribute for a key.
   ///
   /// Attribute's key cannot be empty. It should be made of letters, numbers or underscores (\[a-z0-9_\])
   /// and can't be longer than 30 characters.
-  /// String attribut values are non-empty strings and can't be longer than 64 characters.
+  /// String attribute values are non-empty strings and can't be longer than 64 characters.
   ///
   /// Any attribute with an invalid key or value will be ignored.
   BatchUserDataEditor setStringAttribute(String key, String value);
