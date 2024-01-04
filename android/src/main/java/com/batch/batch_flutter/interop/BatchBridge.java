@@ -293,6 +293,18 @@ public class BatchBridge {
                         }
                         break;
                     }
+                    case "SET_ATTRIBUTION_ID": {
+                        Object value = operationDescription.get("value");
+
+                        if (value != null && !(value instanceof String)) {
+                            Log.e("Batch Bridge", "Invalid SET_ATTRIBUTION_ID value: it can only be a string or null");
+                            // Invalid value, continue. NULL is allowed though
+                            continue;
+                        }
+
+                        editor.setAttributionIdentifier((String) value);
+                        break;
+                    }
                     case "SET_ATTRIBUTE":
                         String key = getTypedParameter(operationDescription, "key", String.class);
                         String type = getTypedParameter(operationDescription, "type", String.class);

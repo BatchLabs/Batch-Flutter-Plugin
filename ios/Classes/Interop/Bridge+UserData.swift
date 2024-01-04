@@ -10,6 +10,7 @@ extension Bridge {
         case setIdentifier = "SET_IDENTIFIER"
         case setEmail = "SET_EMAIL"
         case setEmailMarketingSubscription = "SET_EMAIL_MARKETING_SUBSCRIPTION"
+        case setAttributionId = "SET_ATTRIBUTION_ID"
         case setAttribute = "SET_ATTRIBUTE"
         case removeAttribute = "REMOVE_ATTRIBUTE"
         case clearAttributes = "CLEAR_ATTRIBUTES"
@@ -81,6 +82,17 @@ extension Bridge {
                         userDataEditor.setEmailMarketingSubscriptionState(.unsubscribed)
                     } else {
                         throw BridgeError.makeBadArgumentError(argumentName: rawOperation + ".value")
+                    }
+                    break;
+                case .setIdentifier:
+                    let rawValue = operationDescription["value"]
+                    if rawValue == nil || rawValue is NSNull {
+                        userDataEditor.setAttributionIdentifier(nil)
+                    } else {
+                        guard let value = rawValue as? String else {
+                            throw BridgeError.makeBadArgumentError(argumentName: rawOperation + ".value")
+                        }
+                        userDataEditor.setAttributionIdentifier(value)
                     }
                     break;
                 case .setLanguage:
