@@ -9,6 +9,7 @@
 
 **User**
 
+* Removed automatic collection of the advertising id. You need to collect it from your side and pass it to Batch via the added `setAttributionIdentifier(String? id)` method.
 * Added `setEmail(String? email)` method to `BatchUserDataEditor`. This requires to have a user identifier registered or to call the `setIdentifier` method on the editor instance beforehand.
 * Added `setEmailMarketingSubscriptionState(BatchEmailSubscriptionState state)` method to `BatchUserDataEditor`. 
 
