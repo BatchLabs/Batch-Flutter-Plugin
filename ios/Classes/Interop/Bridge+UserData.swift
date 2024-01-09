@@ -75,7 +75,6 @@ extension Bridge {
                     guard let value = rawValue as? String else {
                         throw BridgeError.makeBadArgumentError(argumentName: rawOperation + ".value")
                     }
-                    print(value)
                     if (value == "subscribed") {
                         userDataEditor.setEmailMarketingSubscriptionState(.subscribed)
                     } else if (value == "unsubscribed") {
@@ -84,7 +83,7 @@ extension Bridge {
                         throw BridgeError.makeBadArgumentError(argumentName: rawOperation + ".value")
                     }
                     break;
-                case .setIdentifier:
+                case .setAttributionId:
                     let rawValue = operationDescription["value"]
                     if rawValue == nil || rawValue is NSNull {
                         userDataEditor.setAttributionIdentifier(nil)
