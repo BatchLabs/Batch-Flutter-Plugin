@@ -4,8 +4,8 @@
 
 * Dart 2.15+ is now required.
 * Updated Batch to 1.21.0. 
-* Batch now compiles with and targets SDK 34 (Android 14). 
-* Xcode 15.1 required if your project uses bitcode.
+* Batch requires iOS 12.0 or higher.
+* Batch now compiles with and targets SDK 34 (Android 14).
 
 **User**
 
