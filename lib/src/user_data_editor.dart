@@ -159,15 +159,15 @@ class BatchUserDataEditorImpl implements BatchUserDataEditor {
   }
 
   @override
-  BatchUserDataEditor setAttributionIdentifier(String? identifier) {
-    if (identifier != null && identifier.length == 0) {
+  BatchUserDataEditor setAttributionIdentifier(String? attributionId) {
+    if (attributionId != null && attributionId.length == 0) {
       BatchLogger.public(
           "BatchUserDataEditor - Attribution identifier cannot be empty. If " +
               "you meant to un-set the attribution identifier, please use null.");
       return this;
     }
     _enqueueOperation(UserDataOperationKind.setAttributionId, {
-      "value": identifier,
+      "value": attributionId,
     });
     return this;
   }

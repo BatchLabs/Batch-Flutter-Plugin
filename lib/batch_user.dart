@@ -197,7 +197,7 @@ abstract class BatchUserDataEditor {
   /// Since automatic collection of the advertising ID has been removed
   /// from native SDKs, you can now collect it from your side and pass it to Batch.
   /// Must be a valid IDFA or GAID. Null to erase.
-  BatchUserDataEditor setAttributionIdentifier(String? email);
+  BatchUserDataEditor setAttributionIdentifier(String? attributionId);
 
   /// Set a string attribute for a key.
   ///
