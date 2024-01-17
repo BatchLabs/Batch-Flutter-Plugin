@@ -15,7 +15,6 @@ import com.batch.android.Config;
 public class BatchPluginConfiguration {
 
     private static final String APIKEY_MANIFEST_KEY = "com.batch.flutter.apikey";
-    private static final String GAID_MANIFEST_KEY = "com.batch.flutter.use_gaid";
     private static final String ADVANCED_INFO_MANIFEST_KEY = "com.batch.flutter.use_advanced_device_information";
     private static final String INITIAL_DND_STATE_MANIFEST_KEY = "com.batch.flutter.do_not_disturb_initial_state";
 
@@ -23,8 +22,6 @@ public class BatchPluginConfiguration {
 
     @Nullable
     private String apiKey;
-
-    private boolean canUseAdvertisingID = true;
 
     private boolean canUseAdvancedDeviceInformation = true;
 
@@ -42,7 +39,6 @@ public class BatchPluginConfiguration {
 
         final ManifestReader manifestReader = new ManifestReader(context);
         apiKey = manifestReader.readString(APIKEY_MANIFEST_KEY, null);
-        canUseAdvertisingID = manifestReader.readBoolean(GAID_MANIFEST_KEY, true);
         canUseAdvancedDeviceInformation = manifestReader.readBoolean(ADVANCED_INFO_MANIFEST_KEY, true);
         initialDoNotDisturbState = manifestReader.readBoolean(INITIAL_DND_STATE_MANIFEST_KEY, false);
     }
@@ -58,7 +54,6 @@ public class BatchPluginConfiguration {
         }
         Config batchConfig = new Config(apiKey);
         batchConfig.setCanUseAdvancedDeviceInformation(canUseAdvancedDeviceInformation);
-        batchConfig.setCanUseAdvertisingID(canUseAdvertisingID);
         return batchConfig;
     }
 
@@ -74,12 +69,26 @@ public class BatchPluginConfiguration {
         return this;
     }
 
+    /**
+     * Can Batch use Advertising ID
+     * Batch doesn't collects Android Advertising Identifier anymore.
+     *
+     * @deprecated This method does nothing, please stop using it.
+     * @return Always return false.
+     */
+    @Deprecated
     public boolean canUseAdvertisingID() {
-        return canUseAdvertisingID;
+        return false;
     }
 
+    /**
+     * Batch doesn't support Android Advertising Identifier anymore.
+     *
+     * @param canUseAdvertisingID This parameter does nothing.
+     * @deprecated This method does nothing, please stop using it.
+     */
+    @Deprecated
     public BatchPluginConfiguration setCanUseAdvertisingID(boolean canUseAdvertisingID) {
-        this.canUseAdvertisingID = canUseAdvertisingID;
         return this;
     }
 
