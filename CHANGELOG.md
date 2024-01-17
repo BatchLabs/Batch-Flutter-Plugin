@@ -9,7 +9,12 @@
 
 **User**
 
-* Removed automatic collection of the advertising id. You need to collect it from your side and pass it to Batch via the added `setAttributionIdentifier(String? id)` method.
+* Removed automatic collection of the advertising id:
+  * Android's Methods `setCanUseAdvertisingID` and `canUseAdvertisingID` from `BatchPluginConfiguration` are now deprecated and do nothing.
+  * Android's manifest configuration `com.batch.flutter.use_gaid` has been removed.
+  * iOS's property `canUseIDFA` from `BatchPluginConfiguration` is now deprecated and does nothing.
+  * iOS's Info.plist property `BatchFlutterCanUseIDFA` has been removed.
+  * You need to collect it from your side and pass it to Batch via the added `setAttributionIdentifier(String? id)` method.
 * Added `setEmail(String? email)` method to `BatchUserDataEditor`. This requires to have a user identifier registered or to call the `setIdentifier` method on the editor instance beforehand.
 * Added `setEmailMarketingSubscriptionState(BatchEmailSubscriptionState state)` method to `BatchUserDataEditor`. 
 
