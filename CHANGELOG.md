@@ -14,7 +14,7 @@
   * Android's manifest configuration `com.batch.flutter.use_gaid` has been removed.
   * iOS's property `canUseIDFA` from `BatchPluginConfiguration` is now deprecated and does nothing.
   * iOS's Info.plist property `BatchFlutterCanUseIDFA` has been removed.
-  * You need to collect it from your side and pass it to Batch via the added `setAttributionIdentifier(String? id)` method.
+  * You need to collect it from your side and pass it to Batch via the added `setAttributionIdentifier(String? id)` method. Batch will persist it across starts.
 * Added `setEmail(String? email)` method to `BatchUserDataEditor`. This requires to have a user identifier registered or to call the `setIdentifier` method on the editor instance beforehand.
 * Added `setEmailMarketingSubscriptionState(BatchEmailSubscriptionState state)` method to `BatchUserDataEditor`. 
 
