@@ -41,7 +41,7 @@ android {
     }
 
     dependencies {
-        api 'com.batch.android:batch-sdk:1.21.+'
+        api 'com.batch.android:batch-sdk:2.0.+'
         //noinspection GradleDynamicVersion
 
         implementation 'androidx.appcompat:appcompat:1.2.0'
