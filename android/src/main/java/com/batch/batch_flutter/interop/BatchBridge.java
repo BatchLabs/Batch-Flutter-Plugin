@@ -9,12 +9,11 @@ import androidx.annotation.NonNull;
 import com.batch.android.Batch;
 import com.batch.android.BatchAttributesFetchListener;
 import com.batch.android.BatchEmailSubscriptionState;
-import com.batch.android.BatchEventData;
 import com.batch.android.BatchMessage;
 import com.batch.android.BatchOptOutResultListener;
+import com.batch.android.BatchPushRegistration;
 import com.batch.android.BatchTagCollectionsFetchListener;
 import com.batch.android.BatchUserAttribute;
-import com.batch.android.BatchUserDataEditor;
 import com.batch.android.json.JSONObject;
 import com.batch.batch_flutter.BatchFlutterLogger;
 import com.batch.batch_flutter.Promise;
@@ -211,7 +210,8 @@ public class BatchBridge {
     }
 
     private static String getLastKnownPushToken() {
-        return Batch.Push.getLastKnownPushToken();
+        BatchPushRegistration registration = Batch.Push.getRegistration();
+        return registration != null ? registration.getToken() : null;
     }
 
     private static void dismissNotifications() {
