@@ -58,7 +58,7 @@ class SettingsTab extends StatelessWidget {
         padding: EdgeInsets.fromLTRB(16, 20, 20, 8),
         child: Text(
           text,
-          style: Theme.of(context).textTheme.subtitle2,
+          style: Theme.of(context).textTheme.titleSmall,
         ));
   }
 
