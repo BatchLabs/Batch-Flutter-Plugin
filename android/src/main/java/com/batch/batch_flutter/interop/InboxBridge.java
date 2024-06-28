@@ -18,8 +18,8 @@ import java.util.Map;
 import java.util.UUID;
 import java.util.concurrent.ConcurrentHashMap;
 
-import static com.batch.batch_flutter.interop.BatchBridge.getOptionalTypedParameter;
-import static com.batch.batch_flutter.interop.BatchBridge.getTypedParameter;
+import static com.batch.batch_flutter.interop.BatchBridgeUtils.getOptionalTypedParameter;
+import static com.batch.batch_flutter.interop.BatchBridgeUtils.getTypedParameter;
 
 /**
  * The InboxBridge's job is to retain {@link com.batch.android.BatchInboxFetcher} instances

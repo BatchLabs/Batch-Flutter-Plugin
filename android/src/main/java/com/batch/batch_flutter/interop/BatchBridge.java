@@ -1,5 +1,8 @@
 package com.batch.batch_flutter.interop;
 
+import static com.batch.batch_flutter.interop.BatchBridgeUtils.convertSerializedEventDataToEventAttributes;
+import static com.batch.batch_flutter.interop.BatchBridgeUtils.getTypedParameter;
+
 import android.app.Activity;
 import android.location.Location;
 import android.util.Log;
@@ -9,12 +12,13 @@ import androidx.annotation.NonNull;
 import com.batch.android.Batch;
 import com.batch.android.BatchAttributesFetchListener;
 import com.batch.android.BatchEmailSubscriptionState;
+import com.batch.android.BatchEventAttributes;
 import com.batch.android.BatchMessage;
 import com.batch.android.BatchOptOutResultListener;
+import com.batch.android.BatchProfileAttributeEditor;
 import com.batch.android.BatchPushRegistration;
 import com.batch.android.BatchTagCollectionsFetchListener;
 import com.batch.android.BatchUserAttribute;
-import com.batch.android.json.JSONObject;
 import com.batch.batch_flutter.BatchFlutterLogger;
 import com.batch.batch_flutter.Promise;
 
@@ -59,7 +63,7 @@ public class BatchBridge {
 
     @NonNull
     private static Promise<Object> doAction(String actionName, Map<String, Object> parameters, Activity activity) throws BatchBridgeException, BatchBridgeNotImplementedException {
-        if (actionName == null || actionName.length() == 0) {
+        if (actionName == null || actionName.isEmpty()) {
             throw new BatchBridgeException(BatchBridgePublicErrorCode.INTERNAL_BRIDGE_ERROR, "Invalid parameter : Empty or null action");
         }
 
@@ -111,13 +115,9 @@ public class BatchBridge {
                 userDataEdit(parameters);
                 return Promise.resolved(null);
             case USER_TRACK_EVENT:
-                trackEvent(parameters);
-                return Promise.resolved(null);
+                return trackEvent(parameters);
             case USER_TRACK_LOCATION:
                 trackLocation(parameters);
-                return Promise.resolved(null);
-            case USER_TRACK_TRANSACTION:
-                trackTransaction(parameters);
                 return Promise.resolved(null);
             case USER_FETCH_ATTRIBUTES:
                 return userFetchAttributes(activity);
@@ -146,39 +146,7 @@ public class BatchBridge {
         }
     }
 
-    @SuppressWarnings("unchecked")
-    static <T> T getTypedParameter(Map<String, Object> parameters, String parameterName, Class<T> parameterClass) throws BatchBridgeException {
-        Object result = null;
 
-        if (parameters != null) {
-            result = parameters.get(parameterName);
-        }
-
-        if (result == null) {
-            throw new BatchBridgeException(BatchBridgePublicErrorCode.BAD_BRIDGE_ARGUMENT_TYPE, "Required parameter '" + parameterName + "' missing");
-        }
-
-        if (!parameterClass.isInstance(result)) {
-            throw new BatchBridgeException(BatchBridgePublicErrorCode.BAD_BRIDGE_ARGUMENT_TYPE, "Required parameter '" + parameterName + "' of wrong type");
-        }
-
-        return (T) result;
-    }
-
-    @SuppressWarnings("unchecked")
-    static <T> T getOptionalTypedParameter(Map<String, Object> parameters, String parameterName, Class<T> parameterClass, T fallback) {
-        Object result = null;
-
-        if (parameters != null) {
-            result = parameters.get(parameterName);
-        }
-
-        if (result == null || !parameterClass.isInstance(result)) {
-            return fallback;
-        }
-
-        return (T) result;
-    }
 
     private static void optIn(Activity activity) {
         Batch.optIn(activity);
@@ -220,16 +188,15 @@ public class BatchBridge {
 
 //region User Data
 
+    @SuppressWarnings({"unchecked", "ConstantConditions"})
     private static void userDataEdit(Map<String, Object> parameters) throws BatchBridgeException {
         try {
-            //noinspection unchecked
             List<Map<String, Object>> operations = getTypedParameter(parameters, "operations", List.class);
-
             if (operations == null) {
                 return;
             }
 
-            BatchUserDataEditor editor = Batch.User.editor();
+            BatchProfileAttributeEditor editor = Batch.Profile.editor();
 
             for (Map<String, Object> operationDescription : operations) {
                 String operationName = getTypedParameter(operationDescription, "operation", String.class);
@@ -259,19 +226,7 @@ public class BatchBridge {
                         editor.setRegion((String) value);
                         break;
                     }
-                    case "SET_IDENTIFIER": {
-                        Object value = operationDescription.get("value");
-
-                        if (value != null && !(value instanceof String)) {
-                            Log.e("Batch Bridge", "Invalid SET_IDENTIFIER value: it can only be a string or null");
-                            // Invalid value, continue. NULL is allowed though
-                            continue;
-                        }
-
-                        editor.setIdentifier((String) value);
-                        break;
-                    }
-                    case "SET_EMAIL": {
+                    case "SET_EMAIL_ADDRESS": {
                         Object value = operationDescription.get("value");
 
                         if (value != null && !(value instanceof String)) {
@@ -279,33 +234,21 @@ public class BatchBridge {
                             continue;
                         }
 
-                        editor.setEmail((String) value);
+                        editor.setEmailAddress((String) value);
                         break;
                     }
                     case "SET_EMAIL_MARKETING_SUBSCRIPTION": {
                         Object value = operationDescription.get("value");
                         if ("subscribed".equals(value)) {
-                            editor.setEmailMarketingSubscriptionState(BatchEmailSubscriptionState.SUBSCRIBED);
+                            editor.setEmailMarketingSubscription(BatchEmailSubscriptionState.SUBSCRIBED);
                         } else if ("unsubscribed".equals(value)) {
-                            editor.setEmailMarketingSubscriptionState(BatchEmailSubscriptionState.UNSUBSCRIBED);
+                            editor.setEmailMarketingSubscription(BatchEmailSubscriptionState.UNSUBSCRIBED);
                         } else {
                             Log.e("Batch Bridge", "Invalid SET_EMAIL_MARKETING_SUBSCRIPTION value: it can only be `subscribed` or `unsubscribed`.");
                         }
                         break;
                     }
-                    case "SET_ATTRIBUTION_ID": {
-                        Object value = operationDescription.get("value");
-
-                        if (value != null && !(value instanceof String)) {
-                            Log.e("Batch Bridge", "Invalid SET_ATTRIBUTION_ID value: it can only be a string or null");
-                            // Invalid value, continue. NULL is allowed though
-                            continue;
-                        }
-
-                        editor.setAttributionIdentifier((String) value);
-                        break;
-                    }
-                    case "SET_ATTRIBUTE":
+                    case "SET_ATTRIBUTE": {
                         String key = getTypedParameter(operationDescription, "key", String.class);
                         String type = getTypedParameter(operationDescription, "type", String.class);
 
@@ -365,130 +308,73 @@ public class BatchBridge {
                                 }
                                 break;
                             }
+                            case "array": {
+                                List<String> value = new ArrayList<String>(getTypedParameter(operationDescription, "value", ArrayList.class));
+                                if (value != null) {
+                                    editor.setAttribute(key, value);
+                                }
+                                break;
+                            }
                         }
                         break;
-                    case "REMOVE_ATTRIBUTE":
-                        editor.removeAttribute(getTypedParameter(operationDescription, "key", String.class));
-                        break;
-                    case "CLEAR_ATTRIBUTES":
-                        editor.clearAttributes();
-                        break;
-                    case "ADD_TAG": {
-                        String tag = getTypedParameter(operationDescription, "tag", String.class);
-                        String collection = getTypedParameter(operationDescription, "collection", String.class);
-
-                        editor.addTag(collection, tag);
+                    }
+                    case "REMOVE_ATTRIBUTE": {
+                        String key = getTypedParameter(operationDescription, "key", String.class);
+                        editor.removeAttribute(key);
                         break;
                     }
-                    case "REMOVE_TAG": {
-                        String tag = getTypedParameter(operationDescription, "tag", String.class);
-                        String collection = getTypedParameter(operationDescription, "collection", String.class);
-
-                        editor.removeTag(collection, tag);
+                    case "ADD_TO_ARRAY": {
+                        String key = getTypedParameter(operationDescription, "key", String.class);
+                        String value = getTypedParameter(operationDescription, "value", String.class);
+                        editor.addToArray(key, value);
                         break;
                     }
-                    case "CLEAR_TAGS":
-                        editor.clearTags();
+                    case "REMOVE_FROM_ARRAY": {
+                        String key = getTypedParameter(operationDescription, "key", String.class);
+                        String value = getTypedParameter(operationDescription, "value", String.class);
+                        editor.removeFromArray(key, value);
                         break;
-                    case "CLEAR_TAG_COLLECTION":
-                        editor.clearTagCollection(getTypedParameter(operationDescription, "collection", String.class));
-                        break;
+                    }
                 }
             }
-
             editor.save();
         } catch (ClassCastException e) {
             throw new BatchBridgeException(BatchBridgePublicErrorCode.INTERNAL_BRIDGE_ERROR, "Error while decoding user data operations ", null, e);
         }
     }
 
-    private static void trackEvent(Map<String, Object> parameters) throws BatchBridgeException {
-        String name = getTypedParameter(parameters, "name", String.class);
-
-        String label = null;
-        try {
-            label = getTypedParameter(parameters, "label", String.class);
-        } catch (BatchBridgeException e) {
-            // The parameter is optional, disregard the exception
-        }
-
-        Map data = null;
-        try {
-            data = getTypedParameter(parameters, "event_data", Map.class);
-        } catch (BatchBridgeException e) {
-            // The parameter is optional, disregard the exception
-        }
-
-        BatchEventData batchEventData = null;
-
-        if (data != null) {
-            batchEventData = new BatchEventData();
-            List tags = getTypedParameter(data, "tags", List.class);
-            Map<String, Object> attributes = getTypedParameter(data, "attributes", Map.class);
-
-            for (Object tag : tags) {
-                if (tag instanceof String) {
-                    batchEventData.addTag((String) tag);
-                }
+    private static Promise<Object> trackEvent(Map<String, Object> parameters) {
+        return new Promise<>(promise -> {
+            String name = null;
+            try {
+                name = getTypedParameter(parameters, "name", String.class);
+            } catch (BatchBridgeException e) {
+                promise.reject(new BatchBridgeException(BatchBridgePublicErrorCode.BAD_BRIDGE_ARGUMENT_TYPE, "Missing event name parameter."));
+                return;
             }
-
-            for (Map.Entry<String, Object> attributeEntry : attributes.entrySet()) {
-                Object entryKey = attributeEntry.getKey();
-                Object entryValue = attributeEntry.getValue();
-                if (!(entryKey instanceof String)) {
-                    continue;
-                }
-                if (!(entryValue instanceof Map)) {
-                    continue;
-                }
-                String entryStringKey = (String) entryKey;
-                Map<String, Object> entryMapValue = (Map<String, Object>) entryValue;
-                String type = getTypedParameter(entryMapValue, "type", String.class);
-
-                if ("s".equals(type)) {
-                    batchEventData.put(entryStringKey, getTypedParameter(entryMapValue, "value", String.class));
-                } else if ("b".equals(type)) {
-                    batchEventData.put(entryStringKey, getTypedParameter(entryMapValue, "value", Boolean.class));
-                } else if ("i".equals(type)) {
-                    batchEventData.put(entryStringKey, getTypedParameter(entryMapValue, "value", Number.class).longValue());
-                } else if ("f".equals(type)) {
-                    batchEventData.put(entryStringKey, getTypedParameter(entryMapValue, "value", Number.class).doubleValue());
-                } else if ("d".equals(type)) {
-                    long timestamp = getTypedParameter(entryMapValue, "value", Number.class).longValue();
-                    batchEventData.put(entryStringKey, new Date(timestamp));
-                } else if ("u".equals(type)) {
-                    String rawURI = getTypedParameter(entryMapValue, "value", String.class);
-                    try {
-                        batchEventData.put(entryStringKey, new URI(rawURI));
-                    } catch (URISyntaxException e) {
-                        throw new BatchBridgeException(BatchBridgePublicErrorCode.INTERNAL_BRIDGE_ERROR, "Bad URL event data syntax", null, e);
+            Map<String, Object>  data = null;
+            try {
+                data = getTypedParameter(parameters, "event_data", Map.class);
+            } catch (BatchBridgeException e) {
+                // Event data are optionals, disregard the exception
+            }
+            if (data != null) {
+                try {
+                    BatchEventAttributes batchEventAttributes = convertSerializedEventDataToEventAttributes(data);
+                    List<String> errors = batchEventAttributes.validateEventAttributes();
+                    if (errors.isEmpty()) {
+                        Batch.Profile.trackEvent(name, batchEventAttributes);
+                        promise.resolve(null);
+                    } else {
+                        promise.reject(new BatchBridgeException(BatchBridgePublicErrorCode.BAD_BRIDGE_ARGUMENT_TYPE, errors.toString()));
                     }
-                } else {
-                    throw new BatchBridgeException(BatchBridgePublicErrorCode.INTERNAL_BRIDGE_ERROR, "Unknown event_data.attributes type");
+                } catch (BatchBridgeException e) {
+                    promise.reject(e);
                 }
+            } else {
+                Batch.Profile.trackEvent(name, null);
             }
-        }
-
-        Batch.User.trackEvent(name, label, batchEventData);
-    }
-
-    private static void trackTransaction(Map<String, Object> parameters) throws BatchBridgeException {
-        double amount = getTypedParameter(parameters, "amount", Number.class).doubleValue();
-
-        Map data = null;
-        try {
-            data = getTypedParameter(parameters, "data", Map.class);
-        } catch (BatchBridgeException e) {
-            // The parameter is optional, disregard the exception
-        }
-
-        JSONObject jsonData = null;
-
-        if (data != null) {
-            jsonData = new JSONObject(data);
-        }
-
-        Batch.User.trackTransaction(amount, jsonData);
+        });
     }
 
     private static void trackLocation(Map<String, Object> parameters) throws BatchBridgeException {
@@ -504,7 +390,7 @@ public class BatchBridge {
 
         Number date = null;
         try {
-            Number rawDate = getTypedParameter(parameters, "date", Number.class);
+            date = getTypedParameter(parameters, "date", Number.class);
         } catch (BatchBridgeException e) {
             // The parameter is optional, disregard the exception
         }
@@ -521,7 +407,7 @@ public class BatchBridge {
             location.setTime(date.longValue());
         }
 
-        Batch.User.trackLocation(location);
+        Batch.Profile.trackLocation(location);
     }
 
     private static Promise<Object> userFetchAttributes(Activity activity) {

@@ -6,7 +6,6 @@ import android.text.TextUtils;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 
-import com.batch.android.Config;
 
 /**
  * Manages Batch configuration for the flutter plugin.
@@ -42,21 +41,6 @@ public class BatchPluginConfiguration {
         canUseAdvancedDeviceInformation = manifestReader.readBoolean(ADVANCED_INFO_MANIFEST_KEY, true);
         initialDoNotDisturbState = manifestReader.readBoolean(INITIAL_DND_STATE_MANIFEST_KEY, false);
     }
-
-    boolean hasAPIKey() {
-        return !TextUtils.isEmpty(apiKey);
-    }
-
-    @Nullable
-    Config makeBatchConfig() {
-        if (!hasAPIKey()) {
-            return null;
-        }
-        Config batchConfig = new Config(apiKey);
-        batchConfig.setCanUseAdvancedDeviceInformation(canUseAdvancedDeviceInformation);
-        return batchConfig;
-    }
-
     //region Public API
 
     @Nullable

@@ -10,8 +10,6 @@ import androidx.annotation.VisibleForTesting;
 import androidx.core.content.ContextCompat;
 
 import com.batch.android.Batch;
-import com.batch.android.BatchMessage;
-import com.batch.android.Config;
 import com.batch.batch_flutter.interop.BatchBridge;
 import com.batch.batch_flutter.interop.BatchBridgeException;
 import com.batch.batch_flutter.interop.BatchBridgeNotImplementedException;
@@ -217,7 +215,7 @@ public class BatchFlutterPlugin implements FlutterPlugin, MethodCallHandler, Act
      * This MUST be called in an {@link android.app.Application} subclass' {@link Application#onCreate()}.
      * <p>
      * Once setup success fully, the configuration cannot be changed anymore
-     * as this calls {@link com.batch.android.Batch#setConfig(Config);}
+     * as this calls {@link com.batch.android.Batch#start(String)}
      * <p>
      * Note: If setup has never been called, or if Batch wasn't provided an APIKey in the manifest or
      * using {@link BatchFlutterPlugin#getConfiguration(Context)} and {@link BatchPluginConfiguration#setAPIKey(String)},
@@ -233,10 +231,8 @@ public class BatchFlutterPlugin implements FlutterPlugin, MethodCallHandler, Act
         }
 
         BatchPluginConfiguration pluginConfiguration = getConfiguration(context);
-        Config batchConfig = pluginConfiguration.makeBatchConfig();
-
-        if (batchConfig != null) {
-            Batch.setConfig(batchConfig);
+        if (pluginConfiguration.getApiKey() != null) {
+            Batch.start(pluginConfiguration.getApiKey());
             Batch.Messaging.setDoNotDisturbEnabled(pluginConfiguration.getInitialDoNotDisturbState());
             didCallSetup = true;
             return true;

@@ -19,7 +19,7 @@ class TypedAttribute {
 /// A typed attribute's type
 /// <nodoc>
 @protected
-enum TypedAttributeType { string, boolean, integer, float, date, url }
+enum TypedAttributeType { string, boolean, integer, float, date, url, object, string_array, object_array }
 
 extension TypedAttributeTypeBridge on TypedAttributeType {
   String toBridgeRepresentation() {
@@ -36,6 +36,12 @@ extension TypedAttributeTypeBridge on TypedAttributeType {
         return "d";
       case TypedAttributeType.url:
         return "u";
+      case TypedAttributeType.object:
+        return "o";
+      case TypedAttributeType.string_array:
+        return "sa";
+      case TypedAttributeType.object_array:
+        return "oa";
     }
   }
 }
