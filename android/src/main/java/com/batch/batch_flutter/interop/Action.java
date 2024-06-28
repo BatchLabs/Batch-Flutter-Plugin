@@ -19,7 +19,6 @@ enum Action
     PUSH_DISMISS_NOTIFICATIONS("push.dismissNotifications"),
 	USER_EDIT("user.edit"),
 	USER_TRACK_EVENT("user.track.event"),
-	USER_TRACK_TRANSACTION("user.track.transaction"),
     USER_TRACK_LOCATION("user.track.location"),
     USER_GET_IDENTIFIER("user.getIdentifier"),
     USER_GET_LANGUAGE("user.getLanguage"),

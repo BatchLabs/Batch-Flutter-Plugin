@@ -7,7 +7,7 @@ import 'package:flutter/services.dart';
 import 'package:flutter/widgets.dart';
 
 /// Provides user related functionality, such as custom data and events.
-/// Do not instanciate this: use the `instance` static property.
+/// Do not instantiate this: use the `instance` static property.
 class BatchUser {
   static const MethodChannel _channel =
       const MethodChannel('batch_flutter.user');
@@ -38,7 +38,7 @@ class BatchUser {
     return await _channel.invokeMethod('user.getInstallationID');
   }
 
-  /// Instanciate a new [BatchUserDataEditor] to edit custom data attributes and tags.
+  /// Instantiate a new [BatchUserDataEditor] to edit custom data attributes and tags.
   ///
   /// See [BatchUserDataEditor]'s documentation for more info.
   BatchUserDataEditor newEditor() {
@@ -50,22 +50,16 @@ class BatchUser {
   /// The event name is required and must not be empty. It should be composed of letters,
   /// numbers or underscores (\[a-z0-9_\]) and can’t be longer than 30 characters.
   ///
-  /// The event label is an optional string, which must not be empty or longer
-  /// than 200 characters. If the label is too long, it will be ignored.
-  ///
   /// The event data is an optional object holding attributes and tags related
   /// to the event. See [BatchEventData]'s documentation for more info.
-  void trackEvent({required String name, String? label, BatchEventData? data}) {
-    Map eventArgs = {"name": name, "label": label};
+  void trackEvent({required String name, BatchEventData? data}) {
+    Map eventArgs = {"name": name};
     if (data != null) {
       eventArgs["event_data"] = data.internalGetBridgeRepresentation();
     }
-    _channel.invokeMethod("user.track.event", eventArgs);
-  }
-
-  /// Track a transaction.
-  void trackTransaction(double amount) {
-    _channel.invokeMethod("user.track.transaction", {"amount": amount});
+    _channel.invokeMethod("user.track.event", eventArgs).catchError((error) => {
+      BatchLogger.public("Tracking event '"+ name +"' failed with error: " + error.toString())
+    });
   }
 
   /// Track a geolocation update.
@@ -173,31 +167,17 @@ abstract class BatchUserDataEditor {
   /// `null` deletes the override: Batch will autodetect the user region.
   BatchUserDataEditor setRegion(String? region);
 
-  /// Set the custom user identifier.
-  ///
-  /// Be careful: you should make sure the identifier uniquely identifies a user.
-  /// When pushing using an identifier, all installations with that identifier will get the Push,
-  /// which can cause some privacy issues if done wrong.
-  BatchUserDataEditor setIdentifier(String? identifier);
-
   /// Set the user email address.
   ///
   /// This requires to have a custom user ID registered
-  /// or to call the `setIdentifier` method on the editor instance beforehand.
+  /// or to call the `identify` method beforehand.
   /// Null to erase. Addresses must be valid.
-  BatchUserDataEditor setEmail(String? email);
+  BatchUserDataEditor setEmailAddress(String? email);
 
   /// Set the user email marketing subscription state
   ///
   /// Use enum BatchEmailSubscriptionState.subscribed or BatchEmailSubscriptionState.unsubscribed
-  BatchUserDataEditor setEmailMarketingSubscriptionState(BatchEmailSubscriptionState state);
-
-  /// Set the user attribution identifier
-  ///
-  /// Since automatic collection of the advertising ID has been removed
-  /// from native SDKs, you can now collect it from your side and pass it to Batch.
-  /// Must be a valid IDFA or GAID. Null to erase.
-  BatchUserDataEditor setAttributionIdentifier(String? attributionId);
+  BatchUserDataEditor setEmailMarketingSubscription(BatchEmailSubscriptionState state);
 
   /// Set a string attribute for a key.
   ///
@@ -254,42 +234,40 @@ abstract class BatchUserDataEditor {
   /// Any attribute with an invalid key or value will be ignored.
   BatchUserDataEditor setDateTimeAttribute(String key, DateTime value);
 
+  /// Set a String List attribute for a key.
+  ///
+  /// Attribute's key cannot be empty. It should be made of letters, numbers or underscores (\[a-z0-9_\])
+  /// and can't be longer than 30 characters.
+  ///
+  /// String List attribute values cannot have more than 25 items.
+  /// Individual items cannot be longer than 64 characters. For better results, you should make them upper/lowercase and trim the whitespaces.
+  ///
+  /// Any attribute with an invalid key or value will be ignored.
+  BatchUserDataEditor setStringListAttribute(String key, List<String> value);
+
   /// Delete an attribute using its key.
   ///
   /// If the attribute doesn't exist, this method is silently ignored.
   BatchUserDataEditor removeAttribute(String key);
 
-  /// Delete all attributes.
-  BatchUserDataEditor clearAttributes();
-
-  /// Add a tag to a collection.
+  /// Add a string value in the specified array attribute.
+  /// If empty, the array will automatically be created.
   ///
-  /// If the collection doesn't exist, it will be created.
-  ///
-  /// The tag collection name must be a string of letters, numbers or
+  /// The key must be a string of letters, numbers or
   /// underscores (\[a-z0-9_\]) and can't be longer than 30 characters.
   ///
-  /// The tag cannot be empty or longer than 64 characters.
-  BatchUserDataEditor addTag(String collection, String tag);
+  /// The value cannot be empty or longer than 64 characters.
+  BatchUserDataEditor addToArray(String key, String tag);
 
-  /// Delete a tag from a collection.
+  /// Delete a string value from the specified array attribute.
   ///
-  /// If the collection is empty, it will be deleted.
+  /// If the array is empty, it will be deleted.
   ///
-  /// The tag collection name must be a string of letters, numbers or
+  /// The key must be a string of letters, numbers or
   /// underscores (\[a-z0-9_\]) and can't be longer than 30 characters.
   ///
-  /// If the tag doesn't exist, this method will silently do nothing.
-  BatchUserDataEditor removeTag(String collection, String tag);
-
-  /// Removes all tags from a collection.
-  ///
-  /// The tag collection name must be a string of letters, numbers or
-  /// underscores (\[a-z0-9_\]) and can't be longer than 30 characters.
-  BatchUserDataEditor clearTagCollection(String collection);
-
-  /// Removes all tags.
-  BatchUserDataEditor clearTags();
+  /// If the specified array doesn't exist, this method will silently do nothing.
+  BatchUserDataEditor removeFromArray(String collection, String tag);
 
   /// Save all of the pending changes. This action cannot be undone.
   void save();
@@ -305,29 +283,9 @@ abstract class BatchUserDataEditor {
 /// Keys should be strings composed of letters, numbers or underscores
 /// (\[a-z0-9_\]) and can't be longer than 30 characters.
 class BatchEventData {
-  static final RegExp _attributeKeyRegexp = RegExp("^[a-zA-Z0-9_]{1,30}\$");
-  static const int _maxStringLength = 64;
 
-  Set<String> _tags = new HashSet();
   Map<String, TypedAttribute> _attributes = new HashMap();
 
-  /// Add a tag.
-  /// Collections are not supported.
-  ///
-  /// Tags can't be longer than 64 characters, and can't be empty.
-  /// For better results, you should trim/lowercase your strings,
-  /// and use slugs when possible.
-  BatchEventData addTag(String tag) {
-    if (tag.length == 0 || tag.length > _maxStringLength) {
-      BatchLogger.public(
-          "BatchEventData - Invalid tag. Tags are not allowed to " +
-              "be longer than 64 characters (bytes) and must not be empty. " +
-              "Ignoring tag '$tag'.");
-      return this;
-    }
-    _tags.add(tag.toLowerCase());
-    return this;
-  }
 
   /// Add a string attribute for the given key.
   ///
@@ -338,10 +296,7 @@ class BatchEventData {
   /// For better results, you should trim/lowercase your strings
   /// and use slugs when possible.
   BatchEventData putString(String key, String value) {
-    if (_validateAttributeKey(key)) {
-      _attributes[key.toLowerCase()] =
-          TypedAttribute(type: TypedAttributeType.string, value: value);
-    }
+    _attributes[key.toLowerCase()] = TypedAttribute(type: TypedAttributeType.string, value: value);
     return this;
   }
 
@@ -353,10 +308,7 @@ class BatchEventData {
   /// While the value is an Uri instance, it must be a valid URL and
   /// not be longer than 2048 characters.
   BatchEventData putUrl(String key, Uri value) {
-    if (_validateAttributeKey(key)) {
-      _attributes[key.toLowerCase()] =
-          TypedAttribute(type: TypedAttributeType.url, value: value.toString());
-    }
+    _attributes[key.toLowerCase()] = TypedAttribute(type: TypedAttributeType.url, value: value.toString());
     return this;
   }
 
@@ -365,10 +317,7 @@ class BatchEventData {
   /// The attribute key should be a string composed of letters, numbers
   /// or underscores (\[a-z0-9_\]) and can't be longer than 30 characters.
   BatchEventData putBoolean(String key, bool value) {
-    if (_validateAttributeKey(key)) {
-      _attributes[key.toLowerCase()] =
-          TypedAttribute(type: TypedAttributeType.boolean, value: value);
-    }
+    _attributes[key.toLowerCase()] = TypedAttribute(type: TypedAttributeType.boolean, value: value);
     return this;
   }
 
@@ -377,10 +326,7 @@ class BatchEventData {
   /// The attribute key should be a string composed of letters, numbers
   /// or underscores (\[a-z0-9_\]) and can't be longer than 30 characters.
   BatchEventData putInteger(String key, int value) {
-    if (_validateAttributeKey(key)) {
-      _attributes[key.toLowerCase()] =
-          TypedAttribute(type: TypedAttributeType.integer, value: value);
-    }
+    _attributes[key.toLowerCase()] = TypedAttribute(type: TypedAttributeType.integer, value: value);
     return this;
   }
 
@@ -389,10 +335,7 @@ class BatchEventData {
   /// The attribute key should be a string composed of letters, numbers
   /// or underscores (\[a-z0-9_\]) and can't be longer than 30 characters.
   BatchEventData putDouble(String key, double value) {
-    if (_validateAttributeKey(key)) {
-      _attributes[key.toLowerCase()] =
-          TypedAttribute(type: TypedAttributeType.float, value: value);
-    }
+    _attributes[key.toLowerCase()] = TypedAttribute(type: TypedAttributeType.float, value: value);
     return this;
   }
 
@@ -404,11 +347,40 @@ class BatchEventData {
   /// Date attribute values are sent in UTC to Batch. If you notice that the reported
   /// time may be off, try making an UTC DateTime for consistency.
   BatchEventData putDate(String key, DateTime value) {
-    if (_validateAttributeKey(key)) {
-      _attributes[key.toLowerCase()] = TypedAttribute(
-          type: TypedAttributeType.date,
-          value: value.toUtc().millisecondsSinceEpoch);
-    }
+    _attributes[key.toLowerCase()] = TypedAttribute(
+        type: TypedAttributeType.date,
+        value: value.toUtc().millisecondsSinceEpoch);
+    return this;
+  }
+
+  /// Add a BatchEventData attribute for the given key.
+  ///
+  /// The attribute key should be a string composed of letters, numbers
+  /// or underscores (\[a-z0-9_\]) and can't be longer than 30 characters.
+  BatchEventData putObject(String key, BatchEventData value) {
+    _attributes[key.toLowerCase()] = TypedAttribute(type: TypedAttributeType.object, value: value.internalGetBridgeRepresentation());
+    return this;
+  }
+
+  /// Add an Object List attribute for the given key.
+  ///
+  /// The attribute key should be a string composed of letters, numbers
+  /// or underscores (\[a-z0-9_\]) and can't be longer than 30 characters.
+  BatchEventData putObjectList(String key, List<BatchEventData> value) {
+    List array = [];
+    value.forEach((element) {
+      array.add(element.internalGetBridgeRepresentation());
+    });
+    _attributes[key.toLowerCase()] = TypedAttribute(type: TypedAttributeType.object_array, value: array);
+    return this;
+  }
+
+  /// Add a String List attribute for the given key.
+  ///
+  /// The attribute key should be a string composed of letters, numbers
+  /// or underscores (\[a-z0-9_\]) and can't be longer than 30 characters.
+  BatchEventData putStringList(String key, List<String> value) {
+    _attributes[key.toLowerCase()] = TypedAttribute(type: TypedAttributeType.string_array, value: value);
     return this;
   }
 
@@ -417,23 +389,7 @@ class BatchEventData {
   /// <nodoc>
   @protected
   Map internalGetBridgeRepresentation() {
-    return {
-      "attributes": _attributes
-          .map((key, value) => MapEntry(key, value.toBridgeRepresentation())),
-      "tags": _tags.toList()
-    };
-  }
-
-  bool _validateAttributeKey(String key) {
-    if (!_attributeKeyRegexp.hasMatch(key)) {
-      BatchLogger.public(
-          "BatchEventData - Invalid attribute key. Please make sure that " +
-              "the key is made of letters, underscores and numbers only " +
-              "(a-zA-Z0-9_). It also can't be longer than 30 characters. " +
-              "Ignoring attribute '$key'.");
-      return false;
-    }
-    return true;
+    return _attributes.map((key, value) => MapEntry(key, value.toBridgeRepresentation()));
   }
 }
 

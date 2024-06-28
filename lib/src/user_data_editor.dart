@@ -10,17 +10,12 @@ import 'batch_logger.dart';
 enum UserDataOperationKind {
   setLanguage,
   setRegion,
-  setIdentifier,
-  setEmail,
-  setEmailMarketingSubscriptionState,
-  setAttributionId,
+  setEmailAddress,
+  setEmailMarketingSubscription,
   setAttribute,
   removeAttribute,
-  clearAttributes,
-  addTag,
-  removeTag,
-  clearTags,
-  clearTagCollection
+  addToArray,
+  removeFromArray,
 }
 
 extension UserDataOperationKindBridge on UserDataOperationKind {
@@ -30,28 +25,18 @@ extension UserDataOperationKindBridge on UserDataOperationKind {
         return "SET_LANGUAGE";
       case UserDataOperationKind.setRegion:
         return "SET_REGION";
-      case UserDataOperationKind.setIdentifier:
-        return "SET_IDENTIFIER";
-      case UserDataOperationKind.setEmail:
-        return "SET_EMAIL";
-      case UserDataOperationKind.setEmailMarketingSubscriptionState:
+      case UserDataOperationKind.setEmailAddress:
+        return "SET_EMAIL_ADDRESS";
+      case UserDataOperationKind.setEmailMarketingSubscription:
         return "SET_EMAIL_MARKETING_SUBSCRIPTION";
-      case UserDataOperationKind.setAttributionId:
-        return "SET_ATTRIBUTION_ID";
       case UserDataOperationKind.setAttribute:
         return "SET_ATTRIBUTE";
       case UserDataOperationKind.removeAttribute:
         return "REMOVE_ATTRIBUTE";
-      case UserDataOperationKind.clearAttributes:
-        return "CLEAR_ATTRIBUTES";
-      case UserDataOperationKind.addTag:
-        return "ADD_TAG";
-      case UserDataOperationKind.removeTag:
-        return "REMOVE_TAG";
-      case UserDataOperationKind.clearTags:
-        return "CLEAR_TAGS";
-      case UserDataOperationKind.clearTagCollection:
-        return "CLEAR_TAG_COLLECTION";
+      case UserDataOperationKind.addToArray:
+        return "ADD_TO_ARRAY";
+      case UserDataOperationKind.removeFromArray:
+        return "REMOVE_FROM_ARRAY";
     }
   }
 }
@@ -73,12 +58,13 @@ class UserDataOperation {
   }
 }
 
-/// Private class: Do not instanciate this: use the `newEditor()` method on `BatchUser`.
+/// Private class: Do not instantiate this: use the `newEditor()` method on `BatchUser`.
 /// <nodoc>
 @protected
 class BatchUserDataEditorImpl implements BatchUserDataEditor {
   static final RegExp _attributeKeyRegexp = RegExp("^[a-zA-Z0-9_]{1,30}\$");
   static const int _maxStringLength = 64;
+  static const int _maxStringArrayLength = 25;
 
   List<UserDataOperation> _operationQueue = [];
 
@@ -119,24 +105,9 @@ class BatchUserDataEditorImpl implements BatchUserDataEditor {
     return this;
   }
 
-  @override
-  BatchUserDataEditor setIdentifier(String? identifier) {
-    if (identifier != null && identifier.length == 0) {
-      BatchLogger.public(
-          "BatchUserDataEditor - Identifier cannot be empty. If " +
-              "you meant to un-set the identifier, please use null.");
-      return this;
-    }
-
-    _enqueueOperation(UserDataOperationKind.setIdentifier, {
-      "value": identifier,
-    });
-
-    return this;
-  }
 
   @override
-  BatchUserDataEditor setEmail(String? address) {
+  BatchUserDataEditor setEmailAddress(String? address) {
     if (address != null && address.length == 0) {
       BatchLogger.public(
           "BatchUserDataEditor - Email cannot be empty. If " +
@@ -144,86 +115,52 @@ class BatchUserDataEditorImpl implements BatchUserDataEditor {
       return this;
     }
 
-    _enqueueOperation(UserDataOperationKind.setEmail, {
+    _enqueueOperation(UserDataOperationKind.setEmailAddress, {
       "value": address,
     });
     return this;
   }
 
   @override
-  BatchUserDataEditor setEmailMarketingSubscriptionState(BatchEmailSubscriptionState state) {
-    _enqueueOperation(UserDataOperationKind.setEmailMarketingSubscriptionState, {
+  BatchUserDataEditor setEmailMarketingSubscription(BatchEmailSubscriptionState state) {
+    _enqueueOperation(UserDataOperationKind.setEmailMarketingSubscription, {
       "value": state.name,
     });
     return this;
   }
 
   @override
-  BatchUserDataEditor setAttributionIdentifier(String? attributionId) {
-    if (attributionId != null && attributionId.length == 0) {
-      BatchLogger.public(
-          "BatchUserDataEditor - Attribution identifier cannot be empty. If " +
-              "you meant to un-set the attribution identifier, please use null.");
-      return this;
-    }
-    _enqueueOperation(UserDataOperationKind.setAttributionId, {
-      "value": attributionId,
-    });
-    return this;
-  }
-
-  @override
-  BatchUserDataEditor addTag(String collection, String tag) {
-    if (!_ensureValidTagCollection(collection)) {
+  BatchUserDataEditor addToArray(String key, String value) {
+    if (!_ensureValidAttributeKey(key)) {
       return this;
     }
 
-    if (!_ensureValidTag(tag)) {
+    if (!_ensureValidStringItem(value)) {
       return this;
     }
 
-    _enqueueOperation(UserDataOperationKind.addTag, {
-      "collection": collection,
-      "tag": tag,
+    _enqueueOperation(UserDataOperationKind.addToArray, {
+      "key": key,
+      "value": value,
     });
 
     return this;
   }
 
   @override
-  BatchUserDataEditor removeTag(String collection, String tag) {
-    if (!_ensureValidTagCollection(collection)) {
+  BatchUserDataEditor removeFromArray(String key, String value) {
+    if (!_ensureValidAttributeKey(key)) {
       return this;
     }
 
-    if (!_ensureValidTag(tag)) {
+    if (!_ensureValidStringItem(value)) {
       return this;
     }
 
-    _enqueueOperation(UserDataOperationKind.removeTag, {
-      "collection": collection,
-      "tag": tag,
+    _enqueueOperation(UserDataOperationKind.removeFromArray, {
+      "key": key,
+      "value": value,
     });
-
-    return this;
-  }
-
-  @override
-  BatchUserDataEditor clearTagCollection(String collection) {
-    if (!_ensureValidTagCollection(collection)) {
-      return this;
-    }
-
-    _enqueueOperation(UserDataOperationKind.clearTagCollection, {
-      "collection": collection,
-    });
-
-    return this;
-  }
-
-  @override
-  BatchUserDataEditor clearTags() {
-    _enqueueOperation(UserDataOperationKind.clearTags, {});
 
     return this;
   }
@@ -311,6 +248,33 @@ class BatchUserDataEditorImpl implements BatchUserDataEditor {
   }
 
   @override
+  BatchUserDataEditor setStringListAttribute(String key, List<String> value) {
+    if (!_ensureValidAttributeKey(key)) {
+      return this;
+    }
+    if (value.length > _maxStringArrayLength) {
+      BatchLogger.public(
+          "BatchUserDataEditor - List of string attributes must not be longer than 25 items. " +
+              "Ignoring attribute '$key'.");
+    }
+    for (String item in value) {
+      if(!_ensureValidStringItem(item)) {
+        BatchLogger.public(
+            "BatchUserDataEditor - List of string attributes must respect the string attribute limitations. " +
+                "Ignoring attribute '$key'.");
+        return this;
+      }
+    }
+    _enqueueOperation(UserDataOperationKind.setAttribute, {
+      "key": key,
+      "type": "array",
+      "value": value,
+    });
+    return this;
+  }
+
+
+  @override
   BatchUserDataEditor setUrlAttribute(String key, Uri value) {
     if (!_ensureValidAttributeKey(key)) {
       return this;
@@ -339,12 +303,6 @@ class BatchUserDataEditorImpl implements BatchUserDataEditor {
   }
 
   @override
-  BatchUserDataEditor clearAttributes() {
-    _enqueueOperation(UserDataOperationKind.clearAttributes, {});
-    return this;
-  }
-
-  @override
   void save() {
     Map bridgeOperations = {
       "operations":
@@ -366,24 +324,12 @@ class BatchUserDataEditorImpl implements BatchUserDataEditor {
     return true;
   }
 
-  bool _ensureValidTagCollection(String collection) {
-    if (!_attributeKeyRegexp.hasMatch(collection)) {
+  bool _ensureValidStringItem(String item) {
+    if (item.length == 0 || item.length > _maxStringLength) {
       BatchLogger.public(
-          "BatchUserDataEditor - Invalid collection. Please make sure that " +
-              "the collection is made of letters, underscores and numbers only " +
-              "(a-zA-Z0-9_). It also can't be longer than 30 characters. " +
-              "Ignoring collection '$collection'.");
-      return false;
-    }
-    return true;
-  }
-
-  bool _ensureValidTag(String tag) {
-    if (tag.length == 0 || tag.length > _maxStringLength) {
-      BatchLogger.public(
-          "BatchUserDataEditor - Invalid tag. Tags are not allowed to " +
+          "BatchUserDataEditor - Invalid string item. String items are not allowed to " +
               "be longer than 64 characters (bytes) and must not be empty. " +
-              "Ignoring operation on tag '$tag'.");
+              "Ignoring operation on string '$item'.");
       return false;
     }
     return true;
