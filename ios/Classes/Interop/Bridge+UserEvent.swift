@@ -3,24 +3,28 @@ import Batch
 import Flutter
 
 extension Bridge {
-    func trackEvent(_ parameters: BridgeParameters) throws {
-        guard let name = parameters["name"] as? String else {
-            throw BridgeError.makeBadArgumentError(argumentName: "name")
+    func trackEvent(_ parameters: BridgeParameters) -> LightPromise<AnyObject?> {
+        return LightPromise<AnyObject?> { resolve, reject in
+            guard let name = parameters["name"] as? String else {
+                reject(BridgeError.makeBadArgumentError(argumentName: "name"))
+                return
+            }
+            guard let rawEventData = parameters["event_data"] as? [String: AnyObject] else {
+                // event_data is optional, ignore it if it is of the wrong type
+                BatchProfile.trackEvent(name: name, attributes: nil)
+                resolve(nil)
+                return
+            }
+            let attributes = try? parseEventData(rawEventData)
+            do {
+                let _ = try attributes?.validate()
+                BatchProfile.trackEvent(name: name, attributes: attributes)
+                resolve(nil)
+            } catch let error {
+                reject(error)
+            }
         }
         
-        let label = parameters["label"] as? String
-        
-        let data = try parseEventData(parameters)
-        
-        BatchUser.trackEvent(name, withLabel: label, data: data)
-    }
-    
-    func trackTransaction(_ parameters: BridgeParameters) throws {
-        guard let amount = parameters["amount"] as? Double else {
-            throw BridgeError.makeBadArgumentError(argumentName: "amount")
-        }
-        
-        BatchUser.trackTransaction(withAmount: amount)
     }
     
     func trackLocation(_ parameters: [String: AnyObject]) throws {
@@ -32,30 +36,14 @@ extension Bridge {
             throw BridgeError.makeBadArgumentError(argumentName: "longitude")
         }
         
-        BatchUser.trackLocation(CLLocation(latitude: latitude, longitude: longitude))
+        BatchProfile.trackLocation(CLLocation(latitude: latitude, longitude: longitude))
     }
     
-    private func parseEventData(_ parameters: BridgeParameters) throws -> BatchEventData? {
-        guard let rawEventData = parameters["event_data"] as? [String: AnyObject] else {
-            // event_data is optional, ignore it if it is of the wrong type
-            return nil
-        }
+    private func parseEventData(_ rawEventData: BridgeParameters) throws -> BatchEventAttributes? {
         
-        guard let tags = rawEventData["tags"] as? [String] else {
-            throw BridgeError.makeBadArgumentError(argumentName: "event_data: tags")
-        }
-        
-        guard let attributes = rawEventData["attributes"] as? [String: [String: AnyObject]] else {
-            throw BridgeError.makeBadArgumentError(argumentName: "event_data: attributes")
-        }
-        
-        let eventData = BatchEventData()
-        
-        tags.forEach { tag in
-            eventData.add(tag: tag)
-        }
-        
-        try attributes.forEach { (key, typedValue) in
+        let eventData = BatchEventAttributes()
+    
+        try rawEventData.forEach { (key, typedValue) in
             guard let type = typedValue["type"] as? String else {
                 throw BridgeError.makeBadArgumentError(argumentName: "event_data: type")
             }
@@ -99,6 +87,33 @@ extension Bridge {
                     }
                     let date = Date(timeIntervalSince1970: Double(rawTimestamp) / 1000)
                     eventData.put(date, forKey: key)
+                    break
+                case "o":
+                    guard let value = typedValue["value"] as? BridgeParameters else {
+                        throw BridgeError.makeBadArgumentError(argumentName: argumentErrorDescription)
+                    }
+                    guard let objectAttribute = try parseEventData(value) else {
+                        throw BridgeError.makeBadArgumentError(argumentName: argumentErrorDescription)
+                    }
+                    eventData.put(objectAttribute, forKey:key)
+                    break
+                case "sa":
+                    guard let value = typedValue["value"] as? Array<String> else {
+                        throw BridgeError.makeBadArgumentError(argumentName: argumentErrorDescription)
+                    }
+                    eventData.put(value, forKey: key)
+                    break
+                case "oa":
+                    guard let value = typedValue["value"] as? Array<BridgeParameters> else {
+                        throw BridgeError.makeBadArgumentError(argumentName: argumentErrorDescription)
+                    }
+                    var objectArray: [BatchEventAttributes] = []
+                    for objectAttribute in value {
+                        if let object = try parseEventData(objectAttribute) {
+                            objectArray.append(object)
+                        }
+                    }
+                    eventData.put(objectArray, forKey: key)
                     break
                 default:
                     throw BridgeError(code: BridgeError.ErrorCode.internalBridgeError,

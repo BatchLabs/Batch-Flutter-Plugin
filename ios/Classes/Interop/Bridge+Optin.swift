@@ -4,13 +4,13 @@ import Flutter
 
 extension Bridge {
     func optIn() {
-        Batch.optIn()
+        BatchSDK.optIn()
         BatchFlutterPlugin.startManagedNativeSDK()
     }
 
     func optOut() -> LightPromise<AnyObject?> {
         return LightPromise<AnyObject?> { resolve, _ in
-            Batch.optOut { _ in
+            BatchSDK.optOut { _ in
                 resolve(nil)
                 return BatchOptOutNetworkErrorPolicy.ignore
             }
@@ -19,7 +19,7 @@ extension Bridge {
     
     func optOutAndWipeData() -> LightPromise<AnyObject?> {
         return LightPromise<AnyObject?> { resolve, _ in
-            Batch.optOutAndWipeData { _ in
+            BatchSDK.optOutAndWipeData { _ in
                 resolve(nil)
                 return BatchOptOutNetworkErrorPolicy.ignore
             }
