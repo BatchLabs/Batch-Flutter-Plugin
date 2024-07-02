@@ -48,7 +48,6 @@ public class BatchPluginConfiguration: NSObject {
     internal func apply() -> Bool {
         if let APIKey = APIKey, APIKey.trimmingCharacters(in: .whitespacesAndNewlines).count > 0 {
             actualAPIKey = APIKey
-            Batch.setUseAdvancedDeviceInformation(canUseAdvancedDeviceInformation)
             BatchMessaging.doNotDisturb = initialDoNotDisturbState
             return true
         } else {

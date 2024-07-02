@@ -47,7 +47,7 @@ struct Bridge {
                     try setShowForegroundNotifications(parameters: parameters)
                     return emptySuccessPromise()
                 case .push_getLastKnownPushToken:
-                    return LightPromise<AnyObject?>.resolved(BatchPush.lastKnownPushToken() as NSString?)
+                    return LightPromise<AnyObject?>.resolved(BatchPush.lastKnownPushToken as NSString?)
                     
                 case .user_getInstallationID:
                     return getInstallationID()
@@ -71,10 +71,6 @@ struct Bridge {
                 case .user_trackLocation:
                     try trackLocation(parameters)
                     return emptySuccessPromise()
-                case .user_trackTransaction:
-                    try trackTransaction(parameters)
-                    return emptySuccessPromise()
-                
                 case .messaging_showPendingMessage:
                     showPendingMessage()
                     return emptySuccessPromise()
@@ -109,7 +105,7 @@ struct Bridge {
     }
     
     private func getInstallationID() -> LightPromise<AnyObject?> {
-        var installID = BatchUser.installationID()
+        var installID = BatchUser.installationID
         // To maintain consistency with Android, an empty installation ID will be nilled.
         // It's a native SDK weirdness that might someday change
         if installID?.count == 0 {

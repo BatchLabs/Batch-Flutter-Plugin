@@ -4,7 +4,7 @@ import Batch
 // Bridge Debug methods
 extension Bridge {
     func showDebugView() {
-        if let debugVC = Batch.debugViewController(),
+        if let debugVC = BatchSDK.makeDebugViewController(),
            let rootViewController = WindowHelper.topViewController {
             rootViewController.present(debugVC, animated: true, completion: nil)
         } else {

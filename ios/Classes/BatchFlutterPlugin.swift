@@ -118,7 +118,7 @@ public class BatchFlutterPlugin: NSObject, FlutterPlugin {
     internal static func startManagedNativeSDK() {
         if manageBatchLifecycle {
             if let batchAPIKey = configuration.actualAPIKey {
-                Batch.start(withAPIKey: batchAPIKey)
+                BatchSDK.start(withAPIKey: batchAPIKey)
                 BatchPush.refreshToken()
             } else {
                 BatchFlutterLogger.logDebug(module: "Bridge", message: "Attempted to start Batch without an apikey, which we had beforehand")

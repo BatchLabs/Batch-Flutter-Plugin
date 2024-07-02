@@ -7,17 +7,12 @@ extension Bridge {
     fileprivate enum UserDataOperation: String {
         case setLanguage = "SET_LANGUAGE"
         case setRegion = "SET_REGION"
-        case setIdentifier = "SET_IDENTIFIER"
-        case setEmail = "SET_EMAIL"
+        case setEmailAddress = "SET_EMAIL_ADDRESS"
         case setEmailMarketingSubscription = "SET_EMAIL_MARKETING_SUBSCRIPTION"
-        case setAttributionId = "SET_ATTRIBUTION_ID"
         case setAttribute = "SET_ATTRIBUTE"
         case removeAttribute = "REMOVE_ATTRIBUTE"
-        case clearAttributes = "CLEAR_ATTRIBUTES"
-        case addTag = "ADD_TAG"
-        case removeTag = "REMOVE_TAG"
-        case clearTags = "CLEAR_TAGS"
-        case clearTagCollection = "CLEAR_TAG_COLLECTION"
+        case addToStringArray = "ADD_TO_ARRAY"
+        case removeFromStringArray = "REMOVE_FROM_ARRAY"
     }
     
     fileprivate enum UserDataType: String {
@@ -27,14 +22,15 @@ extension Bridge {
         case date
         case boolean
         case url
-    }
+        case array
+    }	
     
     func userDataEdit(parameters: BridgeParameters) throws {
         guard let operations = parameters["operations"] as? [[String: AnyObject]] else {
             throw BridgeError.makeBadArgumentError(argumentName: "operations")
         }
         
-        let userDataEditor = BatchUser.editor()
+        let profileAttributeEditor = BatchProfile.editor()
         
         try operations.forEach { operationDescription in
             guard let rawOperation = operationDescription["operation"] as? String else {
@@ -48,26 +44,15 @@ extension Bridge {
             }
             
             switch operation {
-                case .setIdentifier:
+                case .setEmailAddress:
                     let rawValue = operationDescription["value"]
                     if rawValue == nil || rawValue is NSNull {
-                        userDataEditor.setIdentifier(nil)
+                        try? profileAttributeEditor.setEmailAddress(nil)
                     } else {
                         guard let value = rawValue as? String else {
                             throw BridgeError.makeBadArgumentError(argumentName: rawOperation + ".value")
                         }
-                        userDataEditor.setIdentifier(value)
-                    }
-                    break;
-                case .setEmail:
-                    let rawValue = operationDescription["value"]
-                    if rawValue == nil || rawValue is NSNull {
-                        try? userDataEditor.setEmail(nil)
-                    } else {
-                        guard let value = rawValue as? String else {
-                            throw BridgeError.makeBadArgumentError(argumentName: rawOperation + ".value")
-                        }
-                        try? userDataEditor.setEmail(value)
+                        try? profileAttributeEditor.setEmailAddress(value)
                     }
                     break;
                 case .setEmailMarketingSubscription:
@@ -76,72 +61,52 @@ extension Bridge {
                         throw BridgeError.makeBadArgumentError(argumentName: rawOperation + ".value")
                     }
                     if (value == "subscribed") {
-                        userDataEditor.setEmailMarketingSubscriptionState(.subscribed)
+                        profileAttributeEditor.setEmailMarketingSubscriptionState(.subscribed)
                     } else if (value == "unsubscribed") {
-                        userDataEditor.setEmailMarketingSubscriptionState(.unsubscribed)
+                        profileAttributeEditor.setEmailMarketingSubscriptionState(.unsubscribed)
                     } else {
                         throw BridgeError.makeBadArgumentError(argumentName: rawOperation + ".value")
-                    }
-                    break;
-                case .setAttributionId:
-                    let rawValue = operationDescription["value"]
-                    if rawValue == nil || rawValue is NSNull {
-                        userDataEditor.setAttributionIdentifier(nil)
-                    } else {
-                        guard let value = rawValue as? String else {
-                            throw BridgeError.makeBadArgumentError(argumentName: rawOperation + ".value")
-                        }
-                        userDataEditor.setAttributionIdentifier(value)
                     }
                     break;
                 case .setLanguage:
                     let rawValue = operationDescription["value"]
                     if rawValue == nil || rawValue is NSNull {
-                        userDataEditor.setLanguage(nil)
+                        try? profileAttributeEditor.setLanguage(nil)
                     } else {
                         guard let value = rawValue as? String else {
                             throw BridgeError.makeBadArgumentError(argumentName: rawOperation + ".value")
                         }
-                        userDataEditor.setLanguage(value)
+                        try? profileAttributeEditor.setLanguage(value)
                     }
                     break;
                 case .setRegion:
                     let rawValue = operationDescription["value"]
                     if rawValue == nil || rawValue is NSNull {
-                        userDataEditor.setRegion(nil)
+                        try? profileAttributeEditor.setRegion(nil)
                     } else {
                         guard let value = rawValue as? String else {
                             throw BridgeError.makeBadArgumentError(argumentName: rawOperation + ".value")
                         }
-                        userDataEditor.setRegion(value)
+                        try? profileAttributeEditor.setRegion(value)
                     }
                     break;
-                case .addTag:
-                    guard let tag = operationDescription["tag"] as? String else {
-                        throw BridgeError.makeBadArgumentError(argumentName: rawOperation + ".tag")
+                case .addToStringArray:
+                    guard let value = operationDescription["value"] as? String else {
+                        throw BridgeError.makeBadArgumentError(argumentName: rawOperation + ".value")
                     }
-                    guard let collection = operationDescription["collection"] as? String else {
-                        throw BridgeError.makeBadArgumentError(argumentName: rawOperation + ".collection")
+                    guard let key = operationDescription["key"] as? String else {
+                        throw BridgeError.makeBadArgumentError(argumentName: rawOperation + ".key")
                     }
-                    userDataEditor.addTag(tag, inCollection: collection)
+                    try? profileAttributeEditor.addToStringArray(item: value, forKey:key)
                     break;
-                case .removeTag:
-                    guard let tag = operationDescription["tag"] as? String else {
-                        throw BridgeError.makeBadArgumentError(argumentName: rawOperation + ".tag")
+                case .removeFromStringArray:
+                    guard let value = operationDescription["value"] as? String else {
+                        throw BridgeError.makeBadArgumentError(argumentName: rawOperation + ".value")
                     }
-                    guard let collection = operationDescription["collection"] as? String else {
-                        throw BridgeError.makeBadArgumentError(argumentName: rawOperation + ".collection")
+                    guard let key = operationDescription["key"] as? String else {
+                        throw BridgeError.makeBadArgumentError(argumentName: rawOperation + ".key")
                     }
-                    userDataEditor.removeTag(tag, fromCollection: collection)
-                    break;
-                case .clearTagCollection:
-                    guard let collection = operationDescription["collection"] as? String else {
-                        throw BridgeError.makeBadArgumentError(argumentName: rawOperation + ".collection")
-                    }
-                    userDataEditor.clearTagCollection(collection)
-                    break;
-                case .clearTags:
-                    userDataEditor.clearTags()
+                    try? profileAttributeEditor.removeFromStringArray(item: value, forKey: key)
                     break;
                 case .setAttribute:
                     guard let key = operationDescription["key"] as? String else {
@@ -165,56 +130,59 @@ extension Bridge {
                             guard let boolValue = value as? Bool else {
                                 throw BridgeError.makeBadArgumentError(argumentName: errorArgumentName)
                             }
-                            try? userDataEditor.set(attribute: boolValue, forKey: key)
+                            try? profileAttributeEditor.set(attribute: boolValue, forKey: key)
                             break
                         case .integer:
                             guard let intValue = value as? Int64 else {
                                 throw BridgeError.makeBadArgumentError(argumentName: errorArgumentName)
                             }
-                            try? userDataEditor.set(attribute: intValue, forKey: key)
+                            try? profileAttributeEditor.set(attribute: intValue, forKey: key)
                             break
                         case .float:
                             guard let doubleValue = value as? Double else {
                                 throw BridgeError.makeBadArgumentError(argumentName: errorArgumentName)
                             }
-                            try? userDataEditor.set(attribute: doubleValue, forKey: key)
+                            try? profileAttributeEditor.set(attribute: doubleValue, forKey: key)
                             break
                         case .string:
                             guard let stringValue = value as? String else {
                                 throw BridgeError.makeBadArgumentError(argumentName: errorArgumentName)
                             }
-                            try? userDataEditor.set(attribute: stringValue, forKey: key)
+                            try? profileAttributeEditor.set(attribute: stringValue, forKey: key)
                             break
                         case .url:
                             guard let stringValue = value as? String, let urlValue = URL(string: stringValue) else {
                                 throw BridgeError.makeBadArgumentError(argumentName: errorArgumentName)
                             }
-                            try? userDataEditor.set(attribute: urlValue, forKey: key)
+                            try? profileAttributeEditor.set(attribute: urlValue, forKey: key)
                             break
                         case .date:
                             guard let rawTimestamp = value as? Int64 else {
                                 throw BridgeError.makeBadArgumentError(argumentName: errorArgumentName)
                             }
                             let dateValue = Date(timeIntervalSince1970: Double(rawTimestamp) / 1000)
-                            try? userDataEditor.set(attribute: dateValue, forKey: key)
+                            try? profileAttributeEditor.set(attribute: dateValue, forKey: key)
+                            break
+                        case .array:
+                            guard let stringArrayValue = value as? Array<String> else {
+                                throw BridgeError.makeBadArgumentError(argumentName: errorArgumentName)
+                            }
+                            try? profileAttributeEditor.set(attribute: stringArrayValue, forKey: key)
                             break
                     }
-                    
                     break;
                 case .removeAttribute:
                     guard let key = operationDescription["key"] as? String else {
                         throw BridgeError.makeBadArgumentError(argumentName: rawOperation + ".key")
                     }
-                    userDataEditor.removeAttribute(forKey: key)
+                    try? profileAttributeEditor.removeAttribute(key:key)
                     break;
-                case .clearAttributes:
-                    userDataEditor.clearAttributes()
-                    break;
+
             }
             
         }
         
-        userDataEditor.save()
+        profileAttributeEditor.save()
     }
     
     func userDataFetchAttributes() -> LightPromise<AnyObject?> {

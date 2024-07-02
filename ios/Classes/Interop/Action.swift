@@ -19,7 +19,6 @@ enum Action: String {
     case user_fetchTags = "user.fetch.tags"
     case user_edit = "user.edit"
     case user_trackEvent = "user.track.event"
-    case user_trackTransaction = "user.track.transaction"
     case user_trackLocation = "user.track.location"
     
     case inbox_createInstallationFetcher = "inbox.createInstallationFetcher"
