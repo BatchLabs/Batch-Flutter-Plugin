@@ -83,6 +83,8 @@ public class BatchBridge {
                 return optOut(activity, false);
             case OPT_OUT_AND_WIPE_DATA:
                 return optOut(activity, true);
+            case IS_OPTED_OUT:
+                return Promise.resolved(Batch.isOptedOut(activity));
             case MESSAGING_SET_DO_NOT_DISTURB_ENABLED:
                 Batch.Messaging.setDoNotDisturbEnabled(getTypedParameter(parameters, "enabled", Boolean.class));
                 return Promise.resolved(null);

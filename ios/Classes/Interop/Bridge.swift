@@ -27,6 +27,8 @@ struct Bridge {
                     return optOut()
                 case .optOutAndWipeData:
                     return optOutAndWipeData()
+                case .isOptedOut:
+                return LightPromise<AnyObject?>.resolved(BatchSDK.isOptedOut as NSNumber)
                 
                 case .push_iOSRefreshToken:
                     BatchPush.refreshToken()
