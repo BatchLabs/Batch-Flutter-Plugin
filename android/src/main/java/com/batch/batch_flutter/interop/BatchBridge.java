@@ -111,6 +111,9 @@ public class BatchBridge {
                 return Promise.resolved(Batch.User.getLanguage(activity));
             case USER_GET_REGION:
                 return Promise.resolved(Batch.User.getRegion(activity));
+            case PROFILE_IDENTIFY:
+                identify(parameters);
+                return Promise.resolved(null);
             case PROFILE_EDIT:
                 editProfileAttributes(parameters);
                 return Promise.resolved(null);
@@ -187,6 +190,11 @@ public class BatchBridge {
     }
 
 //region Profile
+
+    private static void identify(Map<String, Object> parameters) throws BatchBridgeException {
+        String identifier = getTypedParameter(parameters, "identifier", String.class);
+        Batch.Profile.identify(identifier);
+    }
 
     @SuppressWarnings({"unchecked", "ConstantConditions"})
     private static void editProfileAttributes(Map<String, Object> parameters) throws BatchBridgeException {

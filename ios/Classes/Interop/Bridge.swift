@@ -61,7 +61,10 @@ struct Bridge {
                     return userDataFetchAttributes()
                 case .user_fetchTags:
                     return userDataFetchTags()
-                
+
+                case .profile_identify:
+                    try identify(parameters: parameters)
+                    return emptySuccessPromise()
                 case .profile_edit:
                     try editProfileAttributes(parameters: parameters)
                     return emptySuccessPromise()

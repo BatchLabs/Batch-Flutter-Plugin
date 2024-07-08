@@ -24,6 +24,13 @@ extension Bridge {
         case url
         case array
     }
+
+    func identify(parameters: BridgeParameters) throws {
+        guard let identifier = parameters["identifier"] as? String else {
+            throw BridgeError.makeBadArgumentError(argumentName: "identifier")
+        }
+        BatchProfile.identify(identifier)
+    }
     
     func editProfileAttributes(parameters: BridgeParameters) throws {
         guard let operations = parameters["operations"] as? [[String: AnyObject]] else {
