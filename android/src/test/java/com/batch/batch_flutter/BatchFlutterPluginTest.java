@@ -11,28 +11,29 @@ import org.junit.Assert;
 import org.junit.Rule;
 import org.junit.Test;
 import org.junit.runner.RunWith;
+import org.robolectric.Robolectric;
+import org.robolectric.RobolectricTestRunner;
+import org.robolectric.android.controller.ActivityController;
 import org.robolectric.annotation.LooperMode;
 
 import java.lang.ref.WeakReference;
 import java.util.HashMap;
 import java.util.Map;
 
-import io.flutter.plugin.common.MethodCall;
-
 import static android.os.Looper.getMainLooper;
 import static org.robolectric.Shadows.shadowOf;
 
-@RunWith(AndroidJUnit4.class)
-@LooperMode(LooperMode.Mode.PAUSED)
+import io.flutter.plugin.common.MethodCall;
+
+@RunWith(RobolectricTestRunner.class)
 public class BatchFlutterPluginTest {
-    @Rule
-    public ActivityScenarioRule<TestActivity> rule = new ActivityScenarioRule<>(TestActivity.class);
 
     @Test
     public void testSetupErrors() {
-        ActivityScenario<TestActivity> scenario = rule.getScenario();
+        try (ActivityController<TestActivity> controller = Robolectric.buildActivity(TestActivity.class)) {
+            controller.setup();
 
-        scenario.onActivity((activity) -> {
+            TestActivity activity = controller.get();
             Assert.assertNotNull(activity);
 
             ControllableBatchFlutterPlugin plugin = new ControllableBatchFlutterPlugin();
@@ -58,14 +59,15 @@ public class BatchFlutterPluginTest {
             Assert.assertTrue(noActivityResult.didCallError);
             Assert.assertFalse(noActivityResult.didCallSuccess);
             Assert.assertEquals(BatchBridgePublicErrorCode.NOT_ATTACHED_TO_ACTIVITY.code, noActivityResult.lastErrorArguments.errorCode);
-        });
+        }
     }
 
     @Test
     public void testBridgeErrors() {
-        ActivityScenario<TestActivity> scenario = rule.getScenario();
+        try (ActivityController<TestActivity> controller = Robolectric.buildActivity(TestActivity.class)) {
+            controller.setup();
 
-        scenario.onActivity((activity) -> {
+            TestActivity activity = controller.get();
             Assert.assertNotNull(activity);
 
             ControllableBatchFlutterPlugin plugin = new ControllableBatchFlutterPlugin();
@@ -88,14 +90,15 @@ public class BatchFlutterPluginTest {
             Assert.assertTrue(internalErrorResult.didCallError);
             Assert.assertFalse(internalErrorResult.didCallSuccess);
             Assert.assertEquals(BatchBridgePublicErrorCode.INTERNAL_BRIDGE_ERROR.code, internalErrorResult.lastErrorArguments.errorCode);
-        });
+        }
     }
 
     @Test
     public void testBridgeSuccess() {
-        ActivityScenario<TestActivity> scenario = rule.getScenario();
+        try (ActivityController<TestActivity> controller = Robolectric.buildActivity(TestActivity.class)) {
+            controller.setup();
 
-        scenario.onActivity((activity) -> {
+            TestActivity activity = controller.get();
             Assert.assertNotNull(activity);
 
             ControllableBatchFlutterPlugin plugin = new ControllableBatchFlutterPlugin();
@@ -125,6 +128,6 @@ public class BatchFlutterPluginTest {
             Assert.assertFalse(echoResult.didCallError);
             Assert.assertTrue(echoResult.didCallSuccess);
             Assert.assertNull(echoResult.lastSuccessArgument);
-        });
+        }
     }
 }

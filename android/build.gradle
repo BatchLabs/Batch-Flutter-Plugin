@@ -43,15 +43,11 @@ android {
     dependencies {
         api 'com.batch.android:batch-sdk:2.0.+'
         //noinspection GradleDynamicVersion
-
         implementation 'androidx.appcompat:appcompat:1.2.0'
 
-        testImplementation 'androidx.test:core:1.6.1'
-        testImplementation 'androidx.test:rules:1.6.1'
         testImplementation 'androidx.test.ext:junit:1.2.1'
-        testImplementation 'androidx.test.ext:truth:1.6.0'
-        testImplementation 'org.robolectric:robolectric:4.11.1'
+        testImplementation 'junit:junit:4.13.2'
+        testImplementation "org.robolectric:robolectric:4.12.2"
     }
 }
-
 apply from: 'javadoc.gradle'
