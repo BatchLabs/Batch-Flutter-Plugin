@@ -32,6 +32,12 @@ class BatchUser {
     return await _channel.invokeMethod('user.getInstallationID');
   }
 
+  /// Clear all tags and attributes set on an installation and their local cache
+  /// returned by [attributes] and [tagCollections].
+  /// This does not affect data set on profiles using [BatchProfile].
+  void clearInstallationData() {
+     _channel.invokeMethod('user.clearInstallationData');
+  }
 
   /// Read the saved attributes.
   /// Reading is asynchronous so as not to interfere with saving operations.
