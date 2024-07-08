@@ -33,6 +33,7 @@ public class BatchFlutterPlugin: NSObject, FlutterPlugin {
         registerChannel(name: "batch_flutter.push", registrar: registrar, pluginInstance: instance)
         registerChannel(name: "batch_flutter.inbox", registrar: registrar, pluginInstance: instance)
         registerChannel(name: "batch_flutter.messaging", registrar: registrar, pluginInstance: instance)
+        registerChannel(name: "batch_flutter.profile", registrar: registrar, pluginInstance: instance)
     }
     
     private static func registerChannel(name: String, registrar: FlutterPluginRegistrar, pluginInstance: BatchFlutterPlugin) {

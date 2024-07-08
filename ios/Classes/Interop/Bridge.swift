@@ -48,7 +48,7 @@ struct Bridge {
                     return emptySuccessPromise()
                 case .push_getLastKnownPushToken:
                     return LightPromise<AnyObject?>.resolved(BatchPush.lastKnownPushToken as NSString?)
-                    
+                
                 case .user_getInstallationID:
                     return getInstallationID()
                 case .user_getIdentifier:
@@ -61,16 +61,16 @@ struct Bridge {
                     return userDataFetchAttributes()
                 case .user_fetchTags:
                     return userDataFetchTags()
-                    
-                case .user_edit:
-                    try userDataEdit(parameters: parameters)
+                
+                case .profile_edit:
+                    try editProfileAttributes(parameters: parameters)
                     return emptySuccessPromise()
-                case .user_trackEvent:
-                    try trackEvent(parameters)
-                    return emptySuccessPromise()
-                case .user_trackLocation:
+                case .profile_trackEvent:
+                     return trackEvent(parameters)
+                case .profile_trackLocation:
                     try trackLocation(parameters)
                     return emptySuccessPromise()
+                
                 case .messaging_showPendingMessage:
                     showPendingMessage()
                     return emptySuccessPromise()
