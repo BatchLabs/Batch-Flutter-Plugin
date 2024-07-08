@@ -111,12 +111,12 @@ public class BatchBridge {
                 return Promise.resolved(Batch.User.getLanguage(activity));
             case USER_GET_REGION:
                 return Promise.resolved(Batch.User.getRegion(activity));
-            case USER_EDIT:
-                userDataEdit(parameters);
+            case PROFILE_EDIT:
+                editProfileAttributes(parameters);
                 return Promise.resolved(null);
-            case USER_TRACK_EVENT:
+            case PROFILE_TRACK_EVENT:
                 return trackEvent(parameters);
-            case USER_TRACK_LOCATION:
+            case PROFILE_TRACK_LOCATION:
                 trackLocation(parameters);
                 return Promise.resolved(null);
             case USER_FETCH_ATTRIBUTES:
@@ -186,10 +186,10 @@ public class BatchBridge {
         Batch.Push.dismissNotifications();
     }
 
-//region User Data
+//region Profile
 
     @SuppressWarnings({"unchecked", "ConstantConditions"})
-    private static void userDataEdit(Map<String, Object> parameters) throws BatchBridgeException {
+    private static void editProfileAttributes(Map<String, Object> parameters) throws BatchBridgeException {
         try {
             List<Map<String, Object>> operations = getTypedParameter(parameters, "operations", List.class);
             if (operations == null) {
@@ -409,6 +409,9 @@ public class BatchBridge {
 
         Batch.Profile.trackLocation(location);
     }
+    // endregion
+
+    //region User Data
 
     private static Promise<Object> userFetchAttributes(Activity activity) {
         return new Promise<>(promise -> {

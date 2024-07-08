@@ -1,13 +1,13 @@
+import 'package:batch_flutter/batch_profile.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter/widgets.dart';
 
-import '../batch_user.dart';
 import 'batch_logger.dart';
 
 /// Private class: User data operations
 /// <nodoc>
 @protected
-enum UserDataOperationKind {
+enum ProfileDataOperationKind {
   setLanguage,
   setRegion,
   setEmailAddress,
@@ -18,24 +18,24 @@ enum UserDataOperationKind {
   removeFromArray,
 }
 
-extension UserDataOperationKindBridge on UserDataOperationKind {
+extension ProfileDataOperationKindBridge on ProfileDataOperationKind {
   String toBridgeRepresentation() {
     switch (this) {
-      case UserDataOperationKind.setLanguage:
+      case ProfileDataOperationKind.setLanguage:
         return "SET_LANGUAGE";
-      case UserDataOperationKind.setRegion:
+      case ProfileDataOperationKind.setRegion:
         return "SET_REGION";
-      case UserDataOperationKind.setEmailAddress:
+      case ProfileDataOperationKind.setEmailAddress:
         return "SET_EMAIL_ADDRESS";
-      case UserDataOperationKind.setEmailMarketingSubscription:
+      case ProfileDataOperationKind.setEmailMarketingSubscription:
         return "SET_EMAIL_MARKETING_SUBSCRIPTION";
-      case UserDataOperationKind.setAttribute:
+      case ProfileDataOperationKind.setAttribute:
         return "SET_ATTRIBUTE";
-      case UserDataOperationKind.removeAttribute:
+      case ProfileDataOperationKind.removeAttribute:
         return "REMOVE_ATTRIBUTE";
-      case UserDataOperationKind.addToArray:
+      case ProfileDataOperationKind.addToArray:
         return "ADD_TO_ARRAY";
-      case UserDataOperationKind.removeFromArray:
+      case ProfileDataOperationKind.removeFromArray:
         return "REMOVE_FROM_ARRAY";
     }
   }
@@ -44,10 +44,10 @@ extension UserDataOperationKindBridge on UserDataOperationKind {
 /// Private class: Represents a user data operation
 /// <nodoc>
 @protected
-class UserDataOperation {
-  UserDataOperation({required this.kind, required this.arguments});
+class ProfileDataOperation {
+  ProfileDataOperation({required this.kind, required this.arguments});
 
-  final UserDataOperationKind kind;
+  final ProfileDataOperationKind kind;
   final Map<String, dynamic> arguments;
 
   Map<String, dynamic> toBridgeRepresentation() {
@@ -61,20 +61,20 @@ class UserDataOperation {
 /// Private class: Do not instantiate this: use the `newEditor()` method on `BatchUser`.
 /// <nodoc>
 @protected
-class BatchUserDataEditorImpl implements BatchUserDataEditor {
+class BatchProfileAttributeEditorImpl implements BatchProfileAttributeEditor {
   static final RegExp _attributeKeyRegexp = RegExp("^[a-zA-Z0-9_]{1,30}\$");
   static const int _maxStringLength = 64;
   static const int _maxStringArrayLength = 25;
 
-  List<UserDataOperation> _operationQueue = [];
+  List<ProfileDataOperation> _operationQueue = [];
 
-  BatchUserDataEditorImpl(MethodChannel userMethodChannel)
+  BatchProfileAttributeEditorImpl(MethodChannel userMethodChannel)
       : this._userMethodChannel = userMethodChannel;
 
   MethodChannel _userMethodChannel;
 
   @override
-  BatchUserDataEditor setLanguage(String? language) {
+  BatchProfileAttributeEditor setLanguage(String? language) {
     if (language != null && language.length == 0) {
       BatchLogger.public(
           "BatchUserDataEditor - Language override cannot be empty. If " +
@@ -82,7 +82,7 @@ class BatchUserDataEditorImpl implements BatchUserDataEditor {
       return this;
     }
 
-    _enqueueOperation(UserDataOperationKind.setLanguage, {
+    _enqueueOperation(ProfileDataOperationKind.setLanguage, {
       "value": language,
     });
 
@@ -90,7 +90,7 @@ class BatchUserDataEditorImpl implements BatchUserDataEditor {
   }
 
   @override
-  BatchUserDataEditor setRegion(String? region) {
+  BatchProfileAttributeEditor setRegion(String? region) {
     if (region != null && region.length == 0) {
       BatchLogger.public(
           "BatchUserDataEditor - Region override cannot be empty. If " +
@@ -98,7 +98,7 @@ class BatchUserDataEditorImpl implements BatchUserDataEditor {
       return this;
     }
 
-    _enqueueOperation(UserDataOperationKind.setRegion, {
+    _enqueueOperation(ProfileDataOperationKind.setRegion, {
       "value": region,
     });
 
@@ -107,7 +107,7 @@ class BatchUserDataEditorImpl implements BatchUserDataEditor {
 
 
   @override
-  BatchUserDataEditor setEmailAddress(String? address) {
+  BatchProfileAttributeEditor setEmailAddress(String? address) {
     if (address != null && address.length == 0) {
       BatchLogger.public(
           "BatchUserDataEditor - Email cannot be empty. If " +
@@ -115,22 +115,22 @@ class BatchUserDataEditorImpl implements BatchUserDataEditor {
       return this;
     }
 
-    _enqueueOperation(UserDataOperationKind.setEmailAddress, {
+    _enqueueOperation(ProfileDataOperationKind.setEmailAddress, {
       "value": address,
     });
     return this;
   }
 
   @override
-  BatchUserDataEditor setEmailMarketingSubscription(BatchEmailSubscriptionState state) {
-    _enqueueOperation(UserDataOperationKind.setEmailMarketingSubscription, {
+  BatchProfileAttributeEditor setEmailMarketingSubscription(BatchEmailSubscriptionState state) {
+    _enqueueOperation(ProfileDataOperationKind.setEmailMarketingSubscription, {
       "value": state.name,
     });
     return this;
   }
 
   @override
-  BatchUserDataEditor addToArray(String key, String value) {
+  BatchProfileAttributeEditor addToArray(String key, String value) {
     if (!_ensureValidAttributeKey(key)) {
       return this;
     }
@@ -139,7 +139,7 @@ class BatchUserDataEditorImpl implements BatchUserDataEditor {
       return this;
     }
 
-    _enqueueOperation(UserDataOperationKind.addToArray, {
+    _enqueueOperation(ProfileDataOperationKind.addToArray, {
       "key": key,
       "value": value,
     });
@@ -148,7 +148,7 @@ class BatchUserDataEditorImpl implements BatchUserDataEditor {
   }
 
   @override
-  BatchUserDataEditor removeFromArray(String key, String value) {
+  BatchProfileAttributeEditor removeFromArray(String key, String value) {
     if (!_ensureValidAttributeKey(key)) {
       return this;
     }
@@ -157,7 +157,7 @@ class BatchUserDataEditorImpl implements BatchUserDataEditor {
       return this;
     }
 
-    _enqueueOperation(UserDataOperationKind.removeFromArray, {
+    _enqueueOperation(ProfileDataOperationKind.removeFromArray, {
       "key": key,
       "value": value,
     });
@@ -166,12 +166,12 @@ class BatchUserDataEditorImpl implements BatchUserDataEditor {
   }
 
   @override
-  BatchUserDataEditor setBooleanAttribute(String key, bool value) {
+  BatchProfileAttributeEditor setBooleanAttribute(String key, bool value) {
     if (!_ensureValidAttributeKey(key)) {
       return this;
     }
 
-    _enqueueOperation(UserDataOperationKind.setAttribute, {
+    _enqueueOperation(ProfileDataOperationKind.setAttribute, {
       "key": key,
       "type": "boolean",
       "value": value,
@@ -181,12 +181,12 @@ class BatchUserDataEditorImpl implements BatchUserDataEditor {
   }
 
   @override
-  BatchUserDataEditor setDateTimeAttribute(String key, DateTime value) {
+  BatchProfileAttributeEditor setDateTimeAttribute(String key, DateTime value) {
     if (!_ensureValidAttributeKey(key)) {
       return this;
     }
 
-    _enqueueOperation(UserDataOperationKind.setAttribute, {
+    _enqueueOperation(ProfileDataOperationKind.setAttribute, {
       "key": key,
       "type": "date",
       "value": value.toUtc().millisecondsSinceEpoch,
@@ -196,12 +196,12 @@ class BatchUserDataEditorImpl implements BatchUserDataEditor {
   }
 
   @override
-  BatchUserDataEditor setDoubleAttribute(String key, double value) {
+  BatchProfileAttributeEditor setDoubleAttribute(String key, double value) {
     if (!_ensureValidAttributeKey(key)) {
       return this;
     }
 
-    _enqueueOperation(UserDataOperationKind.setAttribute, {
+    _enqueueOperation(ProfileDataOperationKind.setAttribute, {
       "key": key,
       "type": "float",
       "value": value,
@@ -211,12 +211,12 @@ class BatchUserDataEditorImpl implements BatchUserDataEditor {
   }
 
   @override
-  BatchUserDataEditor setIntegerAttribute(String key, int value) {
+  BatchProfileAttributeEditor setIntegerAttribute(String key, int value) {
     if (!_ensureValidAttributeKey(key)) {
       return this;
     }
 
-    _enqueueOperation(UserDataOperationKind.setAttribute, {
+    _enqueueOperation(ProfileDataOperationKind.setAttribute, {
       "key": key,
       "type": "integer",
       "value": value,
@@ -226,13 +226,13 @@ class BatchUserDataEditorImpl implements BatchUserDataEditor {
   }
 
   @override
-  BatchUserDataEditor setStringAttribute(String key, String value) {
+  BatchProfileAttributeEditor setStringAttribute(String key, String value) {
     if (!_ensureValidAttributeKey(key)) {
       return this;
     }
 
     if (value.length <= _maxStringLength) {
-      _enqueueOperation(UserDataOperationKind.setAttribute, {
+      _enqueueOperation(ProfileDataOperationKind.setAttribute, {
         "key": key,
         "type": "string",
         "value": value,
@@ -248,7 +248,7 @@ class BatchUserDataEditorImpl implements BatchUserDataEditor {
   }
 
   @override
-  BatchUserDataEditor setStringListAttribute(String key, List<String> value) {
+  BatchProfileAttributeEditor setStringListAttribute(String key, List<String> value) {
     if (!_ensureValidAttributeKey(key)) {
       return this;
     }
@@ -265,7 +265,7 @@ class BatchUserDataEditorImpl implements BatchUserDataEditor {
         return this;
       }
     }
-    _enqueueOperation(UserDataOperationKind.setAttribute, {
+    _enqueueOperation(ProfileDataOperationKind.setAttribute, {
       "key": key,
       "type": "array",
       "value": value,
@@ -275,12 +275,12 @@ class BatchUserDataEditorImpl implements BatchUserDataEditor {
 
 
   @override
-  BatchUserDataEditor setUrlAttribute(String key, Uri value) {
+  BatchProfileAttributeEditor setUrlAttribute(String key, Uri value) {
     if (!_ensureValidAttributeKey(key)) {
       return this;
     }
 
-    _enqueueOperation(UserDataOperationKind.setAttribute, {
+    _enqueueOperation(ProfileDataOperationKind.setAttribute, {
       "key": key,
       "type": "url",
       "value": value.toString(),
@@ -290,12 +290,12 @@ class BatchUserDataEditorImpl implements BatchUserDataEditor {
   }
 
   @override
-  BatchUserDataEditor removeAttribute(String key) {
+  BatchProfileAttributeEditor removeAttribute(String key) {
     if (!_ensureValidAttributeKey(key)) {
       return this;
     }
 
-    _enqueueOperation(UserDataOperationKind.removeAttribute, {
+    _enqueueOperation(ProfileDataOperationKind.removeAttribute, {
       "key": key,
     });
 
@@ -309,7 +309,7 @@ class BatchUserDataEditorImpl implements BatchUserDataEditor {
           _operationQueue.map((e) => e.toBridgeRepresentation()).toList(),
     };
     _operationQueue.clear();
-    _userMethodChannel.invokeMethod("user.edit", bridgeOperations);
+    _userMethodChannel.invokeMethod("profile.edit", bridgeOperations);
   }
 
   bool _ensureValidAttributeKey(String key) {
@@ -336,7 +336,7 @@ class BatchUserDataEditorImpl implements BatchUserDataEditor {
   }
 
   void _enqueueOperation(
-      UserDataOperationKind kind, Map<String, dynamic> arguments) {
-    _operationQueue.add(UserDataOperation(kind: kind, arguments: arguments));
+      ProfileDataOperationKind kind, Map<String, dynamic> arguments) {
+    _operationQueue.add(ProfileDataOperation(kind: kind, arguments: arguments));
   }
 }

@@ -8,8 +8,10 @@ enum Action
     OPT_IN("optIn"),
     OPT_OUT("optOut"),
     OPT_OUT_AND_WIPE_DATA("optOutAndWipeData"),
+
     MESSAGING_SET_DO_NOT_DISTURB_ENABLED("messaging.setDoNotDisturbEnabled"),
     MESSAGING_SHOW_PENDING_MESSAGE("messaging.showPendingMessage"),
+
     PUSH_GET_LAST_KNOWN_TOKEN("push.getLastKnownPushToken"),
     PUSH_REQUEST_PERMISSION("push.requestPermission"),
     PUSH_IOS_REQUEST_PROVISIONAL_PERMISSION("push.iOS.requestProvisionalPermission"),
@@ -17,9 +19,11 @@ enum Action
     PUSH_IOS_SET_SHOW_FOREGROUND("push.iOS.setShowForegroundNotifications"),
     PUSH_CLEAR_BADGE("push.clearBadge"),
     PUSH_DISMISS_NOTIFICATIONS("push.dismissNotifications"),
-	USER_EDIT("user.edit"),
-	USER_TRACK_EVENT("user.track.event"),
-    USER_TRACK_LOCATION("user.track.location"),
+
+	PROFILE_EDIT("profile.edit"),
+	PROFILE_TRACK_EVENT("profile.track.event"),
+    PROFILE_TRACK_LOCATION("profile.track.location"),
+
     USER_GET_IDENTIFIER("user.getIdentifier"),
     USER_GET_LANGUAGE("user.getLanguage"),
     USER_GET_REGION("user.getRegion"),
