@@ -1,3 +1,5 @@
+import 'dart:ffi';
+
 import 'package:flutter/services.dart';
 
 /// Batch SDK Flutter Plugin main module.
@@ -69,5 +71,14 @@ class Batch {
   /// can be sent to Batch's servers.
   Future<void> optOutAndWipeData() async {
     await _channel.invokeMethod('optOutAndWipeData');
+  }
+
+  /// Checks whether Batch has been opted out from or not.
+  ///
+  /// Returns a promise that resolves to a boolean value indicating whether Batch
+  /// has been opted out from or not.
+  Future<bool> isOptedOut() async {
+    bool isOptedOut = await _channel.invokeMethod('isOptedOut');
+    return isOptedOut;
   }
 }
