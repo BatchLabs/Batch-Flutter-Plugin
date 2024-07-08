@@ -1,4 +1,4 @@
-import 'package:batch_flutter/batch_user.dart';
+import 'package:batch_flutter/batch_profile.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
 import 'package:flutter/foundation.dart' as foundation;
@@ -14,7 +14,7 @@ class SubscriptionsModel extends foundation.ChangeNotifier {
   bool _subscribedToFlashSales = true;
   bool _subscribedToSuggestedContent = true;
   bool _subscribedToFashionSuggestions = true;
-  bool _subscibedToOtherSuggestions = true;
+  bool _subscribedToOtherSuggestions = true;
 
   get subscribedToFlashSales => this._subscribedToFlashSales;
 
@@ -37,10 +37,10 @@ class SubscriptionsModel extends foundation.ChangeNotifier {
     performSetterSideEffects();
   }
 
-  get subscribedToOtherSuggestions => this._subscibedToOtherSuggestions;
+  get subscribedToOtherSuggestions => this._subscribedToOtherSuggestions;
 
   set subscribedToOtherSuggestions(suggestionOther) {
-    this._subscibedToOtherSuggestions = suggestionOther;
+    this._subscribedToOtherSuggestions = suggestionOther;
     performSetterSideEffects();
   }
 
@@ -51,7 +51,7 @@ class SubscriptionsModel extends foundation.ChangeNotifier {
     _subscribedToFashionSuggestions = prefs.getBool(
             _suggestionTopicsCollection + "_" + _suggestionTopicFashionKey) ??
         true;
-    _subscibedToOtherSuggestions = prefs.getBool(
+    _subscribedToOtherSuggestions = prefs.getBool(
             _suggestionTopicsCollection + "_" + _suggestionTopicOtherKey) ??
         true;
     notifyListeners();
@@ -77,23 +77,23 @@ class SubscriptionsModel extends foundation.ChangeNotifier {
         _suggestionTopicsCollection + "_" + _suggestionTopicFashionKey,
         _subscribedToFashionSuggestions);
     prefs.setBool(_suggestionTopicsCollection + "_" + _suggestionTopicOtherKey,
-        _subscibedToOtherSuggestions);
+        _subscribedToOtherSuggestions);
   }
 
   void syncWithBatch() {
-    final editor = BatchUser.instance.newEditor();
+    final editor = BatchProfile.instance.newEditor();
 
     editor.setBooleanAttribute(_flashSalesKey, _subscribedToFlashSales);
     editor.setBooleanAttribute(
         _suggestedContentKey, _subscribedToSuggestedContent);
 
-    editor.clearTagCollection(_suggestionTopicsCollection);
+    editor.removeAttribute(_suggestionTopicsCollection);
 
     if (_subscribedToFashionSuggestions) {
-      editor.addTag(_suggestionTopicsCollection, _suggestionTopicFashionKey);
+      editor.addToArray(_suggestionTopicsCollection, _suggestionTopicFashionKey);
     }
-    if (_subscibedToOtherSuggestions) {
-      editor.addTag(_suggestionTopicsCollection, _suggestionTopicOtherKey);
+    if (_subscribedToOtherSuggestions) {
+      editor.addToArray(_suggestionTopicsCollection, _suggestionTopicOtherKey);
     }
 
     editor.save();
