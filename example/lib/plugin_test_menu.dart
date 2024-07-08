@@ -3,6 +3,7 @@ import 'package:batch_flutter/batch_push.dart';
 import 'package:batch_flutter/batch_inbox.dart';
 import 'package:batch_flutter/batch_messaging.dart';
 import 'package:batch_flutter/batch_user.dart';
+import 'package:batch_flutter/batch_profile.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 
@@ -78,29 +79,30 @@ class _PluginTestMenuState extends State<PluginTestMenu> {
     eventData.putInteger("int", 1);
     eventData.putDouble("double", 2.3);
     eventData.putUrl("url", Uri.parse("https://batch.com/about"));
-    eventData.addTag("tag1");
-    eventData.addTag("tag1").addTag("tag2");
-    BatchUser.instance
-        .trackEvent(name: "test_event", label: "test_label", data: eventData);
-
-    BatchUser.instance.trackLocation(latitude: 0.4, longitude: 0.523232);
-    BatchUser.instance.trackTransaction(0.34);
+    eventData.putObject("myObj", eventData);
+    eventData.putObjectList("obj_list", [eventData, new BatchEventData().putString("obj_list_item2", "value")]);
+    eventData.putString("\$label", "test_label");
+    eventData.putStringList("\$tags", ["tag1", "tag2"]);
+    BatchProfile.instance.trackEvent(name: "test_event", data: eventData);
+    BatchProfile.instance.trackLocation(latitude: 0.4, longitude: 0.523232);
   }
 
   void testCustomData() {
-    BatchUserDataEditor editor = BatchUser.instance.newEditor();
+    BatchProfileAttributeEditor editor = BatchProfile.instance.newEditor();
     editor
-        .setIdentifier("test_user")
-        .setEmail("john.doe@batch.com")
-        .setEmailMarketingSubscriptionState(BatchEmailSubscriptionState.subscribed)
+        .setEmailAddress("john.doe@batch.com")
+        .setEmailMarketingSubscription(BatchEmailSubscriptionState.subscribed)
         .setBooleanAttribute("bootl", true)
         .setStringAttribute("string", "bar")
         .setDateTimeAttribute("date", DateTime.now())
         .setIntegerAttribute("int", 1)
         .setDoubleAttribute("double", 2.3)
         .setUrlAttribute("url", Uri.parse("https://batch.com/about"))
-        .addTag("push_optin", "foot")
-        .addTag("push_optin", "rugby")
+        .setStringListAttribute("mylist", ["michel", "c'est le bresil"])
+        .addToArray("push_optin", "foot")
+        .addToArray("mylist", "foot")
+        .addToArray("push_optin", "rugby")
+        .removeFromArray("push_optin", "coco")
         .setLanguage("pt")
         .setRegion("BR")
         .save();
@@ -114,15 +116,12 @@ class _PluginTestMenuState extends State<PluginTestMenu> {
   }
 
   void resetCustomData() {
-    BatchUser.instance
+    BatchProfile.instance
         .newEditor()
-        .setIdentifier(null)
         .setLanguage(null)
         .setRegion(null)
-        .clearAttributes()
-        .clearTagCollection("foobar")
-        .clearTags()
         .save();
+    BatchUser.instance.clearInstallationData();
   }
 
   void testInbox() async {
@@ -216,6 +215,12 @@ class _PluginTestMenuState extends State<PluginTestMenu> {
                   onPressed: () => {Batch.instance.optOutAndWipeData()},
                 ),
               ],
+            ),
+            ElevatedButton(
+              child: Text("Is Opted-Out"),
+              onPressed: () async => {
+                print(await Batch.instance.isOptedOut())
+              },
             ),
             ElevatedButton(
                 child: Text("Test inbox"), onPressed: () => testInbox()),
