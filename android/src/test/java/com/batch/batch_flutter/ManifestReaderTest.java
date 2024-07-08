@@ -1,11 +1,5 @@
 package com.batch.batch_flutter;
 
-import android.content.Context;
-import android.content.pm.PackageManager;
-import android.os.Bundle;
-
-import androidx.annotation.NonNull;
-import androidx.annotation.Nullable;
 import androidx.test.core.app.ApplicationProvider;
 import androidx.test.ext.junit.runners.AndroidJUnit4;
 
