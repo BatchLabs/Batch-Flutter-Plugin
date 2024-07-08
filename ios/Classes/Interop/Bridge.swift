@@ -61,6 +61,9 @@ struct Bridge {
                     return userDataFetchAttributes()
                 case .user_fetchTags:
                     return userDataFetchTags()
+                case .user_clearInstallationData:
+                    BatchUser.clearInstallationData()
+                    return emptySuccessPromise()
 
                 case .profile_identify:
                     try identify(parameters: parameters)

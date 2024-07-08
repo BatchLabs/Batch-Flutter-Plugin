@@ -111,6 +111,9 @@ public class BatchBridge {
                 return Promise.resolved(Batch.User.getLanguage(activity));
             case USER_GET_REGION:
                 return Promise.resolved(Batch.User.getRegion(activity));
+            case USER_CLEAR_INSTALLATION_DATA:
+                Batch.User.clearInstallationData();
+                return Promise.resolved(null);
             case PROFILE_IDENTIFY:
                 identify(parameters);
                 return Promise.resolved(null);
@@ -420,7 +423,6 @@ public class BatchBridge {
     // endregion
 
     //region User Data
-
     private static Promise<Object> userFetchAttributes(Activity activity) {
         return new Promise<>(promise -> {
             Batch.User.fetchAttributes(activity, new BatchAttributesFetchListener() {

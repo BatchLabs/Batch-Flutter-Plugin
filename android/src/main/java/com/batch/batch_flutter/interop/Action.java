@@ -31,6 +31,7 @@ enum Action
 	USER_GET_INSTALLATION_ID("user.getInstallationID"),
     USER_FETCH_ATTRIBUTES("user.fetch.attributes"),
     USER_FETCH_TAGS("user.fetch.tags"),
+    USER_CLEAR_INSTALLATION_DATA("user.clearInstallationData"),
     DEBUG_SHOW_DEBUG_VIEW("debug.showDebugView"),
 
     INBOX_CREATE_INSTALLATION_FETCHER("inbox.createInstallationFetcher"),

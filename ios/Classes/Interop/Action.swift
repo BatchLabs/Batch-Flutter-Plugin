@@ -17,7 +17,8 @@ enum Action: String {
     case user_getInstallationID = "user.getInstallationID"
     case user_fetchAttributes = "user.fetch.attributes"
     case user_fetchTags = "user.fetch.tags"
-    
+    case user_clearInstallationData = "user.clearInstallationData"
+
     case profile_identify = "profile.identify"
     case profile_edit = "profile.edit"
     case profile_trackEvent = "profile.track.event"
