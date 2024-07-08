@@ -18,6 +18,7 @@ enum Action: String {
     case user_fetchAttributes = "user.fetch.attributes"
     case user_fetchTags = "user.fetch.tags"
     
+    case profile_identify = "profile.identify"
     case profile_edit = "profile.edit"
     case profile_trackEvent = "profile.track.event"
     case profile_trackLocation = "user.track.location"

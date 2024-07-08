@@ -15,6 +15,15 @@ class BatchProfile {
   /// Batch Profile module singleton.
   static BatchProfile instance = new BatchProfile();
 
+  /// Identifies this device with a profile using a Custom User ID
+  ///
+  /// [identifier] of the profile you want to identify against. If a profile already exists,
+  /// this device will be attached to it.
+  /// Must not be longer than 1024 characters.
+  void identify(String identifier) {
+    _channel.invokeMethod("profile.identify", {'identifier': identifier});
+  }
+
   /// Instantiate a new [BatchUserDataEditor] to edit custom data attributes and tags.
   ///
   /// See [BatchUserDataEditor]'s documentation for more info.

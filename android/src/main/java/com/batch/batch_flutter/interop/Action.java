@@ -20,6 +20,7 @@ enum Action
     PUSH_CLEAR_BADGE("push.clearBadge"),
     PUSH_DISMISS_NOTIFICATIONS("push.dismissNotifications"),
 
+	PROFILE_IDENTIFY("profile.identify"),
 	PROFILE_EDIT("profile.edit"),
 	PROFILE_TRACK_EVENT("profile.track.event"),
     PROFILE_TRACK_LOCATION("profile.track.location"),
