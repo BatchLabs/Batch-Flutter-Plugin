@@ -28,8 +28,11 @@ struct Bridge {
                 case .optOutAndWipeData:
                     return optOutAndWipeData()
                 case .isOptedOut:
-                return LightPromise<AnyObject?>.resolved(BatchSDK.isOptedOut as NSNumber)
-                
+                    return LightPromise<AnyObject?>.resolved(BatchSDK.isOptedOut as NSNumber)
+                case .setAutomaticDataCollection:
+                    try setAutomaticDataCollection(parameters: parameters)
+                    return emptySuccessPromise()
+
                 case .push_iOSRefreshToken:
                     BatchPush.refreshToken()
                     return emptySuccessPromise()
@@ -128,6 +131,20 @@ struct Bridge {
         }
         
         BatchUNUserNotificationCenterDelegate.sharedInstance.showForegroundNotifications = enabled
+    }
+    
+    private func setAutomaticDataCollection(parameters: BridgeParameters) throws {
+        guard let serializedConfig = parameters["dataCollectionConfig"] as? BridgeParameters else {
+            throw BridgeError.makeBadArgumentError(argumentName: "dataCollectionConfig")
+        }
+        BatchSDK.updateAutomaticDataCollection { editor in
+            if let deviceModelEnabled = serializedConfig["deviceModel"] as? NSNumber {
+                editor.setDeviceModelEnabled(deviceModelEnabled.boolValue)
+            }
+            if let geoIPEnabled = serializedConfig["geoIP"] as? NSNumber {
+                editor.setGeoIPEnabled(geoIPEnabled.boolValue)
+            }
+        }
     }
     
     /// Convinence method to get a promise resolved with nil

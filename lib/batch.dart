@@ -81,4 +81,24 @@ class Batch {
     bool isOptedOut = await _channel.invokeMethod('isOptedOut');
     return isOptedOut;
   }
+
+  /// Configure the SDK Automatic Data Collection by passing [dataCollectionConfig], a
+  /// Map<String, bool> holding the configuration parameters.
+  ///
+  /// The following keys are allowed:
+  /// -  "geoIP": (optional - default: false) Whether Batch can resolve the GeoIP on server side.
+  /// -  "deviceBrand": (optional - default: false) Whether Batch can send the device brand information. (Android only)
+  /// -  "deviceModel": (optional - default: false) Whether Batch can send the device model information.
+  ///
+  /// Example:
+  /// ```dart
+  ///     Batch.instance.setAutomaticDataCollection({
+  ///        "geoIP": true, /// Enable GeoIP resolution on server side
+  ///        "deviceBrand": true, /// Enable automatic collection of the device brand information (android only)
+  ///        "deviceModel": true /// Enable automatic collection of the device model information
+  ///     });
+  /// ```
+  void setAutomaticDataCollection(Map<String, bool> dataCollectionConfig) {
+    _channel.invokeMethod('setAutomaticDataCollection', {"dataCollectionConfig": dataCollectionConfig});
+  }
 }

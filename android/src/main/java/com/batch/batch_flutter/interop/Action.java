@@ -9,6 +9,7 @@ enum Action
     OPT_OUT("optOut"),
     OPT_OUT_AND_WIPE_DATA("optOutAndWipeData"),
     IS_OPTED_OUT("isOptedOut"),
+    SET_AUTOMATIC_DATA_COLLECTION("setAutomaticDataCollection"),
 
     MESSAGING_SET_DO_NOT_DISTURB_ENABLED("messaging.setDoNotDisturbEnabled"),
     MESSAGING_SHOW_PENDING_MESSAGE("messaging.showPendingMessage"),
