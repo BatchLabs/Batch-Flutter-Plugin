@@ -1,6 +1,7 @@
 package com.batch.batch_flutter.interop;
 
 import static com.batch.batch_flutter.interop.BatchBridgeUtils.convertSerializedEventDataToEventAttributes;
+import static com.batch.batch_flutter.interop.BatchBridgeUtils.getOptionalTypedParameter;
 import static com.batch.batch_flutter.interop.BatchBridgeUtils.getTypedParameter;
 
 import android.app.Activity;
@@ -11,6 +12,7 @@ import androidx.annotation.NonNull;
 
 import com.batch.android.Batch;
 import com.batch.android.BatchAttributesFetchListener;
+import com.batch.android.BatchDataCollectionConfig;
 import com.batch.android.BatchEmailSubscriptionState;
 import com.batch.android.BatchEventAttributes;
 import com.batch.android.BatchMessage;
@@ -85,6 +87,9 @@ public class BatchBridge {
                 return optOut(activity, true);
             case IS_OPTED_OUT:
                 return Promise.resolved(Batch.isOptedOut(activity));
+            case SET_AUTOMATIC_DATA_COLLECTION:
+                setAutomaticDataCollection(parameters);
+                return Promise.resolved(null);
             case MESSAGING_SET_DO_NOT_DISTURB_ENABLED:
                 Batch.Messaging.setDoNotDisturbEnabled(getTypedParameter(parameters, "enabled", Boolean.class));
                 return Promise.resolved(null);
@@ -182,6 +187,16 @@ public class BatchBridge {
             } else {
                 Batch.optOut(activity, resultListener);
             }
+        });
+    }
+
+    @SuppressWarnings({"unchecked"})
+    private static void setAutomaticDataCollection(Map<String, Object> parameters) throws BatchBridgeException {
+        Map<String, Object> serializedConfig = getTypedParameter(parameters, "dataCollectionConfig", Map.class);
+        Batch.updateAutomaticDataCollection(config -> {
+            config.setDeviceBrandEnabled(getOptionalTypedParameter(serializedConfig, "deviceBrand", Boolean.class, null));
+            config.setDeviceModelEnabled(getOptionalTypedParameter(serializedConfig, "deviceModel", Boolean.class, null));
+            config.setGeoIPEnabled(getOptionalTypedParameter(serializedConfig, "geoIP", Boolean.class, null));
         });
     }
 

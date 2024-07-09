@@ -3,6 +3,7 @@ enum Action: String {
     case optOut = "optOut"
     case optOutAndWipeData = "optOutAndWipeData"
     case isOptedOut = "isOptedOut"
+    case setAutomaticDataCollection = "setAutomaticDataCollection"
     
     case push_getLastKnownPushToken = "push.getLastKnownPushToken"
     case push_RequestPermission = "push.requestPermission"
