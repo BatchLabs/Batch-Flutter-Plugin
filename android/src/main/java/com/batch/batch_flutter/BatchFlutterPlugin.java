@@ -10,12 +10,14 @@ import androidx.annotation.VisibleForTesting;
 import androidx.core.content.ContextCompat;
 
 import com.batch.android.Batch;
+import com.batch.android.BatchMigration;
 import com.batch.batch_flutter.interop.BatchBridge;
 import com.batch.batch_flutter.interop.BatchBridgeException;
 import com.batch.batch_flutter.interop.BatchBridgeNotImplementedException;
 import com.batch.batch_flutter.interop.BatchBridgePublicErrorCode;
 
 import java.lang.ref.WeakReference;
+import java.util.EnumSet;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -236,6 +238,16 @@ public class BatchFlutterPlugin implements FlutterPlugin, MethodCallHandler, Act
 
         BatchPluginConfiguration pluginConfiguration = getConfiguration(context);
         if (pluginConfiguration.getApiKey() != null) {
+            EnumSet<BatchMigration> migrations = EnumSet.noneOf(BatchMigration.class);
+            if (!pluginConfiguration.isProfileCustomIdMigrationEnabled()) {
+                BatchFlutterLogger.d("Disabling profile custom id migration.");
+                migrations.add(BatchMigration.CUSTOM_ID);
+            }
+            if (!pluginConfiguration.isProfileCustomDataMigrationEnabled()) {
+                BatchFlutterLogger.d("Disabling profile custom data migration.");
+                migrations.add(BatchMigration.CUSTOM_DATA);
+            }
+            Batch.disableMigration(migrations);
             Batch.start(pluginConfiguration.getApiKey());
             Batch.Messaging.setDoNotDisturbEnabled(pluginConfiguration.getInitialDoNotDisturbState());
             didCallSetup = true;
