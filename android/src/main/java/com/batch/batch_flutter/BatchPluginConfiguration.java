@@ -14,17 +14,17 @@ import androidx.annotation.Nullable;
 public class BatchPluginConfiguration {
 
     private static final String APIKEY_MANIFEST_KEY = "com.batch.flutter.apikey";
-    private static final String ADVANCED_INFO_MANIFEST_KEY = "com.batch.flutter.use_advanced_device_information";
+    private static final String PROFILE_CUSTOM_ID_MIGRATION_ENABLED_MANIFEST_KEY = "com.batch.flutter.profile_custom_id_migration_enabled";
+    private static final String PROFILE_CUSTOM_DATA_MIGRATION_ENABLED_MANIFEST_KEY = "com.batch.flutter.profile_custom_data_migration_enabled";
     private static final String INITIAL_DND_STATE_MANIFEST_KEY = "com.batch.flutter.do_not_disturb_initial_state";
 
     private boolean didReadManifest = false;
 
     @Nullable
     private String apiKey;
-
-    private boolean canUseAdvancedDeviceInformation = true;
-
     private boolean initialDoNotDisturbState = false;
+    private boolean profileCustomIdMigrationEnabled = true;
+    private boolean profileCustomDataMigrationEnabled = true;
 
     synchronized void initFromManifest(@NonNull Context context) {
         //noinspection ConstantConditions
@@ -38,61 +38,89 @@ public class BatchPluginConfiguration {
 
         final ManifestReader manifestReader = new ManifestReader(context);
         apiKey = manifestReader.readString(APIKEY_MANIFEST_KEY, null);
-        canUseAdvancedDeviceInformation = manifestReader.readBoolean(ADVANCED_INFO_MANIFEST_KEY, true);
         initialDoNotDisturbState = manifestReader.readBoolean(INITIAL_DND_STATE_MANIFEST_KEY, false);
+        profileCustomIdMigrationEnabled =  manifestReader.readBoolean(PROFILE_CUSTOM_ID_MIGRATION_ENABLED_MANIFEST_KEY, true);
+        profileCustomDataMigrationEnabled =  manifestReader.readBoolean(PROFILE_CUSTOM_DATA_MIGRATION_ENABLED_MANIFEST_KEY, true);
     }
     //region Public API
 
+    /**
+     * Get the API key.
+     *
+     * @return The API key.
+     */
     @Nullable
     public String getApiKey() {
         return apiKey;
     }
 
+    /**
+     * Set the API key.
+     *
+     * @param apiKey The API key.
+     * @return This BatchPluginConfiguration instance for method chaining.
+     */
     public BatchPluginConfiguration setAPIKey(@Nullable String apiKey) {
         this.apiKey = apiKey;
         return this;
     }
 
     /**
-     * Can Batch use Advertising ID
-     * Batch doesn't collects Android Advertising Identifier anymore.
+     * Get the initial do not disturb state.
      *
-     * @deprecated This method does nothing, please stop using it.
-     * @return Always return false.
+     * @return The initial do not disturb state.
      */
-    @Deprecated
-    public boolean canUseAdvertisingID() {
-        return false;
-    }
-
-    /**
-     * Batch doesn't support Android Advertising Identifier anymore.
-     *
-     * @param canUseAdvertisingID This parameter does nothing.
-     * @deprecated This method does nothing, please stop using it.
-     */
-    @Deprecated
-    public BatchPluginConfiguration setCanUseAdvertisingID(boolean canUseAdvertisingID) {
-        return this;
-    }
-
-    public boolean canUseAdvancedDeviceInformation() {
-        return canUseAdvancedDeviceInformation;
-    }
-
-    public BatchPluginConfiguration setCanUseAdvancedDeviceInformation(boolean canUseAdvancedDeviceInformation) {
-        this.canUseAdvancedDeviceInformation = canUseAdvancedDeviceInformation;
-        return this;
-    }
-
     public boolean getInitialDoNotDisturbState() {
         return initialDoNotDisturbState;
     }
 
+    /**
+     * Set the initial do not disturb state.
+     *
+     * @param initialDoNotDisturbState The initial do not disturb state.
+     * @return This BatchPluginConfiguration instance for method chaining.
+     */
     public BatchPluginConfiguration setInitialDoNotDisturbState(boolean initialDoNotDisturbState) {
         this.initialDoNotDisturbState = initialDoNotDisturbState;
         return this;
     }
 
+    /**
+     * Whether custom id migration is enabled or not.
+     */
+    public boolean isProfileCustomIdMigrationEnabled() {
+        return profileCustomIdMigrationEnabled;
+    }
+
+    /**
+     * Whether Batch should automatically identify logged-in user when running the SDK for the first time.
+     * <p>
+     * This mean user with a custom_user_id will be automatically attached a to a Profile and could be targeted within a Project scope.
+     * @param profileCustomIdMigrationEnabled whether custom id migration is enabled or not.
+     * @return This BatchPluginConfiguration instance for method chaining.
+     */
+    public BatchPluginConfiguration setProfileCustomIdMigrationEnabled(boolean profileCustomIdMigrationEnabled) {
+        this.profileCustomIdMigrationEnabled = profileCustomIdMigrationEnabled;
+        return this;
+    }
+
+    /**
+     * Whether custom data migration is enabled or not.
+     */
+    public boolean isProfileCustomDataMigrationEnabled() {
+        return profileCustomDataMigrationEnabled;
+    }
+
+    /**
+     *  Set whether Batch should automatically attach current installation's data (language/region/customDataAttributes...)
+     *  to the User's Profile when running the SDK for the first time.
+     *
+     * @param profileCustomDataMigrationEnabled whether custom data migration is enabled or not.
+     * @return This BatchPluginConfiguration instance for method chaining.
+     */
+    public BatchPluginConfiguration setProfileCustomDataMigrationEnabled(boolean profileCustomDataMigrationEnabled) {
+        this.profileCustomDataMigrationEnabled = profileCustomDataMigrationEnabled;
+        return this;
+    }
     //endregion
 }
