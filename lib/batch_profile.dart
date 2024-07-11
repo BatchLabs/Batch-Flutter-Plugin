@@ -20,7 +20,7 @@ class BatchProfile {
   /// [identifier] of the profile you want to identify against. If a profile already exists,
   /// this device will be attached to it.
   /// Must not be longer than 1024 characters.
-  void identify(String identifier) {
+  void identify(String? identifier) {
     _channel.invokeMethod("profile.identify", {'identifier': identifier});
   }
 

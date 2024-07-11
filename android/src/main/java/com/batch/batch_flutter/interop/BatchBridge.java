@@ -212,8 +212,11 @@ public class BatchBridge {
 //region Profile
 
     private static void identify(Map<String, Object> parameters) throws BatchBridgeException {
-        String identifier = getTypedParameter(parameters, "identifier", String.class);
-        Batch.Profile.identify(identifier);
+        Object identifier = parameters.get("identifier");
+        if (identifier != null && !(identifier instanceof String)) {
+            throw new BatchBridgeException(BatchBridgePublicErrorCode.BAD_BRIDGE_ARGUMENT_TYPE, "Identifier can only be a string or null");
+        }
+        Batch.Profile.identify((String) identifier);
     }
 
     @SuppressWarnings({"unchecked", "ConstantConditions"})
