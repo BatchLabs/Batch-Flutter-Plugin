@@ -1,5 +1,3 @@
-import 'dart:ffi';
-
 import 'package:flutter/services.dart';
 
 /// Batch SDK Flutter Plugin main module.
@@ -46,7 +44,7 @@ class Batch {
   ///  - Prevent the SDK from being started until you call `optIn()`
   ///  - Disable any network capability from the SDK
   ///  - Disable all In-App campaigns
-  ///  - Make the Inbox module return an error immediatly
+  ///  - Make the Inbox module return an error immediately
   ///  - Make any call to `BatchUserDataEditor.save()` do nothing
   ///  - Make any "track" methods from BatchUser ineffective
   ///

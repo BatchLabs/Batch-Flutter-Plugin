@@ -26,10 +26,15 @@ extension Bridge {
     }
 
     func identify(parameters: BridgeParameters) throws {
-        guard let identifier = parameters["identifier"] as? String else {
-            throw BridgeError.makeBadArgumentError(argumentName: "identifier")
+        let rawValue = parameters["identifier"]
+        if rawValue == nil || rawValue is NSNull {
+            BatchProfile.identify(nil)
+        } else {
+            guard let identifier = rawValue as? String else {
+                throw BridgeError.makeBadArgumentError(argumentName: "identifier")
+            }
+            BatchProfile.identify(identifier)
         }
-        BatchProfile.identify(identifier)
     }
     
     func editProfileAttributes(parameters: BridgeParameters) throws {
