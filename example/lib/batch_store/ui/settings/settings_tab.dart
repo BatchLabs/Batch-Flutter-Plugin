@@ -1,8 +1,10 @@
 import 'package:batch_flutter/batch.dart';
 import 'package:batch_flutter_example/batch_store/data/model/subscriptions.dart';
+import 'package:batch_flutter_example/data_collection_settings.dart';
 import 'package:batch_flutter_example/plugin_test_menu.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
+
 
 class SettingsTab extends StatelessWidget {
   const SettingsTab({Key? key}) : super(key: key);
@@ -48,6 +50,10 @@ class SettingsTab extends StatelessWidget {
             title: Text('Flutter plugin tests'),
             onTap: () => {_openPluginTests(context)},
           ),
+          ListTile(
+            title: Text('Data Collection Settings'),
+            onTap: () => {_openDataCollectionSettings(context)},
+          ),
         ],
       );
     });
@@ -60,6 +66,13 @@ class SettingsTab extends StatelessWidget {
           text,
           style: Theme.of(context).textTheme.titleSmall,
         ));
+  }
+
+  void _openDataCollectionSettings(BuildContext context) {
+    Navigator.push(
+      context,
+      MaterialPageRoute(builder: (context) => DataCollectionSettings()),
+    );
   }
 
   void _openPluginTests(BuildContext context) {

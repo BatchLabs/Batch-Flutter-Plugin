@@ -39,5 +39,13 @@
         <meta-data
             android:name="flutterEmbedding"
             android:value="2" />
+
+       <meta-data
+           android:name="com.batch.flutter.profile_custom_id_migration_enabled"
+           android:value="true"/>
+
+       <meta-data
+           android:name="com.batch.flutter.profile_custom_data_migration_enabled"
+           android:value="true"/>
     </application>
 </manifest>

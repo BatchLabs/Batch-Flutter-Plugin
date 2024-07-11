@@ -41,5 +41,9 @@
 	</array>
 	<key>UIViewControllerBasedStatusBarAppearance</key>
 	<false/>
+	<key>BatchFlutterProfileCustomIdMigrationEnabled</key>
+	<true/>
+	<key>BatchFlutterProfileCustomDataMigrationEnabled</key>
+	<true/>
 </dict>
 </plist>

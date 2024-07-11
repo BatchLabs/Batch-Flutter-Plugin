@@ -72,17 +72,52 @@ class _PluginTestMenuState extends State<PluginTestMenu> {
   }
 
   void testCustomEvent() {
-    BatchEventData eventData = new BatchEventData();
-    eventData.putString("string", "bar");
-    eventData.putBoolean("bool", true);
-    eventData.putDate("date", DateTime.now());
-    eventData.putInteger("int", 1);
-    eventData.putDouble("double", 2.3);
-    eventData.putUrl("url", Uri.parse("https://batch.com/about"));
-    eventData.putObject("myObj", eventData);
-    eventData.putObjectList("obj_list", [eventData, new BatchEventData().putString("obj_list_item2", "value")]);
-    eventData.putString("\$label", "test_label");
-    eventData.putStringList("\$tags", ["tag1", "tag2"]);
+    final eventData = BatchEventData()
+        .putObject(
+          'delivery_address',
+          BatchEventData()
+              .putInteger('number', 43)
+              .putString('street', 'Rue Beaubourg')
+              .putInteger('zip_code', 75003)
+              .putString('city', 'Paris')
+              .putString('country', 'France'),
+        )
+        .putInteger('number', 43)
+        .putDate('date', DateTime.now())
+        .putObjectList('items_list', [
+          BatchEventData()
+              .putString('name', 'Basic Tee')
+              .putString('size', 'M')
+              .putDouble('price', 23.99)
+              .putUrl(
+                  'item_url', Uri.parse("https://batch-store.com/basic-tee"))
+              .putUrl(
+                  'item_image',
+                  Uri.parse(
+                      "https://batch-store.com/basic-tee/black/image.png"))
+              .putBoolean('in_sales', true)
+              .putObject(
+                'level_2',
+                BatchEventData().putString('att_1', 'truc').putObject(
+                      'level_3',
+                      BatchEventData().putString('att_2', 'machin'),
+                    ),
+              ),
+          BatchEventData()
+              .putString('name', 'Short socks pack x3')
+              .putString('size', '38-40')
+              .putDouble('price', 15.99)
+              .putUrl('item_url',
+                  Uri.parse("https://batch-store.com/short-socks-pack-x3"))
+              .putUrl(
+                  'item_image',
+                  Uri.parse(
+                      "https://batch-store.com/short-socks-pack-x3/image.png"))
+              .putBoolean('in_sales', false),
+        ])
+        .putStringList('metadata', ['first_purchase', 'apple_pay'])
+        .putString('\$label', 'legacy_label')
+        .putStringList('\$tags', ['first_purchase', 'in_promo']);
     BatchProfile.instance.trackEvent(name: "test_event", data: eventData);
     BatchProfile.instance.trackLocation(latitude: 0.4, longitude: 0.523232);
   }
@@ -92,17 +127,17 @@ class _PluginTestMenuState extends State<PluginTestMenu> {
     editor
         .setEmailAddress("john.doe@batch.com")
         .setEmailMarketingSubscription(BatchEmailSubscriptionState.subscribed)
-        .setBooleanAttribute("bootl", true)
+        .setBooleanAttribute("boolean", true)
         .setStringAttribute("string", "bar")
         .setDateTimeAttribute("date", DateTime.now())
         .setIntegerAttribute("int", 1)
         .setDoubleAttribute("double", 2.3)
         .setUrlAttribute("url", Uri.parse("https://batch.com/about"))
-        .setStringListAttribute("mylist", ["michel", "c'est le bresil"])
+        .setStringListAttribute("os", ["windows", "linux"])
         .addToArray("push_optin", "foot")
-        .addToArray("mylist", "foot")
+        .addToArray("os", "macos")
         .addToArray("push_optin", "rugby")
-        .removeFromArray("push_optin", "coco")
+        .removeFromArray("push_optin", "handball")
         .setLanguage("pt")
         .setRegion("BR")
         .save();
@@ -116,8 +151,8 @@ class _PluginTestMenuState extends State<PluginTestMenu> {
   }
 
   void resetCustomData() {
-    BatchProfile.instance
-        .newEditor()
+    BatchProfile.instance.newEditor()
+        .setEmailAddress(null)
         .setLanguage(null)
         .setRegion(null)
         .save();
@@ -153,13 +188,32 @@ class _PluginTestMenuState extends State<PluginTestMenu> {
               onPressed: () => updateBatchInformation(),
             ),
             ElevatedButton(
-              child: Text("Request notif. auth. (iOS)"),
+              child: Text("Request notif. auth."),
               onPressed: () =>
                   BatchPush.instance.requestNotificationAuthorization(),
             ),
-            ElevatedButton(
-              child: Text("Open Batch Debug"),
-              onPressed: () => {Batch.instance.showDebugView()},
+            Row(
+              children: <Widget>[
+                Flexible(
+                  child: TextField(
+                    onChanged: (text) {
+                      _customID = text;
+                    },
+                    decoration: InputDecoration(
+                      border: OutlineInputBorder(),
+                      hintText: 'Identifier or empty to logout',
+                    ),
+                  ),
+                ),
+                ElevatedButton(
+                  child: Text("Identify"),
+                  onPressed: () => {
+                    _customID.isEmpty
+                        ? BatchProfile.instance.identify(null)
+                        : BatchProfile.instance.identify(_customID)
+                  },
+                ),
+              ],
             ),
             Row(children: [
               ElevatedButton(
@@ -218,9 +272,7 @@ class _PluginTestMenuState extends State<PluginTestMenu> {
             ),
             ElevatedButton(
               child: Text("Is Opted-Out"),
-              onPressed: () async => {
-                print(await Batch.instance.isOptedOut())
-              },
+              onPressed: () async => {print(await Batch.instance.isOptedOut())},
             ),
             ElevatedButton(
                 child: Text("Test inbox"), onPressed: () => testInbox()),
