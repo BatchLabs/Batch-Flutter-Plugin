@@ -72,10 +72,10 @@ class _PluginTestMenuState extends State<PluginTestMenu> {
   }
 
   void testCustomEvent() {
-    final eventData = BatchEventData()
+    final eventData = BatchEventAttributes()
         .putObject(
           'delivery_address',
-          BatchEventData()
+          BatchEventAttributes()
               .putInteger('number', 43)
               .putString('street', 'Rue Beaubourg')
               .putInteger('zip_code', 75003)
@@ -85,7 +85,7 @@ class _PluginTestMenuState extends State<PluginTestMenu> {
         .putInteger('number', 43)
         .putDate('date', DateTime.now())
         .putObjectList('items_list', [
-          BatchEventData()
+          BatchEventAttributes()
               .putString('name', 'Basic Tee')
               .putString('size', 'M')
               .putDouble('price', 23.99)
@@ -98,12 +98,12 @@ class _PluginTestMenuState extends State<PluginTestMenu> {
               .putBoolean('in_sales', true)
               .putObject(
                 'level_2',
-                BatchEventData().putString('att_1', 'truc').putObject(
+                BatchEventAttributes().putString('att_1', 'truc').putObject(
                       'level_3',
-                      BatchEventData().putString('att_2', 'machin'),
+                      BatchEventAttributes().putString('att_2', 'machin'),
                     ),
               ),
-          BatchEventData()
+          BatchEventAttributes()
               .putString('name', 'Short socks pack x3')
               .putString('size', '38-40')
               .putDouble('price', 15.99)
