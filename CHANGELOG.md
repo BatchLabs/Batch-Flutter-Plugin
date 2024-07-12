@@ -7,6 +7,16 @@ This is a major release, please see our [migration guide](https://doc.batch.com/
 * Batch requires iOS 13.0 or higher.
 * Batch requires a `minSdk` level of 21 or higher.
 
+**iOS**
+
+- Added `profileCustomIdMigrationEnabled` property to disable the profile custom id migration. This can also be done from the `Info.plist` file. See our documentation for info.
+- Added `profileCustomDataMigrationEnabled` property to disable the profile custom data migration. This can also be done from the `Info.plist` file. See our documentation for info.
+
+**Android**
+
+- Added `setProfileCustomIdMigrationEnabled` method to disable the profile custom id migration. This can also be done from the `AndroidManifest` meta-data. See our documentation for info.
+- Added `setProfileCustomDataMigrationEnabled` method to disable the profile custom data migration. This can also be done from the `AndroidManifest` meta-data. See our documentation for info.
+
 **Core**
 - Added method `isOptedOut` to checks whether Batch has been opted out from or not.
 - Added method `setAutomaticDataCollection` to fine-tune the data you authorize to be tracked by Batch.
@@ -34,7 +44,7 @@ This version introduced two new types of attribute that can be attached to an ev
 Introduced `BatchProfile`, a new module that enables interacting with profiles. Its functionality replaces most of BatchUser used to do.
 
 - Added `identify` API as replacement of `BatchUser.instance.newEditor().setIdentifier`.
-- Added `editor` method to get a new instance of a `BatchProfileAttributeEditor` as replacement of `BatchUserDataEditor`.
+- Added `newEditor` method to get a new instance of a `BatchProfileAttributeEditor` as replacement of `BatchUserDataEditor`.
 - Added `trackEvent` API as replacement of the `BatchUser.instance.trackEvent` methods.
 - Added `trackLocation` API as replacement of the `BatchUser.instance.trackLocation` method.
 
