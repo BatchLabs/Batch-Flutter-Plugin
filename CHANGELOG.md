@@ -1,3 +1,43 @@
+## 2.0.0
+
+This is a major release, please see our [migration guide](https://doc.batch.com/flutter/advanced/1x-migration/) for more info on how to update your current Batch implementation.
+
+**Plugin**
+* Updated Batch to 2.0. For more information see the [ios](https://doc.batch.com/ios/sdk-changelog/#2_0_0) and [android](https://doc.batch.com/android/sdk-changelog/#2_0_0) changelog .
+* Batch requires iOS 13.0 or higher.
+* Batch requires a `minSdk` level of 21 or higher.
+
+**Core**
+- Added method `isOptedOut` to checks whether Batch has been opted out from or not.
+- Added method `setAutomaticDataCollection` to fine-tune the data you authorize to be tracked by Batch.
+
+**User**
+- Removed method `trackTransaction` with no equivalent.
+- Removed method `BatchUser.newEditor` and the related class `BatchUserDataEditor`, you should now use `BatchProfile.instance.newEditor()` which return an instance of `BatchProfileAttributeEditor`.
+- Added method `clearInstallationData` which allows you to remove the installation data without modifying the current profile.
+
+**Event**
+
+This version introduced two new types of attribute that can be attached to an event : Array and Object.
+
+- Removed `trackEvent` APIs from the user module. You should now use `BatchProfile.instance.trackEvent`.
+- `BatchEventData` has been renamed into `BatchEventAttributes`.
+- Added support of type Array and Object with the following:
+  - Added `putObject` method to `BatchEventAttributes`.
+  - Added `putObjectList` method `BatchEventAttributes`.
+  - Added `putStringList` method `BatchEventAttributes`.
+- Removed `addTag` API from `BatchEventData` You should now use the `$tags` key with `putStringList` method.
+- Removed parameter `label` from `trackEvent` API. You should now use the `$label` key in `BatchEventAttributes` with the `putString` method.
+
+**Profile**
+
+Introduced `BatchProfile`, a new module that enables interacting with profiles. Its functionality replaces most of BatchUser used to do.
+
+- Added `identify` API as replacement of `BatchUser.instance.newEditor().setIdentifier`.
+- Added `editor` method to get a new instance of a `BatchProfileAttributeEditor` as replacement of `BatchUserDataEditor`.
+- Added `trackEvent` API as replacement of the `BatchUser.instance.trackEvent` methods.
+- Added `trackLocation` API as replacement of the `BatchUser.instance.trackLocation` method.
+
 ## 1.4.0
 
 **Plugin**
