@@ -42,7 +42,7 @@ import java.util.Set;
 public class BatchBridge {
     private static final String BRIDGE_VERSION_ENVIRONEMENT_VAR = "batch.bridge.version";
 
-    private static final String BRIDGE_VERSION = "Bridge/1.3";
+    private static final String BRIDGE_VERSION = "Bridge/2.0";
 
     private static final InboxBridge inboxBridge = new InboxBridge();
 
