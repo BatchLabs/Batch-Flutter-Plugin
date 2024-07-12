@@ -4,7 +4,7 @@
 #
 Pod::Spec.new do |s|
   s.name             = 'batch_flutter'
-  s.version          = '0.0.6'
+  s.version          = '2.0.0'
   s.summary          = 'Batch.com Flutter Plugin'
   s.homepage         = 'https://batch.com'
   s.license          = { :type => 'MIT', :file => '../LICENSE' }
