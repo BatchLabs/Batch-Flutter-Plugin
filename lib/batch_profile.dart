@@ -24,9 +24,9 @@ class BatchProfile {
     _channel.invokeMethod("profile.identify", {'identifier': identifier});
   }
 
-  /// Instantiate a new [BatchUserDataEditor] to edit custom data attributes and tags.
+  /// Instantiate a new [BatchProfileAttributeEditor] to edit custom data attributes.
   ///
-  /// See [BatchUserDataEditor]'s documentation for more info.
+  /// See [BatchProfileAttributeEditor]'s documentation for more info.
   BatchProfileAttributeEditor newEditor() {
     return BatchProfileAttributeEditorImpl(_channel);
   }
@@ -36,9 +36,9 @@ class BatchProfile {
   /// The event name is required and must not be empty. It should be composed of letters,
   /// numbers or underscores (\[a-z0-9_\]) and can’t be longer than 30 characters.
   ///
-  /// The event data is an optional object holding attributes and tags related
-  /// to the event. See [BatchEventData]'s documentation for more info.
-  void trackEvent({required String name, BatchEventData? data}) {
+  /// The event attributes are an optional object holding attributes related
+  /// to the event. See [BatchEventAttributes]'s documentation for more info.
+  void trackEvent({required String name, BatchEventAttributes? data}) {
     Map eventArgs = {"name": name};
     if (data != null) {
       eventArgs["event_data"] = data.internalGetBridgeRepresentation();
@@ -193,7 +193,7 @@ abstract class BatchProfileAttributeEditor {
 ///
 /// Keys should be strings composed of letters, numbers or underscores
 /// (\[a-z0-9_\]) and can't be longer than 30 characters.
-class BatchEventData {
+class BatchEventAttributes {
 
   Map<String, TypedAttribute> _attributes = new HashMap();
 
@@ -206,7 +206,7 @@ class BatchEventData {
   /// The attribute string value can't be empty or longer than 64 characters.
   /// For better results, you should trim/lowercase your strings
   /// and use slugs when possible.
-  BatchEventData putString(String key, String value) {
+  BatchEventAttributes putString(String key, String value) {
     _attributes[key.toLowerCase()] = TypedAttribute(type: TypedAttributeType.string, value: value);
     return this;
   }
@@ -218,7 +218,7 @@ class BatchEventData {
   ///
   /// While the value is an Uri instance, it must be a valid URL and
   /// not be longer than 2048 characters.
-  BatchEventData putUrl(String key, Uri value) {
+  BatchEventAttributes putUrl(String key, Uri value) {
     _attributes[key.toLowerCase()] = TypedAttribute(type: TypedAttributeType.url, value: value.toString());
     return this;
   }
@@ -227,7 +227,7 @@ class BatchEventData {
   ///
   /// The attribute key should be a string composed of letters, numbers
   /// or underscores (\[a-z0-9_\]) and can't be longer than 30 characters.
-  BatchEventData putBoolean(String key, bool value) {
+  BatchEventAttributes putBoolean(String key, bool value) {
     _attributes[key.toLowerCase()] = TypedAttribute(type: TypedAttributeType.boolean, value: value);
     return this;
   }
@@ -236,7 +236,7 @@ class BatchEventData {
   ///
   /// The attribute key should be a string composed of letters, numbers
   /// or underscores (\[a-z0-9_\]) and can't be longer than 30 characters.
-  BatchEventData putInteger(String key, int value) {
+  BatchEventAttributes putInteger(String key, int value) {
     _attributes[key.toLowerCase()] = TypedAttribute(type: TypedAttributeType.integer, value: value);
     return this;
   }
@@ -245,7 +245,7 @@ class BatchEventData {
   ///
   /// The attribute key should be a string composed of letters, numbers
   /// or underscores (\[a-z0-9_\]) and can't be longer than 30 characters.
-  BatchEventData putDouble(String key, double value) {
+  BatchEventAttributes putDouble(String key, double value) {
     _attributes[key.toLowerCase()] = TypedAttribute(type: TypedAttributeType.float, value: value);
     return this;
   }
@@ -257,7 +257,7 @@ class BatchEventData {
   ///
   /// Date attribute values are sent in UTC to Batch. If you notice that the reported
   /// time may be off, try making an UTC DateTime for consistency.
-  BatchEventData putDate(String key, DateTime value) {
+  BatchEventAttributes putDate(String key, DateTime value) {
     _attributes[key.toLowerCase()] = TypedAttribute(
         type: TypedAttributeType.date,
         value: value.toUtc().millisecondsSinceEpoch);
@@ -268,7 +268,7 @@ class BatchEventData {
   ///
   /// The attribute key should be a string composed of letters, numbers
   /// or underscores (\[a-z0-9_\]) and can't be longer than 30 characters.
-  BatchEventData putObject(String key, BatchEventData value) {
+  BatchEventAttributes putObject(String key, BatchEventAttributes value) {
     _attributes[key.toLowerCase()] = TypedAttribute(type: TypedAttributeType.object, value: value.internalGetBridgeRepresentation());
     return this;
   }
@@ -277,7 +277,7 @@ class BatchEventData {
   ///
   /// The attribute key should be a string composed of letters, numbers
   /// or underscores (\[a-z0-9_\]) and can't be longer than 30 characters.
-  BatchEventData putObjectList(String key, List<BatchEventData> value) {
+  BatchEventAttributes putObjectList(String key, List<BatchEventAttributes> value) {
     List array = [];
     value.forEach((element) {
       array.add(element.internalGetBridgeRepresentation());
@@ -290,7 +290,7 @@ class BatchEventData {
   ///
   /// The attribute key should be a string composed of letters, numbers
   /// or underscores (\[a-z0-9_\]) and can't be longer than 30 characters.
-  BatchEventData putStringList(String key, List<String> value) {
+  BatchEventAttributes putStringList(String key, List<String> value) {
     _attributes[key.toLowerCase()] = TypedAttribute(type: TypedAttributeType.string_array, value: value);
     return this;
   }
