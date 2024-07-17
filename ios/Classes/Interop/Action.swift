@@ -24,7 +24,7 @@ enum Action: String {
     case profile_identify = "profile.identify"
     case profile_edit = "profile.edit"
     case profile_trackEvent = "profile.track.event"
-    case profile_trackLocation = "user.track.location"
+    case profile_trackLocation = "profile.track.location"
     
     case inbox_createInstallationFetcher = "inbox.createInstallationFetcher"
     case inbox_createUserFetcher = "inbox.createUserFetcher"
