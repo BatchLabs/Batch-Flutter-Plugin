@@ -9,9 +9,9 @@ internal class LightPromise<T> {
     typealias ThenBlock = (T) -> Void
     typealias CatchBlock = (Error?) -> Void
     
-    enum Status<T> {
+    enum Status<S> {
         case pending
-        case resolved(value: T)
+        case resolved(value: S)
         case rejected(error: Error?)
     }
     
@@ -33,14 +33,14 @@ internal class LightPromise<T> {
 
     //MARK: Public API
     
-    static func resolved<T>(_ value: T) -> LightPromise<T> {
-        return LightPromise<T> { resolve, _ in
+    static func resolved<P>(_ value: P) -> LightPromise<P> {
+        return LightPromise<P> { resolve, _ in
             resolve(value)
         }
     }
     
-    static func rejected<T>(_ error: Error?) -> LightPromise<T> {
-        return LightPromise<T> { _, reject in
+    static func rejected<R>(_ error: Error?) -> LightPromise<R> {
+        return LightPromise<R> { _, reject in
             reject(error)
         }
     }
