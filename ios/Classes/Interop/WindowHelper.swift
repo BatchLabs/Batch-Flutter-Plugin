@@ -7,8 +7,10 @@ internal struct WindowHelper {
         var window: UIWindow?
         if #available(iOS 13.0, *) {
             window = keyWindowFromScene
+        } else {
+            window = UIApplication.shared.keyWindow
         }
-        return window ?? UIApplication.shared.keyWindow
+        return window
     }
     
     /// The view controller that we think is the one currently visible (as in not covered by another one)
