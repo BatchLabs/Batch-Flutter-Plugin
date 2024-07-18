@@ -36,12 +36,12 @@ class BatchProfile {
   /// The event name is required and must not be empty. It should be composed of letters,
   /// numbers or underscores (\[a-z0-9_\]) and can’t be longer than 30 characters.
   ///
-  /// The event attributes are an optional object holding attributes related
+  /// The event [attributes] are an optional object holding attributes related
   /// to the event. See [BatchEventAttributes]'s documentation for more info.
-  void trackEvent({required String name, BatchEventAttributes? data}) {
+  void trackEvent({required String name, BatchEventAttributes? attributes}) {
     Map eventArgs = {"name": name};
-    if (data != null) {
-      eventArgs["event_data"] = data.internalGetBridgeRepresentation();
+    if (attributes != null) {
+      eventArgs["event_data"] = attributes.internalGetBridgeRepresentation();
     }
     _channel.invokeMethod("profile.track.event", eventArgs).catchError((error) => {
       BatchLogger.public("Tracking event '"+ name +"' failed with error: " + error.toString())
