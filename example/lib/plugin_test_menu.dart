@@ -118,7 +118,7 @@ class _PluginTestMenuState extends State<PluginTestMenu> {
         .putStringList('metadata', ['first_purchase', 'apple_pay'])
         .putString('\$label', 'legacy_label')
         .putStringList('\$tags', ['first_purchase', 'in_promo']);
-    BatchProfile.instance.trackEvent(name: "test_event", data: eventData);
+    BatchProfile.instance.trackEvent(name: "test_event", attributes: eventData);
     BatchProfile.instance.trackLocation(latitude: 0.4, longitude: 0.523232);
   }
 
