@@ -9,11 +9,15 @@ This is a major release, please see our [migration guide](https://doc.batch.com/
 
 **iOS**
 
+- Removed deprecated `canUseIDFA` property from `BatchPluginConfiguration`.
+- Removed `canUseAdvancedDeviceInformation`property from `BatchPluginConfiguration`. You should now use the `setAutomaticDataCollection` API.
 - Added `profileCustomIdMigrationEnabled` property to disable the profile custom id migration. This can also be done from the `Info.plist` file. See our documentation for info.
 - Added `profileCustomDataMigrationEnabled` property to disable the profile custom data migration. This can also be done from the `Info.plist` file. See our documentation for info.
 
 **Android**
 
+- Removed deprecated `canUseAdvertisingID` method from `BatchPluginConfiguration`.
+- Removed `setCanUseAdvancedDeviceInformation` and `canUseAdvancedDeviceInformation` method from `BatchPluginConfiguration`. You should now use the new `setAutomaticDataCollection` API.
 - Added `setProfileCustomIdMigrationEnabled` method to disable the profile custom id migration. This can also be done from the `AndroidManifest` meta-data. See our documentation for info.
 - Added `setProfileCustomDataMigrationEnabled` method to disable the profile custom data migration. This can also be done from the `AndroidManifest` meta-data. See our documentation for info.
 
@@ -36,7 +40,7 @@ This version introduced two new types of attribute that can be attached to an ev
   - Added `putObject` method to `BatchEventAttributes`.
   - Added `putObjectList` method `BatchEventAttributes`.
   - Added `putStringList` method `BatchEventAttributes`.
-- Removed `addTag` API from `BatchEventData` You should now use the `$tags` key with `putStringList` method.
+- Removed `addTag` API from `BatchEventData` You should now use the `$tags` key in `BatchEventAttributes` with the `putStringList` method.
 - Removed parameter `label` from `trackEvent` API. You should now use the `$label` key in `BatchEventAttributes` with the `putString` method.
 
 **Profile**
