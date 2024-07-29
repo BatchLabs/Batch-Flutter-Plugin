@@ -7,7 +7,7 @@ doc:
 
 doc-ios:
 	rm -rf api_docs/flutter-ios-api-reference
-	swift-doc generate --module-name batch_flutter --format html --base-url "/flutter-ios-api-reference" ./ios/Classes/ -o "api_docs/flutter-ios-api-reference"
+	`xcrun -find docc` process-archive transform-for-static-hosting  ./api_docs/batch_flutter.doccarchive --hosting-base-path flutter-ios-api-reference --output-path ./api_docs/flutter-ios-api-reference
 
 doc-android:
 	rm -rf api_docs/flutter-android-api-reference
