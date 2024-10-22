@@ -27,6 +27,16 @@ public class BatchFlutterPlugin: NSObject, FlutterPlugin {
     }
     
     public static func register(with registrar: FlutterPluginRegistrar) {
+        // Do not register if registrar or registrar.messenger is nil, even though
+        // it is never supposed to be according to the headers: it can be.
+        // Workaround for a Flutter bug: https://github.com/flutter/flutter/issues/67624#issuecomment-801971172
+        #if DEBUG
+        let messenger = (registrar as? NSObject)?.value(forKey: "messenger")
+            if messenger == nil {
+                return
+        }
+        #endif
+        
         let instance = BatchFlutterPlugin()
         registerChannel(name: "batch_flutter", registrar: registrar, pluginInstance: instance)
         registerChannel(name: "batch_flutter.user", registrar: registrar, pluginInstance: instance)

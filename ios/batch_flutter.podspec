@@ -12,7 +12,7 @@ Pod::Spec.new do |s|
     "Batch.com" => "support@batch.com"
   }
   s.source           = { :path => '.' }
-  s.source_files = 'Classes/**/*'
+  s.source_files = 'batch_flutter/Sources/batch_flutter/**/*'
   s.dependency 'Flutter'
   s.dependency 'Batch', '~> 2.0.0'
 
@@ -24,6 +24,6 @@ Pod::Spec.new do |s|
 
   # Unit Tests
   s.test_spec 'Tests' do |test_spec|
-    test_spec.source_files = 'Tests/**/*.{h,m,swift}'
+    test_spec.source_files = 'batch_flutter/Tests/batch_flutter_test/**/*.{h,m,swift}'
   end
 end
