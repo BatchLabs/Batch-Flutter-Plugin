@@ -30,7 +30,7 @@ flutter:
         package: com.batch.batch_flutter
         pluginClass: BatchFlutterPlugin
       ios:
-        pluginClass: BatchFlutterPluginTrampoline
+        pluginClass: BatchFlutterPlugin
 
   # To add assets to your plugin package, add an assets section, like this:
   # assets:
