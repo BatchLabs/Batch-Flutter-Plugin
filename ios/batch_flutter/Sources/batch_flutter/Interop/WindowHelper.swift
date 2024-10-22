@@ -1,4 +1,5 @@
 import Foundation
+import UIKit
 
 // Swift port of Batch's BAWindowHelper
 internal struct WindowHelper {
