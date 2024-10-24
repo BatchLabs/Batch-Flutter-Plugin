@@ -1,3 +1,9 @@
+## UPCOMING
+
+**iOS**
+- Added support for Swift Package Manager. Since, as of writing, [Flutter's support of SPM](https://docs.flutter.dev/packages-and-plugins/swift-package-manager) is still under development, this may not work in future versions of Flutter. Batch is still backwards compatible with CocoaPods.
+
+
 ## 2.0.0
 
 This is a major release, please see our [migration guide](https://doc.batch.com/flutter/advanced/1x-migration/) for more info on how to update your current Batch implementation.
@@ -51,6 +57,7 @@ Introduced `BatchProfile`, a new module that enables interacting with profiles. 
 - Added `newEditor` method to get a new instance of a `BatchProfileAttributeEditor` as replacement of `BatchUserDataEditor`.
 - Added `trackEvent` API as replacement of the `BatchUser.instance.trackEvent` methods.
 - Added `trackLocation` API as replacement of the `BatchUser.instance.trackLocation` method.
+
 
 ## 1.4.0
 
