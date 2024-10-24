@@ -3,7 +3,7 @@ import Flutter
 import batch_flutter
 import Batch
 
-@UIApplicationMain
+@main
 @objc class AppDelegate: FlutterAppDelegate {
   override func application(
     _ application: UIApplication,
