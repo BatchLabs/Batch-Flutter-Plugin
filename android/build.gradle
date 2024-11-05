@@ -23,7 +23,7 @@ apply plugin: 'com.android.library'
 
 android {
     namespace "com.batch.batch_flutter"
-    compileSdkVersion 34
+    compileSdkVersion 35
 
     defaultConfig {
         minSdkVersion 21
@@ -41,7 +41,7 @@ android {
     }
 
     dependencies {
-        api 'com.batch.android:batch-sdk:2.0.+'
+        api 'com.batch.android:batch-sdk:2.1.+'
         //noinspection GradleDynamicVersion
         implementation 'androidx.appcompat:appcompat:1.2.0'
 
