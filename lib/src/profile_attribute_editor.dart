@@ -12,6 +12,8 @@ enum ProfileDataOperationKind {
   setRegion,
   setEmailAddress,
   setEmailMarketingSubscription,
+  setPhoneNumber,
+  setSMSMarketingSubscription,
   setAttribute,
   removeAttribute,
   addToArray,
@@ -29,6 +31,10 @@ extension ProfileDataOperationKindBridge on ProfileDataOperationKind {
         return "SET_EMAIL_ADDRESS";
       case ProfileDataOperationKind.setEmailMarketingSubscription:
         return "SET_EMAIL_MARKETING_SUBSCRIPTION";
+      case ProfileDataOperationKind.setPhoneNumber:
+        return "SET_PHONE_NUMBER";
+      case ProfileDataOperationKind.setSMSMarketingSubscription:
+        return "SET_SMS_MARKETING_SUBSCRIPTION";
       case ProfileDataOperationKind.setAttribute:
         return "SET_ATTRIBUTE";
       case ProfileDataOperationKind.removeAttribute:
@@ -77,7 +83,7 @@ class BatchProfileAttributeEditorImpl implements BatchProfileAttributeEditor {
   BatchProfileAttributeEditor setLanguage(String? language) {
     if (language != null && language.length == 0) {
       BatchLogger.public(
-          "BatchUserDataEditor - Language override cannot be empty. If " +
+          "BatchProfileAttributeEditor - Language override cannot be empty. If " +
               "you meant to un-set the language, please use null.");
       return this;
     }
@@ -93,7 +99,7 @@ class BatchProfileAttributeEditorImpl implements BatchProfileAttributeEditor {
   BatchProfileAttributeEditor setRegion(String? region) {
     if (region != null && region.length == 0) {
       BatchLogger.public(
-          "BatchUserDataEditor - Region override cannot be empty. If " +
+          "BatchProfileAttributeEditor - Region override cannot be empty. If " +
               "you meant to un-set the region, please use null.");
       return this;
     }
@@ -110,7 +116,7 @@ class BatchProfileAttributeEditorImpl implements BatchProfileAttributeEditor {
   BatchProfileAttributeEditor setEmailAddress(String? address) {
     if (address != null && address.length == 0) {
       BatchLogger.public(
-          "BatchUserDataEditor - Email cannot be empty. If " +
+          "BatchProfileAttributeEditor - Email cannot be empty. If " +
               "you meant to un-set the email, please use null.");
       return this;
     }
@@ -124,6 +130,29 @@ class BatchProfileAttributeEditorImpl implements BatchProfileAttributeEditor {
   @override
   BatchProfileAttributeEditor setEmailMarketingSubscription(BatchEmailSubscriptionState state) {
     _enqueueOperation(ProfileDataOperationKind.setEmailMarketingSubscription, {
+      "value": state.name,
+    });
+    return this;
+  }
+
+  @override
+  BatchProfileAttributeEditor setPhoneNumber(String? phoneNumber) {
+    if (phoneNumber != null && phoneNumber.length == 0) {
+      BatchLogger.public(
+          "BatchProfileAttributeEditor - phoneNumber cannot be empty. If " +
+              "you meant to un-set the phone number, please use null.");
+      return this;
+    }
+
+    _enqueueOperation(ProfileDataOperationKind.setPhoneNumber, {
+      "value": phoneNumber,
+    });
+    return this;
+  }
+
+  @override
+  BatchProfileAttributeEditor setSMSMarketingSubscription(BatchSMSSubscriptionState state) {
+    _enqueueOperation(ProfileDataOperationKind.setSMSMarketingSubscription, {
       "value": state.name,
     });
     return this;
@@ -239,7 +268,7 @@ class BatchProfileAttributeEditorImpl implements BatchProfileAttributeEditor {
       });
     } else {
       BatchLogger.public(
-          "BatchUserDataEditor - Invalid attribute string value. String " +
+          "BatchProfileAttributeEditor - Invalid attribute string value. String " +
               "attributes cannot be longer than 64 characters (bytes). " +
               "Ignoring attribute '$key'.");
     }
@@ -254,13 +283,13 @@ class BatchProfileAttributeEditorImpl implements BatchProfileAttributeEditor {
     }
     if (value.length > _maxStringArrayLength) {
       BatchLogger.public(
-          "BatchUserDataEditor - List of string attributes must not be longer than 25 items. " +
+          "BatchProfileAttributeEditor - List of string attributes must not be longer than 25 items. " +
               "Ignoring attribute '$key'.");
     }
     for (String item in value) {
       if(!_ensureValidStringItem(item)) {
         BatchLogger.public(
-            "BatchUserDataEditor - List of string attributes must respect the string attribute limitations. " +
+            "BatchProfileAttributeEditor - List of string attributes must respect the string attribute limitations. " +
                 "Ignoring attribute '$key'.");
         return this;
       }
@@ -315,7 +344,7 @@ class BatchProfileAttributeEditorImpl implements BatchProfileAttributeEditor {
   bool _ensureValidAttributeKey(String key) {
     if (!_attributeKeyRegexp.hasMatch(key)) {
       BatchLogger.public(
-          "BatchUserDataEditor - Invalid attribute key. Please make sure that " +
+          "BatchProfileAttributeEditor - Invalid attribute key. Please make sure that " +
               "the key is made of letters, underscores and numbers only " +
               "(a-zA-Z0-9_). It also can't be longer than 30 characters. " +
               "Ignoring attribute '$key'.");
@@ -327,7 +356,7 @@ class BatchProfileAttributeEditorImpl implements BatchProfileAttributeEditor {
   bool _ensureValidStringItem(String item) {
     if (item.length == 0 || item.length > _maxStringLength) {
       BatchLogger.public(
-          "BatchUserDataEditor - Invalid string item. String items are not allowed to " +
+          "BatchProfileAttributeEditor - Invalid string item. String items are not allowed to " +
               "be longer than 64 characters (bytes) and must not be empty. " +
               "Ignoring operation on string '$item'.");
       return false;
