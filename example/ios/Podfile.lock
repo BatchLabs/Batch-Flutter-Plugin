@@ -1,10 +1,10 @@
 PODS:
-  - Batch (2.0.2)
+  - Batch (2.1.0)
   - batch_flutter (2.0.0):
-    - Batch (~> 2.0.0)
+    - Batch (~> 2.1.0)
     - Flutter
   - batch_flutter/Tests (2.0.0):
-    - Batch (~> 2.0.0)
+    - Batch (~> 2.1.0)
     - Flutter
   - BatchExtension (4.0.0)
   - Flutter (1.0.0)
@@ -33,8 +33,8 @@ EXTERNAL SOURCES:
     :path: ".symlinks/plugins/shared_preferences_foundation/darwin"
 
 SPEC CHECKSUMS:
-  Batch: 5910c05091914c3ca415ca8793e5ce6fcc36cfee
-  batch_flutter: 6d2189bb7b4c636f49ebaa02bdf86c46d0a09b33
+  Batch: 357ef0dd8bcd83739b8ac44968aec5731bc273e1
+  batch_flutter: 030615d810d92a08e7c1cc50021c291d88d8edff
   BatchExtension: ee10c31cc737d66a9c339a1e70e7c787b5988676
   Flutter: e0871f40cf51350855a761d2e70bf5af5b9b5de7
   shared_preferences_foundation: fcdcbc04712aee1108ac7fda236f363274528f78
