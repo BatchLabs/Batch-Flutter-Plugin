@@ -127,6 +127,8 @@ class _PluginTestMenuState extends State<PluginTestMenu> {
     editor
         .setEmailAddress("john.doe@batch.com")
         .setEmailMarketingSubscription(BatchEmailSubscriptionState.subscribed)
+        .setPhoneNumber("+33682449977")
+        .setSMSMarketingSubscription(BatchSMSSubscriptionState.subscribed)
         .setBooleanAttribute("boolean", true)
         .setStringAttribute("string", "bar")
         .setDateTimeAttribute("date", DateTime.now())
@@ -153,6 +155,7 @@ class _PluginTestMenuState extends State<PluginTestMenu> {
   void resetCustomData() {
     BatchProfile.instance.newEditor()
         .setEmailAddress(null)
+        .setPhoneNumber(null)
         .setLanguage(null)
         .setRegion(null)
         .save();
