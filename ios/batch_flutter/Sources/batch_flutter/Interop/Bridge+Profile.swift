@@ -9,6 +9,8 @@ extension Bridge {
         case setRegion = "SET_REGION"
         case setEmailAddress = "SET_EMAIL_ADDRESS"
         case setEmailMarketingSubscription = "SET_EMAIL_MARKETING_SUBSCRIPTION"
+        case setPhoneNumber = "SET_PHONE_NUMBER"
+        case setSMSMarketingSubscription = "SET_SMS_MARKETING_SUBSCRIPTION"
         case setAttribute = "SET_ATTRIBUTE"
         case removeAttribute = "REMOVE_ATTRIBUTE"
         case addToStringArray = "ADD_TO_ARRAY"
@@ -76,6 +78,30 @@ extension Bridge {
                     profileAttributeEditor.setEmailMarketingSubscriptionState(.subscribed)
                 } else if (value == "unsubscribed") {
                     profileAttributeEditor.setEmailMarketingSubscriptionState(.unsubscribed)
+                } else {
+                    throw BridgeError.makeBadArgumentError(argumentName: rawOperation + ".value")
+                }
+                break;
+            case .setPhoneNumber:
+                let rawValue = operationDescription["value"]
+                if rawValue == nil || rawValue is NSNull {
+                    try? profileAttributeEditor.setPhoneNumber(nil)
+                } else {
+                    guard let value = rawValue as? String else {
+                        throw BridgeError.makeBadArgumentError(argumentName: rawOperation + ".value")
+                    }
+                    try? profileAttributeEditor.setPhoneNumber(value)
+                }
+                break;
+            case .setSMSMarketingSubscription:
+                let rawValue = operationDescription["value"]
+                guard let value = rawValue as? String else {
+                    throw BridgeError.makeBadArgumentError(argumentName: rawOperation + ".value")
+                }
+                if (value == "subscribed") {
+                    profileAttributeEditor.setSMSMarketingSubscriptionState(.subscribed)
+                } else if (value == "unsubscribed") {
+                    profileAttributeEditor.setSMSMarketingSubscriptionState(.unsubscribed)
                 } else {
                     throw BridgeError.makeBadArgumentError(argumentName: rawOperation + ".value")
                 }
