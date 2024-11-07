@@ -62,33 +62,49 @@ class BatchProfile {
 /// Email subscription state
 enum BatchEmailSubscriptionState { subscribed, unsubscribed }
 
+/// SMS subscription state
+enum BatchSMSSubscriptionState { subscribed, unsubscribed }
 
-/// Batch's user data editor.
-/// This object is used to transactionally edit user data. Calls can be chained
+/// Batch's profile data editor.
+/// This object is used to transactionally edit profile data. Calls can be chained
 /// in a builder-like fashion.
-/// Once you're done with your changes, call [BatchUserDataEditor.save] to persist your changes.
+/// Once you're done with your changes, call [BatchprofileDataEditor.save] to persist your changes.
 abstract class BatchProfileAttributeEditor {
   /// Set the application language. Overrides Batch's automatically detected value.
   ///
-  /// `null` deletes the override: Batch will autodetect the user language.
+  /// `null` deletes the override: Batch will autodetect the profile language.
   BatchProfileAttributeEditor setLanguage(String? language);
 
   /// Set the application region. Overrides Batch's automatically detected value.
   ///
-  /// `null` deletes the override: Batch will autodetect the user region.
+  /// `null` deletes the override: Batch will autodetect the profile region.
   BatchProfileAttributeEditor setRegion(String? region);
 
-  /// Set the user email address.
+  /// Set the profile email address.
   ///
   /// This requires to have a custom user ID registered
   /// or to call the `identify` method beforehand.
   /// Null to erase. Addresses must be valid.
   BatchProfileAttributeEditor setEmailAddress(String? email);
 
-  /// Set the user email marketing subscription state
+  /// Set the profile email marketing subscription state
   ///
   /// Use enum BatchEmailSubscriptionState.subscribed or BatchEmailSubscriptionState.unsubscribed
   BatchProfileAttributeEditor setEmailMarketingSubscription(BatchEmailSubscriptionState state);
+
+  /// Set the profile phone number.
+  ///
+  /// This requires to have a custom profile ID registered
+  /// or to call the `identify` method beforehand.
+  /// The [phoneNumber] must be a valid E.164 formatted string.
+  /// Must start with a `+` and not be longer than 15 digits without special
+  /// characters (eg: "+33123456789"). Null to reset.
+  BatchProfileAttributeEditor setPhoneNumber(String? phoneNumber);
+
+  /// Set the profile SMS marketing subscription state.
+  ///
+  /// Note that profile's subscription status is automatically set to unsubscribed when users send a STOP message.
+  BatchProfileAttributeEditor setSMSMarketingSubscription(BatchSMSSubscriptionState state);
 
   /// Set a string attribute for a key.
   ///

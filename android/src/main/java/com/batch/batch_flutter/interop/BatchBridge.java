@@ -19,6 +19,7 @@ import com.batch.android.BatchMessage;
 import com.batch.android.BatchOptOutResultListener;
 import com.batch.android.BatchProfileAttributeEditor;
 import com.batch.android.BatchPushRegistration;
+import com.batch.android.BatchSMSSubscriptionState;
 import com.batch.android.BatchTagCollectionsFetchListener;
 import com.batch.android.BatchUserAttribute;
 import com.batch.batch_flutter.BatchFlutterLogger;
@@ -276,6 +277,28 @@ public class BatchBridge {
                             editor.setEmailMarketingSubscription(BatchEmailSubscriptionState.UNSUBSCRIBED);
                         } else {
                             Log.e("Batch Bridge", "Invalid SET_EMAIL_MARKETING_SUBSCRIPTION value: it can only be `subscribed` or `unsubscribed`.");
+                        }
+                        break;
+                    }
+                    case "SET_PHONE_NUMBER": {
+                        Object value = operationDescription.get("value");
+
+                        if (value != null && !(value instanceof String)) {
+                            // Invalid value, continue. NULL is allowed though
+                            continue;
+                        }
+
+                        editor.setPhoneNumber((String) value);
+                        break;
+                    }
+                    case "SET_SMS_MARKETING_SUBSCRIPTION": {
+                        Object value = operationDescription.get("value");
+                        if ("subscribed".equals(value)) {
+                            editor.setSMSMarketingSubscription(BatchSMSSubscriptionState.SUBSCRIBED);
+                        } else if ("unsubscribed".equals(value)) {
+                            editor.setSMSMarketingSubscription(BatchSMSSubscriptionState.UNSUBSCRIBED);
+                        } else {
+                            Log.e("Batch Bridge", "Invalid SET_SMS_MARKETING_SUBSCRIPTION value: it can only be `subscribed` or `unsubscribed`.");
                         }
                         break;
                     }
