@@ -4,10 +4,10 @@ import Batch
 
 fileprivate struct Consts {
     static let BridgeVersionEnvironmentVar = "BATCH_BRIDGE_VERSION"
-    static let BridgeVersion = "Bridge/2.0"
+    static let BridgeVersion = "Bridge/2.1"
     
     static let PluginVersionEnvironmentVar = "BATCH_PLUGIN_VERSION"
-    static let PluginVersion = "Flutter/2.0.0"
+    static let PluginVersion = "Flutter/2.1.0"
 }
 
 /// Batch's Flutter Plugin main class.

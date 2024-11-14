@@ -1,6 +1,6 @@
 name: batch_flutter
 description: Batch SDK Flutter Plugin allows you to build meaningful communication experiences in your app through highly personalized push notifications and In-App messages.
-version: 2.0.0
+version: 2.1.0
 homepage: https://batch.com
 
 environment:

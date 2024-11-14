@@ -1,4 +1,4 @@
-## UPCOMING
+## 2.1.0
 
 **Plugin**
 * Updated Batch to 2.1
