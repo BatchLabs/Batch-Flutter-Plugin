@@ -68,7 +68,7 @@ enum BatchSMSSubscriptionState { subscribed, unsubscribed }
 /// Batch's profile data editor.
 /// This object is used to transactionally edit profile data. Calls can be chained
 /// in a builder-like fashion.
-/// Once you're done with your changes, call [BatchprofileDataEditor.save] to persist your changes.
+/// Once you're done with your changes, call [BatchProfileDataEditor.save] to persist your changes.
 abstract class BatchProfileAttributeEditor {
   /// Set the application language. Overrides Batch's automatically detected value.
   ///
