@@ -1,3 +1,5 @@
+import 'package:flutter/foundation.dart'
+    show TargetPlatform, defaultTargetPlatform, kIsWeb;
 import 'package:flutter/services.dart';
 
 /// Provides push related functionality.
@@ -8,6 +10,10 @@ class BatchPush {
 
   /// Batch User module singleton.
   static BatchPush instance = new BatchPush();
+
+  /// True when running on Android.
+  static bool get _isAndroidPlatform =>
+      !kIsWeb && defaultTargetPlatform == TargetPlatform.android;
 
   /// Get the last known push token.
   /// This might be null if the SDK never successfully registered to push notifcations.
@@ -61,5 +67,22 @@ class BatchPush {
   void setShowForegroundNotificationsOniOS(bool showForegroundNotifications) {
     _channel.invokeMethod('push.iOS.setShowForegroundNotifications',
         {'enabled': showForegroundNotifications});
+  }
+
+  /// Android only. Controls whether Batch should display notifications.
+  Future<void> setShowNotifications(bool showNotifications) async {
+    if (!_isAndroidPlatform) {
+      return;
+    }
+    await _channel.invokeMethod('push.setShowNotifications',
+        {'enabled': showNotifications});
+  }
+
+  /// Android only. Returns whether Batch currently shows notifications.
+  Future<bool?> shouldShowNotifications() async {
+    if (!_isAndroidPlatform) {
+      return null;
+    }
+    return await _channel.invokeMethod<bool>('push.shouldShowNotifications');
   }
 }

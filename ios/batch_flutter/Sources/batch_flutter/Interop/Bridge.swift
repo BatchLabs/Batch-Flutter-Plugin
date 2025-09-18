@@ -53,7 +53,10 @@ struct Bridge {
                     return emptySuccessPromise()
                 case .push_getLastKnownPushToken:
                     return LightPromise<AnyObject?>.resolved(BatchPush.lastKnownPushToken as NSString?)
-                
+                case .push_setShowNotifications:
+                    return emptySuccessPromise()
+                case .push_shouldShowNotifications:
+                    return LightPromise<AnyObject?>.resolved(nil)
                 case .user_getInstallationID:
                     return getInstallationID()
                 case .user_getIdentifier:

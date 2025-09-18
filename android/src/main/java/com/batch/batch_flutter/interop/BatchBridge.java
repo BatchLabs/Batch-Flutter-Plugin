@@ -5,6 +5,7 @@ import static com.batch.batch_flutter.interop.BatchBridgeUtils.getOptionalTypedP
 import static com.batch.batch_flutter.interop.BatchBridgeUtils.getTypedParameter;
 
 import android.app.Activity;
+import android.content.Context;
 import android.location.Location;
 import android.util.Log;
 
@@ -102,6 +103,11 @@ public class BatchBridge {
             case PUSH_DISMISS_NOTIFICATIONS:
                 dismissNotifications();
                 return Promise.resolved(null);
+            case PUSH_SET_SHOW_NOTIFICATIONS:
+                setShowNotifications(parameters);
+                return Promise.resolved(null);
+            case PUSH_SHOULD_SHOW_NOTIFICATIONS:
+                return Promise.resolved(shouldShowNotifications(activity));
             case PUSH_REQUEST_PERMISSION:
                 Batch.Push.requestNotificationPermission(activity);
                 return Promise.resolved(null);
@@ -208,6 +214,15 @@ public class BatchBridge {
 
     private static void dismissNotifications() {
         Batch.Push.dismissNotifications();
+    }
+
+    private static void setShowNotifications(Map<String, Object> parameters) throws BatchBridgeException {
+        Boolean enabled = getTypedParameter(parameters, "enabled", Boolean.class);
+        Batch.Push.setShowNotifications(enabled);
+    }
+
+    private static Boolean shouldShowNotifications(Context context) {
+        return Batch.Push.shouldShowNotifications(context);
     }
 
 //region Profile

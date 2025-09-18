@@ -1,3 +1,18 @@
+## 3.0.0
+
+**Plugin**
+* Updated Batch to 3.1
+* Batch requires iOS 15.0 or higher and Xcode 16.4
+* Batch now compiles with SDK 36 (Android 16 'Baklava').
+
+**Push**
+- Added `setShowNotifications` method to control whether android push notifications should be displayed.
+- Added `shouldShowNotifications` method to check current android notification display settings.
+
+**Messaging**
+- Added support for Mobile Landings within the Customer Engagement Platform.
+- Added support for In-App Automations within the Customer Engagement Platform.
+
 ## 2.1.0
 
 **Plugin**

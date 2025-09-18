@@ -12,6 +12,8 @@ enum Action: String {
     case push_clearBadge = "push.clearBadge"
     case push_dismissNotifications = "push.dismissNotifications"
     case push_iOSSetShowForegroundNotifications = "push.iOS.setShowForegroundNotifications"
+    case push_setShowNotifications = "push.setShowNotifications"
+    case push_shouldShowNotifications = "push.shouldShowNotifications"
     
     case user_getIdentifier = "user.getIdentifier"
     case user_getLanguage = "user.getLanguage"
