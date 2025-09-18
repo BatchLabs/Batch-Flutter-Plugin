@@ -6,13 +6,13 @@ import PackageDescription
 let package = Package(
     name: "batch_flutter",
     platforms: [
-        .iOS("12.0"),
+        .iOS("15.0"),
     ],
     products: [
         .library(name: "batch-flutter", targets: ["batch_flutter"]),
     ],
     dependencies: [
-        .package(url: "https://github.com/BatchLabs/Batch-iOS-SDK", from: "2.1.0"),
+        .package(url: "https://github.com/BatchLabs/Batch-iOS-SDK", from: "3.1.0"),
     ],
     targets: [
         .target(

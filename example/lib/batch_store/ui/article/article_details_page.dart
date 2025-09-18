@@ -57,7 +57,7 @@ class ArticleDetailsPage extends StatelessWidget {
               child: ElevatedButton(
                 style: ButtonStyle(
                   backgroundColor:
-                      MaterialStateProperty.all<Color>(Colors.green),
+                      WidgetStateProperty.all<Color>(Colors.green),
                 ),
                 onPressed: () {
                   _addToCart(context);

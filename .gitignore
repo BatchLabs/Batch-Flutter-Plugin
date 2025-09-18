@@ -36,3 +36,5 @@ build/
 /example/android/key.properties
 /example/android/GeneratedPluginRegistrant.java
 /example/android/local.properties
+
+ios/batch_flutter/.build/
