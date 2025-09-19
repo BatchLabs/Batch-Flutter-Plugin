@@ -28,7 +28,7 @@ extension Bridge {
     }
 
     func identify(parameters: BridgeParameters) throws {
-        let rawValue = parameters["identifier"]
+		let rawValue = parameters["identifier"]
         if rawValue == nil || rawValue is NSNull {
             BatchProfile.identify(nil)
         } else {
@@ -223,8 +223,8 @@ extension Bridge {
         profileAttributeEditor.save()
     }
     
-    func trackEvent(_ parameters: BridgeParameters) -> LightPromise<AnyObject?> {
-        return LightPromise<AnyObject?> { resolve, reject in
+    func trackEvent(_ parameters: BridgeParameters) -> LightPromise {
+        return LightPromise { resolve, reject in
             guard let name = parameters["name"] as? String else {
                 reject(BridgeError.makeBadArgumentError(argumentName: "name"))
                 return
@@ -232,14 +232,14 @@ extension Bridge {
             guard let rawEventData = parameters["event_data"] as? [String: AnyObject] else {
                 // event_data is optional, ignore it if it is of the wrong type
                 BatchProfile.trackEvent(name: name, attributes: nil)
-                resolve(nil)
+				resolve(.null)
                 return
             }
-            let attributes = try? parseEventData(rawEventData)
+			let attributes = try? parseEventData(rawEventData)
             do {
                 let _ = try attributes?.validate()
                 BatchProfile.trackEvent(name: name, attributes: attributes)
-                resolve(nil)
+				resolve(.null)
             } catch let error {
                 reject(error)
             }
@@ -247,7 +247,7 @@ extension Bridge {
         
     }
     
-    func trackLocation(_ parameters: [String: AnyObject]) throws {
+    func trackLocation(_ parameters: BridgeParameters) throws {
         guard let latitude = parameters["latitude"] as? Double else {
             throw BridgeError.makeBadArgumentError(argumentName: "latitude")
         }
@@ -259,7 +259,7 @@ extension Bridge {
         BatchProfile.trackLocation(CLLocation(latitude: latitude, longitude: longitude))
     }
     
-    private func parseEventData(_ rawEventData: BridgeParameters) throws -> BatchEventAttributes? {
+    private func parseEventData(_ rawEventData: [String: AnyObject]) throws -> BatchEventAttributes? {
         
         let eventData = BatchEventAttributes()
     
@@ -309,7 +309,7 @@ extension Bridge {
                     eventData.put(date, forKey: key)
                     break
                 case "o":
-                    guard let value = typedValue["value"] as? BridgeParameters else {
+                    guard let value = typedValue["value"] as? [String: AnyObject] else {
                         throw BridgeError.makeBadArgumentError(argumentName: argumentErrorDescription)
                     }
                     guard let objectAttribute = try parseEventData(value) else {
@@ -324,7 +324,7 @@ extension Bridge {
                     eventData.put(value, forKey: key)
                     break
                 case "oa":
-                    guard let value = typedValue["value"] as? Array<BridgeParameters> else {
+                    guard let value = typedValue["value"] as? Array<[String: AnyObject]> else {
                         throw BridgeError.makeBadArgumentError(argumentName: argumentErrorDescription)
                     }
                     var objectArray: [BatchEventAttributes] = []

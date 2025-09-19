@@ -2,100 +2,92 @@ import Foundation
 import Batch
 import Flutter
 
-typealias BridgeParameters = [String: AnyObject]
-
 struct Bridge {
     private let inboxBridge = InboxBridge()
     
     // Bool is a temporary return value
-    func call(rawAction: String, parameters: BridgeParameters) -> LightPromise<AnyObject?> {
+    func call(rawAction: String, parameters: BridgeParameters) -> LightPromise {
         guard let action = Action.init(rawValue: rawAction) else {
             BatchFlutterLogger.logDebug(module: "Bridge", message: "Invalid action name \(rawAction)")
-            return LightPromise<AnyObject?>.rejected(BridgeInternalError.notImplemented)
+            return LightPromise.rejected(BridgeInternalError.notImplemented)
         }
         
         return doAction(action, parameters: parameters)
     }
     
-    func doAction(_ action: Action, parameters: BridgeParameters) -> LightPromise<AnyObject?> {
+    func doAction(_ action: Action, parameters: BridgeParameters) -> LightPromise {
         do {
             switch action {
                 case .optIn:
-                    optIn()
-                    return emptySuccessPromise()
+                    return optIn()
                 case .optOut:
                     return optOut()
                 case .optOutAndWipeData:
                     return optOutAndWipeData()
                 case .isOptedOut:
-                    return LightPromise<AnyObject?>.resolved(BatchSDK.isOptedOut as NSNumber)
+					return .resolved(.number(BatchSDK.isOptedOut as NSNumber))
                 case .setAutomaticDataCollection:
                     try setAutomaticDataCollection(parameters: parameters)
-                    return emptySuccessPromise()
-
+                    return .emptySuccess
                 case .push_iOSRefreshToken:
                     BatchPush.refreshToken()
-                    return emptySuccessPromise()
+                    return .emptySuccess
                 case .push_RequestPermission:
                     BatchPush.requestNotificationAuthorization()
-                    return emptySuccessPromise()
+                    return .emptySuccess
                 case .push_iOSRequestProvisionalPermission:
                     BatchPush.requestProvisionalNotificationAuthorization()
-                    return emptySuccessPromise()
+                    return .emptySuccess
                 case .push_dismissNotifications:
                     BatchPush.dismissNotifications()
-                    return emptySuccessPromise()
+                    return .emptySuccess
                 case .push_clearBadge:
                     BatchPush.clearBadge()
-                    return emptySuccessPromise()
+                    return .emptySuccess
                 case .push_iOSSetShowForegroundNotifications:
                     try setShowForegroundNotifications(parameters: parameters)
-                    return emptySuccessPromise()
+                    return .emptySuccess
                 case .push_getLastKnownPushToken:
-                    return LightPromise<AnyObject?>.resolved(BatchPush.lastKnownPushToken as NSString?)
+					return .resolved(.string(BatchPush.lastKnownPushToken as String?))
                 case .push_setShowNotifications:
-                    return emptySuccessPromise()
+                    return .emptySuccess
                 case .push_shouldShowNotifications:
-                    return LightPromise<AnyObject?>.resolved(nil)
+					return .emptySuccess
                 case .user_getInstallationID:
                     return getInstallationID()
                 case .user_getIdentifier:
-                    return LightPromise<AnyObject?>.resolved(BatchUser.identifier() as NSString?)
+					return .resolved(.string(BatchUser.identifier()))
                 case .user_getLanguage:
-                    return LightPromise<AnyObject?>.resolved(BatchUser.language() as NSString?)
+                    return .resolved(.string(BatchUser.language()))
                 case .user_getRegion:
-                    return LightPromise<AnyObject?>.resolved(BatchUser.region() as NSString?)
+					return .resolved(.string(BatchUser.region()))
                 case .user_fetchAttributes:
                     return userDataFetchAttributes()
                 case .user_fetchTags:
                     return userDataFetchTags()
                 case .user_clearInstallationData:
                     BatchUser.clearInstallationData()
-                    return emptySuccessPromise()
-
+                    return .emptySuccess
                 case .profile_identify:
                     try identify(parameters: parameters)
-                    return emptySuccessPromise()
+                    return .emptySuccess
                 case .profile_edit:
                     try editProfileAttributes(parameters: parameters)
-                    return emptySuccessPromise()
+                    return .emptySuccess
                 case .profile_trackEvent:
                      return trackEvent(parameters)
                 case .profile_trackLocation:
                     try trackLocation(parameters)
-                    return emptySuccessPromise()
-                
+                    return .emptySuccess
                 case .messaging_showPendingMessage:
                     showPendingMessage()
-                    return emptySuccessPromise()
+                    return .emptySuccess
                 case .messaging_setDoNotDisturbEnabled:
                     try setDoNotDisturbEnabled(parameters: parameters)
-                    return emptySuccessPromise()
-                
+                    return .emptySuccess
                 case .debug_showDebugView:
                     showDebugView()
-                    return emptySuccessPromise()
-                
+                    return .emptySuccess
                 case .inbox_releaseFetcher,
                      .inbox_createInstallationFetcher,
                      .inbox_createUserFetcher,
@@ -106,26 +98,25 @@ struct Bridge {
                      .inbox_markAllAsRead,
                      .inbox_markAsDeleted,
                      .inbox_displayLandingMessage:
-                    return try inboxBridge.doAction(action, parameters: parameters)
-                
-                case .echo:
-                    return LightPromise<NSString?>.resolved(parameters["value"] as? NSString)
+					return try inboxBridge.doAction(action, parameters: parameters)
+				case .echo:
+					return .resolved(.string(parameters["value"] as? String))
                 //default:
                 //    return LightPromise<AnyObject?>.rejected(BridgeInternalError.notImplemented)
             }
         } catch {
-            return LightPromise<AnyObject?>.rejected(error)
+            return .rejected(error)
         }
     }
     
-    private func getInstallationID() -> LightPromise<AnyObject?> {
+    private func getInstallationID() -> LightPromise {
         var installID = BatchUser.installationID
         // To maintain consistency with Android, an empty installation ID will be nilled.
         // It's a native SDK weirdness that might someday change
         if installID?.count == 0 {
             installID = nil
         }
-        return LightPromise<AnyObject?>.resolved(installID as NSString?)
+		return .resolved(.string(installID))
     }
 
     private func setShowForegroundNotifications(parameters: BridgeParameters) throws {
@@ -137,7 +128,7 @@ struct Bridge {
     }
     
     private func setAutomaticDataCollection(parameters: BridgeParameters) throws {
-        guard let serializedConfig = parameters["dataCollectionConfig"] as? BridgeParameters else {
+        guard let serializedConfig = parameters["dataCollectionConfig"] as? [String: AnyObject] else {
             throw BridgeError.makeBadArgumentError(argumentName: "dataCollectionConfig")
         }
         BatchSDK.updateAutomaticDataCollection { editor in
@@ -148,10 +139,5 @@ struct Bridge {
                 editor.setGeoIPEnabled(geoIPEnabled.boolValue)
             }
         }
-    }
-    
-    /// Convinence method to get a promise resolved with nil
-    private func emptySuccessPromise() -> LightPromise<AnyObject?> {
-        return LightPromise<AnyObject?>.resolved(nil)
     }
 }

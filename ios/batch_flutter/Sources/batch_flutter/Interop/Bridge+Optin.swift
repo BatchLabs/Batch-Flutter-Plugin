@@ -3,24 +3,31 @@ import Batch
 import Flutter
 
 extension Bridge {
-    func optIn() {
-        BatchSDK.optIn()
-        BatchFlutterPlugin.startManagedNativeSDK()
+    func optIn() -> LightPromise {
+		return LightPromise { resolve, reject in
+			let callbacks = LightPromise.Callbacks(resolve: resolve, reject: reject)
+			BatchSDK.optIn()
+
+			Task { @MainActor in
+				BatchFlutterPlugin.startManagedNativeSDK()
+				callbacks.resolve(.null)
+			}
+		}
     }
 
-    func optOut() -> LightPromise<AnyObject?> {
-        return LightPromise<AnyObject?> { resolve, _ in
+    func optOut() -> LightPromise {
+        return LightPromise { resolve, _ in
             BatchSDK.optOut { _ in
-                resolve(nil)
+				resolve(.null)
                 return BatchOptOutNetworkErrorPolicy.ignore
             }
         }
     }
     
-    func optOutAndWipeData() -> LightPromise<AnyObject?> {
-        return LightPromise<AnyObject?> { resolve, _ in
+    func optOutAndWipeData() -> LightPromise {
+        return LightPromise { resolve, _ in
             BatchSDK.optOutAndWipeData { _ in
-                resolve(nil)
+				resolve(.null)
                 return BatchOptOutNetworkErrorPolicy.ignore
             }
         }

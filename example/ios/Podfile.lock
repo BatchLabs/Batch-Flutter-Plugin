@@ -34,7 +34,7 @@ EXTERNAL SOURCES:
 
 SPEC CHECKSUMS:
   Batch: 47c1df1f301078fc01b9f9531faeed8f18a9bac0
-  batch_flutter: 9a245da68ee8859ea52f1c067623f13eceb7b093
+  batch_flutter: 8ee966aebb5c381bf990f60abe7b6aabb1cc51f2
   BatchExtension: ee10c31cc737d66a9c339a1e70e7c787b5988676
   Flutter: e0871f40cf51350855a761d2e70bf5af5b9b5de7
   shared_preferences_foundation: 9e1978ff2562383bd5676f64ec4e9aa8fa06a6f7
