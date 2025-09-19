@@ -4,8 +4,9 @@ import Flutter
 
 extension Bridge {
     
-    func userDataFetchAttributes() -> LightPromise<AnyObject?> {
-        return LightPromise<AnyObject?> { resolve, reject in
+    func userDataFetchAttributes() -> LightPromise {
+        return LightPromise { resolve, reject in
+			let callbacks = LightPromise.Callbacks(resolve: resolve, reject: reject)
             BatchUser.fetchAttributes { attributes in
                 do {
                     guard let attributes = attributes else {
@@ -63,19 +64,20 @@ extension Bridge {
                         ]
                     }
                     
-                    resolve(bridgeAttributes as NSDictionary)
+					callbacks.resolve(.dictionary(bridgeAttributes as NSDictionary))
                 } catch {
-                    reject(error)
+                    callbacks.reject(error)
                 }
             }
         }
     }
     
-    func userDataFetchTags() -> LightPromise<AnyObject?> {
-        return LightPromise<AnyObject?> { resolve, reject in
+    func userDataFetchTags() -> LightPromise {
+        return LightPromise { resolve, reject in
+			let callbacks = LightPromise.Callbacks(resolve: resolve, reject: reject)
             BatchUser.fetchTagCollections { tagCollections in
                 guard let tagCollections = tagCollections else {
-                    reject(BridgeError.init(code: BridgeError.ErrorCode.internalSDKError,
+                    callbacks.reject(BridgeError.init(code: BridgeError.ErrorCode.internalSDKError,
                                             description: "Native SDK fetchTagCollections returned an error",
                                             details: nil))
                     return
@@ -85,9 +87,10 @@ extension Bridge {
                     return Array(tags)
                 }
                 
-                resolve(bridgeTagCollections as NSDictionary)
+                callbacks.resolve(.dictionary(bridgeTagCollections as NSDictionary))
             }
         }
         
     }
 }
+
