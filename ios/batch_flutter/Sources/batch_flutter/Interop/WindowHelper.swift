@@ -2,6 +2,7 @@ import Foundation
 import UIKit
 
 // Swift port of Batch's BAWindowHelper
+@MainActor
 internal struct WindowHelper {
     /// Try to get the keyWindow if the app is on screen. Handles UIScene apps.
     static var keyWindow: UIWindow? {

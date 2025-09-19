@@ -1,6 +1,6 @@
 import Foundation
 import XCTest
-import Flutter
+@preconcurrency import Flutter
 @testable import batch_flutter
 
 class BatchFlutterPluginTest: XCTestCase {
@@ -37,19 +37,59 @@ class BatchFlutterPluginTest: XCTestCase {
         let plugin = ControllableBatchFlutterPlugin()
         plugin.isSetupOverride = true
         plugin.bridgeExecutorQueue = LightPromiseExecutor.synchronous
-        
+
         let helloWorld = "Hello, world!"
         var echoResult = RecordingFlutterResult()
         plugin.handle(FlutterMethodCall(methodName: "echo", arguments: ["value": helloWorld]), result: echoResult.asFlutterCallback())
-        
+
         XCTAssertTrue(echoResult.gotResult)
         XCTAssertEqual(helloWorld, echoResult.lastResult as? String)
-        
+
         echoResult = RecordingFlutterResult()
         plugin.handle(FlutterMethodCall(methodName: "echo", arguments: ["value": nil]), result: echoResult.asFlutterCallback())
-        
+
         XCTAssertTrue(echoResult.gotResult)
         XCTAssertNil(echoResult.lastResult)
+    }
+
+	@MainActor
+	func testHandleResultRunsOnMainThreadWithAsyncExecutor() {
+        let plugin = ControllableBatchFlutterPlugin()
+        plugin.isSetupOverride = true
+        plugin.bridgeExecutorQueue = .asyncMain
+
+        let expectation = expectation(description: "flutter result executed on main thread")
+        let call = FlutterMethodCall(methodName: "echo", arguments: ["value": "Ping"])
+
+        DispatchQueue.global(qos: .userInitiated).async {
+            plugin.handle(call) { value in
+                XCTAssertTrue(Thread.isMainThread)
+                XCTAssertEqual(value as? String, "Ping")
+                expectation.fulfill()
+            }
+        }
+
+        waitForExpectations(timeout: 1.0)
+    }
+
+	@MainActor
+	func testHandleErrorRunsOnMainThreadWithAsyncExecutor() {
+        let plugin = ControllableBatchFlutterPlugin()
+        plugin.isSetupOverride = true
+        plugin.bridgeExecutorQueue = .asyncMain
+
+        let expectation = expectation(description: "flutter error executed on main thread")
+        let call = FlutterMethodCall(methodName: "not_implemented", arguments: nil)
+
+        DispatchQueue.global(qos: .userInitiated).async {
+            plugin.handle(call) { value in
+                XCTAssertTrue(Thread.isMainThread)
+                XCTAssertTrue((value as? NSObject) === FlutterMethodNotImplemented)
+                expectation.fulfill()
+            }
+        }
+
+        waitForExpectations(timeout: 1.0)
     }
 }
 
