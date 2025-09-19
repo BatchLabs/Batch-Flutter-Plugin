@@ -273,6 +273,24 @@ class _PluginTestMenuState extends State<PluginTestMenu> {
                 ),
               ],
             ),
+            Row(
+              children: [
+                ElevatedButton(
+                  child: Text("Notif On"),
+                  onPressed: () =>
+                  {BatchPush.instance.setShowNotifications(true)},
+                ),
+                ElevatedButton(
+                  child: Text("Notif Off"),
+                  onPressed: () =>
+                  {BatchPush.instance.setShowNotifications(false)},
+                ),
+                ElevatedButton(
+                  child: Text("Show Pending"),
+                  onPressed: () async => {print(await BatchPush.instance.shouldShowNotifications())},
+                ),
+              ],
+            ),
             ElevatedButton(
               child: Text("Is Opted-Out"),
               onPressed: () async => {print(await Batch.instance.isOptedOut())},
