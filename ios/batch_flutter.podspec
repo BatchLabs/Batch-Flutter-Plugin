@@ -20,7 +20,6 @@ Pod::Spec.new do |s|
   s.pod_target_xcconfig = { 'DEFINES_MODULE' => 'YES', 'EXCLUDED_ARCHS[sdk=iphonesimulator*]' => 'i386' }
   s.ios.deployment_target  = '15.0'
   s.swift_version = '5.0'
-  s.static_framework = true
 
   # Unit Tests
   s.test_spec 'Tests' do |test_spec|
