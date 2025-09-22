@@ -4,6 +4,7 @@
 * Updated Batch to 3.1
 * Batch requires iOS 15.0 or higher and Xcode 16.4
 * Batch now compiles with SDK 36 (Android 16 'Baklava').
+* Change framework to dynamic
 
 **Push**
 - Added `setShowNotifications` method to control whether android push notifications should be displayed.
