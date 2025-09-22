@@ -3,6 +3,7 @@
 **Plugin**
 * Updated Batch to 3.1
 * Batch requires iOS 15.0 or higher and Xcode 16.4
+* Batch is now distributed as a dynamic framework
 * Batch now compiles with SDK 36 (Android 16 'Baklava').
 
 **Push**
