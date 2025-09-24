@@ -15,19 +15,202 @@ concurrency:
   cancel-in-progress: true
 
 jobs:
+  # Step 1: Build the Flutter project and generate documentation
+  build:
+    runs-on: macos-latest
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
+      - name: Cache Flutter dependencies
+        uses: actions/cache@v4
+        with:
+          path: |
+            ~/.pub-cache
+            example/.dart_tool
+          key: ${{ runner.os }}-flutter-${{ hashFiles('**/pubspec.yaml') }}
+          restore-keys: |
+            ${{ runner.os }}-flutter-
+
+      - name: Cache iOS dependencies
+        uses: actions/cache@v4
+        with:
+          path: |
+            example/ios/Pods
+            example/ios/.symlinks
+            example/ios/build
+          key: ${{ runner.os }}-ios-${{ hashFiles('example/ios/Podfile.lock', 'example/ios/Podfile') }}
+          restore-keys: |
+            ${{ runner.os }}-ios-
+            ${{ runner.os }}-
+
+      - name: Cache Android dependencies
+        uses: actions/cache@v4
+        with:
+          path: |
+            ~/.gradle/caches
+            ~/.gradle/wrapper
+            example/android/.gradle
+            example/android/build
+          key: ${{ runner.os }}-android-${{ hashFiles('example/android/build.gradle', 'example/android/app/build.gradle', 'example/android/gradle.properties') }}
+          restore-keys: |
+            ${{ runner.os }}-android-
+            ${{ runner.os }}-gradle-
+            ${{ runner.os }}-
+
+      - name: Set up Flutter SDK
+        uses: subosito/flutter-action@v2
+        with:
+          channel: stable
+          cache: true
+
+      # Java 17 is required for Flutter iOS builds
+      - name: Setup JDK 17 for iOS builds
+        uses: actions/setup-java@v4
+        with:
+          java-version: 17
+          distribution: zulu
+
+      - name: Setup Ruby and install Jazzy
+        uses: ruby/setup-ruby@v1
+        with:
+          ruby-version: '3.0'
+          bundler-cache: false
+
+      - name: Install Jazzy
+        run: |
+          echo "💎 Installing Jazzy for iOS documentation..."
+          gem install jazzy
+          jazzy --version
+          echo "✅ Jazzy installed successfully"
+
+      - name: Verify Flutter and Dart versions
+        run: |
+          echo "📱 Flutter version:"
+          flutter --version
+          echo "🎯 Dart version:"
+          dart --version
+
+      - name: Setup and build iOS project
+        run: |
+          echo "🍎 Setting up and building iOS project..."
+          make setup-build-ios
+          echo "✅ iOS project setup and build completed"
+
+      - name: Generate documentation
+        run: |
+          echo "📚 Generating documentation..."
+          make docs
+          echo "✅ Documentation generation completed"
+
+      - name: Clean DocC archive
+        run: |
+          if [ -d "api_docs/flutter-api-reference" ]; then
+            echo "🧹 Removing DocC archive..."
+            cd api_docs
+            rm -rf batch_flutter.doccarchive
+            echo "✅ DocC deleted"
+          else
+            echo "ℹ️ DocC not found, skipping"
+          fi
+      
+      - name: Compress Flutter API reference
+        run: |
+          if [ -d "api_docs/flutter-api-reference" ]; then
+            echo "📚 Compressing Flutter API reference..."
+            cd api_docs
+            tar -czf flutter-api-reference.tar.gz flutter-api-reference/
+            rm -rf flutter-api-reference
+            echo "✅ Flutter API reference compressed"
+          else
+            echo "ℹ️ Flutter API reference not found, skipping"
+          fi
+
+      - name: Compress iOS API reference
+        run: |
+          if [ -d "api_docs/flutter-ios-api-reference" ]; then
+            echo "🍎 Compressing iOS API reference..."
+            cd api_docs
+            tar -czf flutter_ios_api_reference.tar.gz flutter-ios-api-reference/
+            rm -rf flutter-ios-api-reference
+            echo "✅ iOS API reference compressed"
+          else
+            echo "ℹ️ iOS API reference not found, skipping"
+          fi
+
+      - name: Compress Android API reference
+        run: |
+          if [ -d "api_docs/flutter-android-api-reference" ]; then
+            echo "🤖 Compressing Android API reference..."
+            cd api_docs
+            tar -czf flutter_android_api_reference.tar.gz flutter-android-api-reference/
+            rm -rf flutter-android-api-reference
+            echo "✅ Android API reference compressed"
+          else
+            echo "ℹ️ Android API reference not found, skipping"
+          fi
+
+      - name: Upload documentation artifact
+        uses: actions/upload-artifact@v4
+        with:
+          name: api-docs
+          path: ./api_docs
+          retention-days: 1
+
+  # Step 2: Setup GitHub Pages and deploy the documentation
   deploy:
+    needs: build
     environment:
       name: github-pages
       url: ${{ steps.deployment.outputs.page_url }}
     runs-on: ubuntu-latest
     steps:
-      - name: Checkout
-        uses: actions/checkout@v4
+      - name: Download documentation artifact
+        uses: actions/download-artifact@v4
+        with:
+          name: api-docs
+          path: ./api_docs
 
-      - name: Setup Pages
+      - name: Extract Flutter API reference
+        run: |
+          if [ -f "api_docs/flutter-api-reference.tar.gz" ]; then
+            echo "📚 Extracting Flutter API reference..."
+            cd api_docs
+            tar -xzf flutter-api-reference.tar.gz
+            rm flutter-api-reference.tar.gz
+            echo "✅ Flutter API reference extracted"
+          else
+            echo "ℹ️ Flutter API reference archive not found, skipping"
+          fi
+
+      - name: Extract iOS API reference
+        run: |
+          if [ -f "api_docs/flutter_ios_api_reference.tar.gz" ]; then
+            echo "🍎 Extracting iOS API reference..."
+            cd api_docs
+            tar -xzf flutter_ios_api_reference.tar.gz
+            rm flutter_ios_api_reference.tar.gz
+            echo "✅ iOS API reference extracted"
+          else
+            echo "ℹ️ iOS API reference archive not found, skipping"
+          fi
+
+      - name: Extract Android API reference
+        run: |
+          if [ -f "api_docs/flutter_android_api_reference.tar.gz" ]; then
+            echo "🤖 Extracting Android API reference..."
+            cd api_docs
+            tar -xzf flutter_android_api_reference.tar.gz
+            rm flutter_android_api_reference.tar.gz
+            echo "✅ Android API reference extracted"
+          else
+            echo "ℹ️ Android API reference archive not found, skipping"
+          fi
+
+      - name: Setup GitHub Pages
         uses: actions/configure-pages@v5
 
-      - name: Upload artifact
+      - name: Upload pages artifact
         uses: actions/upload-pages-artifact@v3
         with:
           path: ./api_docs
@@ -36,3 +219,7 @@ jobs:
         id: deployment
         uses: actions/deploy-pages@v4
 
+      - name: Log deployment completion
+        run: |
+          echo "🚀 Documentation deployed successfully!"
+          echo "📖 Available at: ${{ steps.deployment.outputs.page_url }}"
