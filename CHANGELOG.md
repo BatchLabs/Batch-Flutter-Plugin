@@ -1,3 +1,8 @@
+## UPCOMING
+
+**Push**
+- Added `requestNotificationAuthorizationAsync()`to request notification authorization and return a promise that resolve with the authorization result.
+
 ## 3.0.0
 
 **Plugin**

@@ -41,6 +41,20 @@ class BatchPush {
     _channel.invokeMethod('push.requestPermission');
   }
 
+  /// Call this method to trigger the iOS/Android 13 popup that asks the user if they want
+  /// to allow notifications to be displayed.
+  /// You should call this at a strategic moment, like at the end of your onboarding.
+  ///
+  /// Returns a [Future] that resolves to `true` if the user granted
+  /// notification permission, `false` otherwise.
+  ///
+  /// iOS specific: You will then be able to get a push token: Batch will
+  /// automatically ask for a push token if the user replies positively.
+  /// The default registration is made with Badge, Sound and Alert.
+  Future<bool?> requestNotificationAuthorizationAsync() async {
+    return await _channel.invokeMethod<bool>('push.requestPermissionAsync');
+  }
+
   /// Call this method to ask iOS for a provisional notification authorization.
   /// Batch will then automatically ask for a push token. This does not do anything
   /// on Android.
@@ -74,8 +88,8 @@ class BatchPush {
     if (!_isAndroidPlatform) {
       return;
     }
-    await _channel.invokeMethod('push.setShowNotifications',
-        {'enabled': showNotifications});
+    await _channel.invokeMethod(
+        'push.setShowNotifications', {'enabled': showNotifications});
   }
 
   /// Android only. Returns whether Batch currently shows notifications.

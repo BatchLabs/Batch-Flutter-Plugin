@@ -173,6 +173,19 @@ class _PluginTestMenuState extends State<PluginTestMenu> {
     print(notifs.notifications);
   }
 
+  Future<void> requestNotificationAuthorizationAsync() async {
+    final granted =
+        await BatchPush.instance.requestNotificationAuthorizationAsync();
+
+    if (!mounted) return;
+
+    ScaffoldMessenger.of(context).showSnackBar(
+      SnackBar(
+        content: Text("Notification auth async result: $granted"),
+      ),
+    );
+  }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -194,6 +207,10 @@ class _PluginTestMenuState extends State<PluginTestMenu> {
               child: Text("Request notif. auth."),
               onPressed: () =>
                   BatchPush.instance.requestNotificationAuthorization(),
+            ),
+            ElevatedButton(
+              child: Text("Request notif. auth. async"),
+              onPressed: () => requestNotificationAuthorizationAsync(),
             ),
             Row(
               children: <Widget>[
