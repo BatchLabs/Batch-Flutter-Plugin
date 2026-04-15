@@ -18,6 +18,7 @@ import com.batch.android.BatchEmailSubscriptionState;
 import com.batch.android.BatchEventAttributes;
 import com.batch.android.BatchMessage;
 import com.batch.android.BatchOptOutResultListener;
+import com.batch.android.BatchPermissionListener;
 import com.batch.android.BatchProfileAttributeEditor;
 import com.batch.android.BatchPushRegistration;
 import com.batch.android.BatchSMSSubscriptionState;
@@ -111,6 +112,8 @@ public class BatchBridge {
             case PUSH_REQUEST_PERMISSION:
                 Batch.Push.requestNotificationPermission(activity);
                 return Promise.resolved(null);
+            case PUSH_REQUEST_PERMISSION_ASYNC:
+                return requestNotificationPermission(activity);
             case PUSH_IOS_REFRESH_TOKEN:
             case PUSH_IOS_REQUEST_PROVISIONAL_PERMISSION:
             case PUSH_CLEAR_BADGE:
@@ -223,6 +226,17 @@ public class BatchBridge {
 
     private static Boolean shouldShowNotifications(Context context) {
         return Batch.Push.shouldShowNotifications(context);
+    }
+
+    private static Promise<Object> requestNotificationPermission(Activity activity) {
+        return new Promise<>(promise ->
+                Batch.Push.requestNotificationPermission(activity, new BatchPermissionListener() {
+                    @Override
+                    public void onPermissionRequested(boolean granted) {
+                        promise.resolve(granted);
+                    }
+                })
+        );
     }
 
 //region Profile

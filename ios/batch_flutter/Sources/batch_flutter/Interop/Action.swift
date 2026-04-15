@@ -7,6 +7,7 @@ enum Action: String {
     
     case push_getLastKnownPushToken = "push.getLastKnownPushToken"
     case push_RequestPermission = "push.requestPermission"
+    case push_RequestPermissionAsync = "push.requestPermissionAsync"
     case push_iOSRequestProvisionalPermission = "push.iOS.requestProvisionalPermission"
     case push_iOSRefreshToken = "push.iOS.refreshToken"
     case push_clearBadge = "push.clearBadge"
