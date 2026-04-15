@@ -35,6 +35,8 @@ struct Bridge {
                 case .push_RequestPermission:
                     BatchPush.requestNotificationAuthorization()
                     return .emptySuccess
+                case .push_RequestPermissionAsync:
+                    return requestNotificationAuthorization()
                 case .push_iOSRequestProvisionalPermission:
                     BatchPush.requestProvisionalNotificationAuthorization()
                     return .emptySuccess
@@ -125,6 +127,19 @@ struct Bridge {
         }
         
         BatchUNUserNotificationCenterDelegate.sharedInstance.showForegroundNotifications = enabled
+    }
+
+    private func requestNotificationAuthorization() -> LightPromise {
+        return LightPromise { resolve, reject in
+            BatchPush.requestNotificationAuthorization { granted, error in
+                if let error {
+                    reject(error)
+                    return
+                }
+
+                resolve(.number(granted as NSNumber))
+            }
+        }
     }
     
     private func setAutomaticDataCollection(parameters: BridgeParameters) throws {

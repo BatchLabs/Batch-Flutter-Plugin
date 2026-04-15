@@ -16,6 +16,7 @@ enum Action
 
     PUSH_GET_LAST_KNOWN_TOKEN("push.getLastKnownPushToken"),
     PUSH_REQUEST_PERMISSION("push.requestPermission"),
+    PUSH_REQUEST_PERMISSION_ASYNC("push.requestPermissionAsync"),
     PUSH_IOS_REQUEST_PROVISIONAL_PERMISSION("push.iOS.requestProvisionalPermission"),
     PUSH_IOS_REFRESH_TOKEN("push.iOS.refreshToken"),
     PUSH_IOS_SET_SHOW_FOREGROUND("push.iOS.setShowForegroundNotifications"),
