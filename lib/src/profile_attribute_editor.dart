@@ -14,6 +14,9 @@ enum ProfileDataOperationKind {
   setEmailMarketingSubscription,
   setPhoneNumber,
   setSMSMarketingSubscription,
+  setTopicPreferences,
+  addToTopicPreferences,
+  removeFromTopicPreferences,
   setAttribute,
   removeAttribute,
   addToArray,
@@ -35,6 +38,12 @@ extension ProfileDataOperationKindBridge on ProfileDataOperationKind {
         return "SET_PHONE_NUMBER";
       case ProfileDataOperationKind.setSMSMarketingSubscription:
         return "SET_SMS_MARKETING_SUBSCRIPTION";
+      case ProfileDataOperationKind.setTopicPreferences:
+        return "SET_TOPIC_PREFERENCES";
+      case ProfileDataOperationKind.addToTopicPreferences:
+        return "ADD_TO_TOPIC_PREFERENCES";
+      case ProfileDataOperationKind.removeFromTopicPreferences:
+        return "REMOVE_FROM_TOPIC_PREFERENCES";
       case ProfileDataOperationKind.setAttribute:
         return "SET_ATTRIBUTE";
       case ProfileDataOperationKind.removeAttribute:
@@ -69,8 +78,10 @@ class ProfileDataOperation {
 @protected
 class BatchProfileAttributeEditorImpl implements BatchProfileAttributeEditor {
   static final RegExp _attributeKeyRegexp = RegExp("^[a-zA-Z0-9_]{1,30}\$");
+  static final RegExp _topicPreferenceRegexp = RegExp("^[a-z0-9_]{1,300}\$");
   static const int _maxStringLength = 64;
   static const int _maxStringArrayLength = 25;
+  static const int _maxTopicPreferencesLength = 25;
 
   List<ProfileDataOperation> _operationQueue = [];
 
@@ -110,7 +121,6 @@ class BatchProfileAttributeEditorImpl implements BatchProfileAttributeEditor {
 
     return this;
   }
-
 
   @override
   BatchProfileAttributeEditor setEmailAddress(String? address) {
@@ -154,6 +164,42 @@ class BatchProfileAttributeEditorImpl implements BatchProfileAttributeEditor {
   BatchProfileAttributeEditor setSMSMarketingSubscription(BatchSMSSubscriptionState state) {
     _enqueueOperation(ProfileDataOperationKind.setSMSMarketingSubscription, {
       "value": state.name,
+    });
+    return this;
+  }
+
+  @override
+  BatchProfileAttributeEditor setTopicPreferences(List<String>? topics) {
+    if (topics != null && !_ensureValidTopicPreferences(topics)) {
+      return this;
+    }
+
+    _enqueueOperation(ProfileDataOperationKind.setTopicPreferences, {
+      "value": topics,
+    });
+    return this;
+  }
+
+  @override
+  BatchProfileAttributeEditor addToTopicPreferences(List<String> topics) {
+    if (!_ensureValidTopicPreferences(topics)) {
+      return this;
+    }
+
+    _enqueueOperation(ProfileDataOperationKind.addToTopicPreferences, {
+      "value": topics,
+    });
+    return this;
+  }
+
+  @override
+  BatchProfileAttributeEditor removeFromTopicPreferences(List<String> topics) {
+    if (!_ensureValidTopicPreferences(topics)) {
+      return this;
+    }
+
+    _enqueueOperation(ProfileDataOperationKind.removeFromTopicPreferences, {
+      "value": topics,
     });
     return this;
   }
@@ -361,6 +407,27 @@ class BatchProfileAttributeEditorImpl implements BatchProfileAttributeEditor {
               "Ignoring operation on string '$item'.");
       return false;
     }
+    return true;
+  }
+
+  bool _ensureValidTopicPreferences(List<String> topics) {
+    if (topics.length > _maxTopicPreferencesLength) {
+      BatchLogger.public(
+          "BatchProfileAttributeEditor - Topic preferences cannot contain more than 25 items. " +
+              "Ignoring operation.");
+      return false;
+    }
+
+    for (String topic in topics) {
+      if (!_topicPreferenceRegexp.hasMatch(topic)) {
+        BatchLogger.public(
+            "BatchProfileAttributeEditor - Invalid topic preference '$topic'. " +
+                "Topic preferences must only contain lowercase letters, numbers or underscores " +
+                "and be 300 characters or less. Ignoring operation.");
+        return false;
+      }
+    }
+
     return true;
   }
 

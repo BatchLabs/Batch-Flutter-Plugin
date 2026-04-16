@@ -11,6 +11,9 @@ extension Bridge {
         case setEmailMarketingSubscription = "SET_EMAIL_MARKETING_SUBSCRIPTION"
         case setPhoneNumber = "SET_PHONE_NUMBER"
         case setSMSMarketingSubscription = "SET_SMS_MARKETING_SUBSCRIPTION"
+        case setTopicPreferences = "SET_TOPIC_PREFERENCES"
+        case addToTopicPreferences = "ADD_TO_TOPIC_PREFERENCES"
+        case removeFromTopicPreferences = "REMOVE_FROM_TOPIC_PREFERENCES"
         case setAttribute = "SET_ATTRIBUTE"
         case removeAttribute = "REMOVE_ATTRIBUTE"
         case addToStringArray = "ADD_TO_ARRAY"
@@ -105,6 +108,29 @@ extension Bridge {
                 } else {
                     throw BridgeError.makeBadArgumentError(argumentName: rawOperation + ".value")
                 }
+                break;
+            case .setTopicPreferences:
+                let rawValue = operationDescription["value"]
+                if rawValue == nil || rawValue is NSNull {
+                    try? profileAttributeEditor.setTopicPreferences(nil)
+                } else {
+                    guard let value = rawValue as? [String] else {
+                        throw BridgeError.makeBadArgumentError(argumentName: rawOperation + ".value")
+                    }
+                    try? profileAttributeEditor.setTopicPreferences(value)
+                }
+                break;
+            case .addToTopicPreferences:
+                guard let value = operationDescription["value"] as? [String] else {
+                    throw BridgeError.makeBadArgumentError(argumentName: rawOperation + ".value")
+                }
+                try? profileAttributeEditor.addToTopicPreferences(value)
+                break;
+            case .removeFromTopicPreferences:
+                guard let value = operationDescription["value"] as? [String] else {
+                    throw BridgeError.makeBadArgumentError(argumentName: rawOperation + ".value")
+                }
+                try? profileAttributeEditor.removeFromTopicPreferences(value)
                 break;
             case .setLanguage:
                 let rawValue = operationDescription["value"]
