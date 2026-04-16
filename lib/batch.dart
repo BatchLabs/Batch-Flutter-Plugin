@@ -97,6 +97,7 @@ class Batch {
   ///     });
   /// ```
   void setAutomaticDataCollection(Map<String, bool> dataCollectionConfig) {
-    _channel.invokeMethod('setAutomaticDataCollection', {"dataCollectionConfig": dataCollectionConfig});
+    _channel
+        .invokeMethod('setAutomaticDataCollection', {"dataCollectionConfig": dataCollectionConfig});
   }
 }

@@ -9,8 +9,7 @@ import 'package:flutter/widgets.dart';
 /// Provides Profile related functionality, such as custom data and events.
 /// Do not instantiate this: use the `instance` static property.
 class BatchProfile {
-  static const MethodChannel _channel =
-  const MethodChannel('batch_flutter.profile');
+  static const MethodChannel _channel = const MethodChannel('batch_flutter.profile');
 
   /// Batch Profile module singleton.
   static BatchProfile instance = new BatchProfile();
@@ -44,8 +43,8 @@ class BatchProfile {
       eventArgs["event_data"] = attributes.internalGetBridgeRepresentation();
     }
     _channel.invokeMethod("profile.track.event", eventArgs).catchError((error) => {
-      BatchLogger.public("Tracking event '"+ name +"' failed with error: " + error.toString())
-    });
+          BatchLogger.public("Tracking event '" + name + "' failed with error: " + error.toString())
+        });
   }
 
   /// Track a geolocation update.
@@ -54,8 +53,7 @@ class BatchProfile {
   /// your behalf. Acquire location permission and values on your own and
   /// communicate them to Batch (if needed) using this method.
   void trackLocation({required double latitude, required double longitude}) {
-    _channel.invokeMethod(
-        "profile.track.location", {"latitude": latitude, "longitude": longitude});
+    _channel.invokeMethod("profile.track.location", {"latitude": latitude, "longitude": longitude});
   }
 }
 
@@ -255,7 +253,8 @@ class BatchEventAttributes {
   /// While the value is an Uri instance, it must be a valid URL and
   /// not be longer than 2048 characters.
   BatchEventAttributes putUrl(String key, Uri value) {
-    _attributes[key.toLowerCase()] = TypedAttribute(type: TypedAttributeType.url, value: value.toString());
+    _attributes[key.toLowerCase()] =
+        TypedAttribute(type: TypedAttributeType.url, value: value.toString());
     return this;
   }
 
@@ -294,9 +293,8 @@ class BatchEventAttributes {
   /// Date attribute values are sent in UTC to Batch. If you notice that the reported
   /// time may be off, try making an UTC DateTime for consistency.
   BatchEventAttributes putDate(String key, DateTime value) {
-    _attributes[key.toLowerCase()] = TypedAttribute(
-        type: TypedAttributeType.date,
-        value: value.toUtc().millisecondsSinceEpoch);
+    _attributes[key.toLowerCase()] =
+        TypedAttribute(type: TypedAttributeType.date, value: value.toUtc().millisecondsSinceEpoch);
     return this;
   }
 
@@ -305,7 +303,8 @@ class BatchEventAttributes {
   /// The attribute key should be a string composed of letters, numbers
   /// or underscores (\[a-z0-9_\]) and can't be longer than 30 characters.
   BatchEventAttributes putObject(String key, BatchEventAttributes value) {
-    _attributes[key.toLowerCase()] = TypedAttribute(type: TypedAttributeType.object, value: value.internalGetBridgeRepresentation());
+    _attributes[key.toLowerCase()] = TypedAttribute(
+        type: TypedAttributeType.object, value: value.internalGetBridgeRepresentation());
     return this;
   }
 
@@ -318,7 +317,8 @@ class BatchEventAttributes {
     value.forEach((element) {
       array.add(element.internalGetBridgeRepresentation());
     });
-    _attributes[key.toLowerCase()] = TypedAttribute(type: TypedAttributeType.object_array, value: array);
+    _attributes[key.toLowerCase()] =
+        TypedAttribute(type: TypedAttributeType.object_array, value: array);
     return this;
   }
 
@@ -327,7 +327,8 @@ class BatchEventAttributes {
   /// The attribute key should be a string composed of letters, numbers
   /// or underscores (\[a-z0-9_\]) and can't be longer than 30 characters.
   BatchEventAttributes putStringList(String key, List<String> value) {
-    _attributes[key.toLowerCase()] = TypedAttribute(type: TypedAttributeType.string_array, value: value);
+    _attributes[key.toLowerCase()] =
+        TypedAttribute(type: TypedAttributeType.string_array, value: value);
     return this;
   }
 

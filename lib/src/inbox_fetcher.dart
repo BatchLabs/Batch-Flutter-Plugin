@@ -6,8 +6,7 @@ import 'package:flutter/widgets.dart';
 /// <nodoc>
 @protected
 abstract class BatchInboxFetcherBaseImpl extends BatchInboxFetcher {
-  static const MethodChannel _channel =
-      const MethodChannel('batch_flutter.inbox');
+  static const MethodChannel _channel = const MethodChannel('batch_flutter.inbox');
 
   bool _disposed = false;
   String? _fetcherID;
@@ -32,8 +31,8 @@ abstract class BatchInboxFetcherBaseImpl extends BatchInboxFetcher {
   Future<BatchInboxFetchResult> fetchNewNotifications() async {
     _throwIfDisposed();
 
-    Map<String, dynamic>? response = await _channel.invokeMapMethod(
-        "inbox.fetchNewNotifications", _makeBaseBridgeParameters());
+    Map<String, dynamic>? response =
+        await _channel.invokeMapMethod("inbox.fetchNewNotifications", _makeBaseBridgeParameters());
 
     if (response == null) {
       throw InboxInternalError(code: 3);
@@ -48,8 +47,8 @@ abstract class BatchInboxFetcherBaseImpl extends BatchInboxFetcher {
   Future<BatchInboxFetchResult> fetchNextPage() async {
     _throwIfDisposed();
 
-    Map<String, dynamic>? response = await _channel.invokeMapMethod(
-        "inbox.fetchNextPage", _makeBaseBridgeParameters());
+    Map<String, dynamic>? response =
+        await _channel.invokeMapMethod("inbox.fetchNextPage", _makeBaseBridgeParameters());
 
     if (response == null) {
       throw InboxInternalError(code: 3);
@@ -61,8 +60,7 @@ abstract class BatchInboxFetcherBaseImpl extends BatchInboxFetcher {
   }
 
   @override
-  Future<void> markNotificationAsRead(
-      BatchInboxNotificationContent notification) async {
+  Future<void> markNotificationAsRead(BatchInboxNotificationContent notification) async {
     _throwIfDisposed();
 
     Map<String, dynamic> parameters = _makeBaseBridgeParameters();
@@ -74,13 +72,11 @@ abstract class BatchInboxFetcherBaseImpl extends BatchInboxFetcher {
   Future<void> markAllNotificationsAsRead() async {
     _throwIfDisposed();
 
-    await _channel.invokeMethod(
-        "inbox.markAllAsRead", _makeBaseBridgeParameters());
+    await _channel.invokeMethod("inbox.markAllAsRead", _makeBaseBridgeParameters());
   }
 
   @override
-  Future<void> markNotificationAsDeleted(
-      BatchInboxNotificationContent notification) async {
+  Future<void> markNotificationAsDeleted(BatchInboxNotificationContent notification) async {
     _throwIfDisposed();
 
     Map<String, dynamic> parameters = _makeBaseBridgeParameters();
@@ -88,10 +84,8 @@ abstract class BatchInboxFetcherBaseImpl extends BatchInboxFetcher {
     await _channel.invokeMethod("inbox.markAsDeleted", parameters);
   }
 
-
   @override
-  Future<void> displayNotificationLandingMessage(
-      BatchInboxNotificationContent notification) async {
+  Future<void> displayNotificationLandingMessage(BatchInboxNotificationContent notification) async {
     _throwIfDisposed();
 
     Map<String, dynamic> parameters = _makeBaseBridgeParameters();
@@ -103,8 +97,7 @@ abstract class BatchInboxFetcherBaseImpl extends BatchInboxFetcher {
   void dispose() {
     _disposed = true;
     if (_fetcherID != null) {
-      _channel.invokeMethod(
-          'inbox.releaseFetcher', _makeBaseBridgeParameters());
+      _channel.invokeMethod('inbox.releaseFetcher', _makeBaseBridgeParameters());
     }
   }
 
@@ -145,13 +138,10 @@ abstract class BatchInboxFetcherBaseImpl extends BatchInboxFetcher {
       String? title = rawNotification["title"] as String?;
       String body = rawNotification["body"] as String;
       bool isUnread = rawNotification["isUnread"] as bool;
-      DateTime date =
-          DateTime.fromMillisecondsSinceEpoch(rawNotification["date"] as int)
-              .toUtc();
+      DateTime date = DateTime.fromMillisecondsSinceEpoch(rawNotification["date"] as int).toUtc();
       int rawSource = rawNotification["source"] as int;
       bool hasLandingMessage = rawNotification["hasLandingMessage"] as bool;
-      BatchInboxNotificationSource source =
-          BatchInboxNotificationSource.unknown;
+      BatchInboxNotificationSource source = BatchInboxNotificationSource.unknown;
       switch (rawSource) {
         case 1:
           source = BatchInboxNotificationSource.campaign;

@@ -3,8 +3,7 @@ import 'package:flutter/services.dart';
 /// Provides user related functionality, such as custom data and events.
 /// Do not instantiate this: use the `instance` static property.
 class BatchUser {
-  static const MethodChannel _channel =
-      const MethodChannel('batch_flutter.user');
+  static const MethodChannel _channel = const MethodChannel('batch_flutter.user');
 
   /// Batch User module singleton.
   static BatchUser instance = new BatchUser();
@@ -36,7 +35,7 @@ class BatchUser {
   /// returned by [attributes] and [tagCollections].
   /// This does not affect data set on profiles using [BatchProfile].
   void clearInstallationData() {
-     _channel.invokeMethod('user.clearInstallationData');
+    _channel.invokeMethod('user.clearInstallationData');
   }
 
   /// Read the saved attributes.
@@ -64,8 +63,7 @@ class BatchUser {
         case "d":
           type = BatchUserAttributeType.date;
           int rawDate = rawValue as int;
-          castedValue =
-              DateTime.fromMillisecondsSinceEpoch(rawDate, isUtc: true);
+          castedValue = DateTime.fromMillisecondsSinceEpoch(rawDate, isUtc: true);
           break;
         case "i":
           type = BatchUserAttributeType.integer;
