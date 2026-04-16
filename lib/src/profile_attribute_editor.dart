@@ -93,9 +93,8 @@ class BatchProfileAttributeEditorImpl implements BatchProfileAttributeEditor {
   @override
   BatchProfileAttributeEditor setLanguage(String? language) {
     if (language != null && language.length == 0) {
-      BatchLogger.public(
-          "BatchProfileAttributeEditor - Language override cannot be empty. If " +
-              "you meant to un-set the language, please use null.");
+      BatchLogger.public("BatchProfileAttributeEditor - Language override cannot be empty. If " +
+          "you meant to un-set the language, please use null.");
       return this;
     }
 
@@ -109,9 +108,8 @@ class BatchProfileAttributeEditorImpl implements BatchProfileAttributeEditor {
   @override
   BatchProfileAttributeEditor setRegion(String? region) {
     if (region != null && region.length == 0) {
-      BatchLogger.public(
-          "BatchProfileAttributeEditor - Region override cannot be empty. If " +
-              "you meant to un-set the region, please use null.");
+      BatchLogger.public("BatchProfileAttributeEditor - Region override cannot be empty. If " +
+          "you meant to un-set the region, please use null.");
       return this;
     }
 
@@ -125,9 +123,8 @@ class BatchProfileAttributeEditorImpl implements BatchProfileAttributeEditor {
   @override
   BatchProfileAttributeEditor setEmailAddress(String? address) {
     if (address != null && address.length == 0) {
-      BatchLogger.public(
-          "BatchProfileAttributeEditor - Email cannot be empty. If " +
-              "you meant to un-set the email, please use null.");
+      BatchLogger.public("BatchProfileAttributeEditor - Email cannot be empty. If " +
+          "you meant to un-set the email, please use null.");
       return this;
     }
 
@@ -148,9 +145,8 @@ class BatchProfileAttributeEditorImpl implements BatchProfileAttributeEditor {
   @override
   BatchProfileAttributeEditor setPhoneNumber(String? phoneNumber) {
     if (phoneNumber != null && phoneNumber.length == 0) {
-      BatchLogger.public(
-          "BatchProfileAttributeEditor - phoneNumber cannot be empty. If " +
-              "you meant to un-set the phone number, please use null.");
+      BatchLogger.public("BatchProfileAttributeEditor - phoneNumber cannot be empty. If " +
+          "you meant to un-set the phone number, please use null.");
       return this;
     }
 
@@ -313,10 +309,9 @@ class BatchProfileAttributeEditorImpl implements BatchProfileAttributeEditor {
         "value": value,
       });
     } else {
-      BatchLogger.public(
-          "BatchProfileAttributeEditor - Invalid attribute string value. String " +
-              "attributes cannot be longer than 64 characters (bytes). " +
-              "Ignoring attribute '$key'.");
+      BatchLogger.public("BatchProfileAttributeEditor - Invalid attribute string value. String " +
+          "attributes cannot be longer than 64 characters (bytes). " +
+          "Ignoring attribute '$key'.");
     }
 
     return this;
@@ -333,7 +328,7 @@ class BatchProfileAttributeEditorImpl implements BatchProfileAttributeEditor {
               "Ignoring attribute '$key'.");
     }
     for (String item in value) {
-      if(!_ensureValidStringItem(item)) {
+      if (!_ensureValidStringItem(item)) {
         BatchLogger.public(
             "BatchProfileAttributeEditor - List of string attributes must respect the string attribute limitations. " +
                 "Ignoring attribute '$key'.");
@@ -347,7 +342,6 @@ class BatchProfileAttributeEditorImpl implements BatchProfileAttributeEditor {
     });
     return this;
   }
-
 
   @override
   BatchProfileAttributeEditor setUrlAttribute(String key, Uri value) {
@@ -380,8 +374,7 @@ class BatchProfileAttributeEditorImpl implements BatchProfileAttributeEditor {
   @override
   void save() {
     Map bridgeOperations = {
-      "operations":
-          _operationQueue.map((e) => e.toBridgeRepresentation()).toList(),
+      "operations": _operationQueue.map((e) => e.toBridgeRepresentation()).toList(),
     };
     _operationQueue.clear();
     _userMethodChannel.invokeMethod("profile.edit", bridgeOperations);
@@ -420,10 +413,9 @@ class BatchProfileAttributeEditorImpl implements BatchProfileAttributeEditor {
 
     for (String topic in topics) {
       if (!_topicPreferenceRegexp.hasMatch(topic)) {
-        BatchLogger.public(
-            "BatchProfileAttributeEditor - Invalid topic preference '$topic'. " +
-                "Topic preferences must only contain lowercase letters, numbers or underscores " +
-                "and be 300 characters or less. Ignoring operation.");
+        BatchLogger.public("BatchProfileAttributeEditor - Invalid topic preference '$topic'. " +
+            "Topic preferences must only contain lowercase letters, numbers or underscores " +
+            "and be 300 characters or less. Ignoring operation.");
         return false;
       }
     }
@@ -431,8 +423,7 @@ class BatchProfileAttributeEditorImpl implements BatchProfileAttributeEditor {
     return true;
   }
 
-  void _enqueueOperation(
-      ProfileDataOperationKind kind, Map<String, dynamic> arguments) {
+  void _enqueueOperation(ProfileDataOperationKind kind, Map<String, dynamic> arguments) {
     _operationQueue.add(ProfileDataOperation(kind: kind, arguments: arguments));
   }
 }

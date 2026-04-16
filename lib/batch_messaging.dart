@@ -3,8 +3,7 @@ import 'package:flutter/services.dart';
 /// Provides messaging related functionality, such as do not disturb.
 /// Do not instanciate this: use the `instance` static property.
 class BatchMessaging {
-  static const MethodChannel _channel =
-      const MethodChannel('batch_flutter.messaging');
+  static const MethodChannel _channel = const MethodChannel('batch_flutter.messaging');
 
   /// Batch Messaging module singleton.
   static BatchMessaging instance = new BatchMessaging();
@@ -24,8 +23,7 @@ class BatchMessaging {
   /// While DnD is disabled by default, the default state can be configured
   /// in your Info.plist/AndroidManifest.xml
   void setDoNotDisturbEnabled(bool enableDoNotDisturb) {
-    _channel.invokeMethod(
-        'messaging.setDoNotDisturbEnabled', {'enabled': enableDoNotDisturb});
+    _channel.invokeMethod('messaging.setDoNotDisturbEnabled', {'enabled': enableDoNotDisturb});
   }
 
   /// Shows the currently enqueued message, if any.
