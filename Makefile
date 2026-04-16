@@ -1,4 +1,4 @@
-.PHONY: docs doc doc-ios doc-android build-ios-doc setup-build-ios flutter-setup
+.PHONY: docs doc doc-ios doc-android build-ios-doc setup-build-ios flutter-setup format format-check
 
 # Common Flutter setup - run once to avoid redundancy
 flutter-setup:
@@ -82,3 +82,9 @@ doc-ios: build-ios-doc
 doc-android:
 	rm -rf api_docs/flutter-android-api-reference
 	cd example/android && ./gradlew :batch_flutter:generateJavadocRelease
+
+format:
+	dart format lib
+
+format-check:
+	dart format lib -o none --set-exit-if-changed
