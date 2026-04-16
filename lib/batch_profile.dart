@@ -106,6 +106,28 @@ abstract class BatchProfileAttributeEditor {
   /// Note that profile's subscription status is automatically set to unsubscribed when users send a STOP message.
   BatchProfileAttributeEditor setSMSMarketingSubscription(BatchSMSSubscriptionState state);
 
+  /// Set the profile topic preferences.
+  ///
+  /// `null` resets the topic preferences.
+  /// Values cannot contain more than 25 items.
+  /// Individual items should be made of letters, numbers or underscores
+  /// (`[a-z0-9_]`) and can't be longer than 300 characters.
+  BatchProfileAttributeEditor setTopicPreferences(List<String>? topics);
+
+  /// Add topics to the profile topic preferences.
+  ///
+  /// Values cannot contain more than 25 items.
+  /// Individual items should be made of letters, numbers or underscores
+  /// (`[a-z0-9_]`) and can't be longer than 300 characters.
+  BatchProfileAttributeEditor addToTopicPreferences(List<String> topics);
+
+  /// Remove topics from the profile topic preferences.
+  ///
+  /// Values cannot contain more than 25 items.
+  /// Individual items should be made of letters, numbers or underscores
+  /// (`[a-z0-9_]`) and can't be longer than 300 characters.
+  BatchProfileAttributeEditor removeFromTopicPreferences(List<String> topics);
+
   /// Set a string attribute for a key.
   ///
   /// Attribute's key cannot be empty. It should be made of letters, numbers or underscores (\[a-z0-9_\])
@@ -210,9 +232,7 @@ abstract class BatchProfileAttributeEditor {
 /// Keys should be strings composed of letters, numbers or underscores
 /// (\[a-z0-9_\]) and can't be longer than 30 characters.
 class BatchEventAttributes {
-
   Map<String, TypedAttribute> _attributes = new HashMap();
-
 
   /// Add a string attribute for the given key.
   ///

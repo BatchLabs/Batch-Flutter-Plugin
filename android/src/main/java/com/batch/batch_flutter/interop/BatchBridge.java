@@ -331,6 +331,24 @@ public class BatchBridge {
                         }
                         break;
                     }
+                    case "SET_TOPIC_PREFERENCES": {
+                        Object value = operationDescription.get("value");
+                        if (value == null) {
+                            editor.setTopicPreferences(null);
+                            break;
+                        }
+
+                        editor.setTopicPreferences(new ArrayList<>(getTypedParameter(operationDescription, "value", ArrayList.class)));
+                        break;
+                    }
+                    case "ADD_TO_TOPIC_PREFERENCES": {
+                        editor.addToTopicPreferences(new ArrayList<>(getTypedParameter(operationDescription, "value", ArrayList.class)));
+                        break;
+                    }
+                    case "REMOVE_FROM_TOPIC_PREFERENCES": {
+                        editor.removeFromTopicPreferences(new ArrayList<>(getTypedParameter(operationDescription, "value", ArrayList.class)));
+                        break;
+                    }
                     case "SET_ATTRIBUTE": {
                         String key = getTypedParameter(operationDescription, "key", String.class);
                         String type = getTypedParameter(operationDescription, "type", String.class);
