@@ -1,5 +1,13 @@
 ## UPCOMING
 
+**Plugin**
+- Updated Batch to 3.3
+
+**Profile**
+- Added `setTopicPreferences(List<String>? topics)` to `BatchProfileAttributeEditor` class to set or reset the profile topic preferences.
+- Added `addToTopicPreferences(List<String> topics)` to `BatchProfileAttributeEditor` class to add topics to the profile topic preferences.
+- Added `removeFromTopicPreferences(List<String> topics)` to `BatchProfileAttributeEditor` class to remove topics from the profile topic preferences.
+
 **Push**
 - Added `requestNotificationAuthorizationAsync()`to request notification authorization and return a promise that resolve with the authorization result.
 
