@@ -14,8 +14,7 @@ class BatchInbox {
   /// Set [limit] to be the maximum number of notifications to fetch, ever.
   /// This allows you to let Batch manage the upper limit itself, so you can
   /// be sure not to use a crazy amount of memory.
-  Future<BatchInboxFetcher> getFetcherForInstallation(
-      {int? maxPageSize, int? limit}) async {
+  Future<BatchInboxFetcher> getFetcherForInstallation({int? maxPageSize, int? limit}) async {
     var fetcher = BatchInboxFetcherInstallationImpl();
     await fetcher.init(maxPageSize: maxPageSize, limit: limit);
     return fetcher;
@@ -42,8 +41,7 @@ class BatchInbox {
       required String authenticationKey,
       int? maxPageSize,
       int? limit}) async {
-    var fetcher = BatchInboxFetcherUserImpl(
-        user: userIdentifier, authKey: authenticationKey);
+    var fetcher = BatchInboxFetcherUserImpl(user: userIdentifier, authKey: authenticationKey);
     await fetcher.init(maxPageSize: maxPageSize, limit: limit);
     return fetcher;
   }
@@ -115,8 +113,7 @@ abstract class BatchInboxFetcher {
   /// Calling [fetchNewNotifications()]/[fetchNextPage()] right away
   /// might cause notifications to come as unread, as the server needs time to
   /// process your request.
-  Future<void> markNotificationAsRead(
-      BatchInboxNotificationContent notification);
+  Future<void> markNotificationAsRead(BatchInboxNotificationContent notification);
 
   /// Marks all notifications as read.
   /// Note: Please refresh your copy of the notifications using [allNotifications]
@@ -131,15 +128,13 @@ abstract class BatchInboxFetcher {
   /// Calling [fetchNewNotifications()]/[fetchNextPage()] right away
   /// might cause notifications to still be present, as the server needs time to
   /// process your request.
-  Future<void> markNotificationAsDeleted(
-      BatchInboxNotificationContent notification);
+  Future<void> markNotificationAsDeleted(BatchInboxNotificationContent notification);
 
   /// Display the landing message attached to a BatchInboxNotificationContent.
   /// Do nothing if no message is attached.
   ///
   /// Note that this method will work even if Batch is in do not disturb mode.
-  Future<void> displayNotificationLandingMessage(
-      BatchInboxNotificationContent notification);
+  Future<void> displayNotificationLandingMessage(BatchInboxNotificationContent notification);
 
   /// Call this once you're finished with this fetcher to release the native
   /// object and free all memory. Usually, this should be called
@@ -161,8 +156,8 @@ enum BatchInboxNotificationSource { unknown, campaign, transactional, trigger }
 class BatchInboxNotificationContent {
   /// Internal constructor.
   /// <nodoc>
-  BatchInboxNotificationContent(this.id, this.title, this.body, this.isUnread,
-      this.date, this.source, this.payload, this.hasLandingMessage);
+  BatchInboxNotificationContent(this.id, this.title, this.body, this.isUnread, this.date,
+      this.source, this.payload, this.hasLandingMessage);
 
   /// The unique notification identifier. Do not make assumptions about its format: it can change at any time.
   final String id;
@@ -201,8 +196,7 @@ class BatchInboxNotificationContent {
 
 /// Describes a fetch operation result
 class BatchInboxFetchResult {
-  BatchInboxFetchResult(
-      {required this.notifications, required this.endReached});
+  BatchInboxFetchResult({required this.notifications, required this.endReached});
 
   /// Fetched notifications.
   final List<BatchInboxNotificationContent> notifications;
