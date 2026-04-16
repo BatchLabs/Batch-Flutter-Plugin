@@ -142,6 +142,9 @@ class _PluginTestMenuState extends State<PluginTestMenu> {
         .removeFromArray("push_optin", "handball")
         .setLanguage("pt")
         .setRegion("BR")
+        .setTopicPreferences(["topic3", "topic1"])
+        .addToTopicPreferences(["topic2"])
+        .removeFromTopicPreferences(["topic3"])
         .save();
   }
 
@@ -158,6 +161,7 @@ class _PluginTestMenuState extends State<PluginTestMenu> {
         .setPhoneNumber(null)
         .setLanguage(null)
         .setRegion(null)
+        .setTopicPreferences(null)
         .save();
     BatchUser.instance.clearInstallationData();
   }
