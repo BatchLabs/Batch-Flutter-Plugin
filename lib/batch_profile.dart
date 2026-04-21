@@ -130,7 +130,7 @@ abstract class BatchProfileAttributeEditor {
   ///
   /// Attribute's key cannot be empty. It should be made of letters, numbers or underscores (\[a-z0-9_\])
   /// and can't be longer than 30 characters.
-  /// String attribute values are non-empty strings and can't be longer than 64 characters.
+  /// String attribute values are non-empty strings and can't be longer than 300 characters.
   ///
   /// Any attribute with an invalid key or value will be ignored.
   BatchProfileAttributeEditor setStringAttribute(String key, String value);
@@ -237,7 +237,7 @@ class BatchEventAttributes {
   /// The attribute key should be a string composed of letters, numbers
   /// or underscores (\[a-z0-9_\]) and can't be longer than 30 characters.
   ///
-  /// The attribute string value can't be empty or longer than 64 characters.
+  /// The attribute string value can't be empty or longer than 300 characters.
   /// For better results, you should trim/lowercase your strings
   /// and use slugs when possible.
   BatchEventAttributes putString(String key, String value) {
