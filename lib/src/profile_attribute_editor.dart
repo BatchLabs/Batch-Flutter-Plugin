@@ -77,12 +77,6 @@ class ProfileDataOperation {
 /// <nodoc>
 @protected
 class BatchProfileAttributeEditorImpl implements BatchProfileAttributeEditor {
-  static final RegExp _attributeKeyRegexp = RegExp("^[a-zA-Z0-9_]{1,30}\$");
-  static final RegExp _topicPreferenceRegexp = RegExp("^[a-z0-9_]{1,300}\$");
-  static const int _maxStringLength = 64;
-  static const int _maxStringArrayLength = 25;
-  static const int _maxTopicPreferencesLength = 25;
-
   List<ProfileDataOperation> _operationQueue = [];
 
   BatchProfileAttributeEditorImpl(MethodChannel userMethodChannel)
@@ -92,12 +86,6 @@ class BatchProfileAttributeEditorImpl implements BatchProfileAttributeEditor {
 
   @override
   BatchProfileAttributeEditor setLanguage(String? language) {
-    if (language != null && language.length == 0) {
-      BatchLogger.public("BatchProfileAttributeEditor - Language override cannot be empty. If " +
-          "you meant to un-set the language, please use null.");
-      return this;
-    }
-
     _enqueueOperation(ProfileDataOperationKind.setLanguage, {
       "value": language,
     });
@@ -107,12 +95,6 @@ class BatchProfileAttributeEditorImpl implements BatchProfileAttributeEditor {
 
   @override
   BatchProfileAttributeEditor setRegion(String? region) {
-    if (region != null && region.length == 0) {
-      BatchLogger.public("BatchProfileAttributeEditor - Region override cannot be empty. If " +
-          "you meant to un-set the region, please use null.");
-      return this;
-    }
-
     _enqueueOperation(ProfileDataOperationKind.setRegion, {
       "value": region,
     });
@@ -122,12 +104,6 @@ class BatchProfileAttributeEditorImpl implements BatchProfileAttributeEditor {
 
   @override
   BatchProfileAttributeEditor setEmailAddress(String? address) {
-    if (address != null && address.length == 0) {
-      BatchLogger.public("BatchProfileAttributeEditor - Email cannot be empty. If " +
-          "you meant to un-set the email, please use null.");
-      return this;
-    }
-
     _enqueueOperation(ProfileDataOperationKind.setEmailAddress, {
       "value": address,
     });
@@ -144,12 +120,6 @@ class BatchProfileAttributeEditorImpl implements BatchProfileAttributeEditor {
 
   @override
   BatchProfileAttributeEditor setPhoneNumber(String? phoneNumber) {
-    if (phoneNumber != null && phoneNumber.length == 0) {
-      BatchLogger.public("BatchProfileAttributeEditor - phoneNumber cannot be empty. If " +
-          "you meant to un-set the phone number, please use null.");
-      return this;
-    }
-
     _enqueueOperation(ProfileDataOperationKind.setPhoneNumber, {
       "value": phoneNumber,
     });
@@ -166,10 +136,6 @@ class BatchProfileAttributeEditorImpl implements BatchProfileAttributeEditor {
 
   @override
   BatchProfileAttributeEditor setTopicPreferences(List<String>? topics) {
-    if (topics != null && !_ensureValidTopicPreferences(topics)) {
-      return this;
-    }
-
     _enqueueOperation(ProfileDataOperationKind.setTopicPreferences, {
       "value": topics,
     });
@@ -178,10 +144,6 @@ class BatchProfileAttributeEditorImpl implements BatchProfileAttributeEditor {
 
   @override
   BatchProfileAttributeEditor addToTopicPreferences(List<String> topics) {
-    if (!_ensureValidTopicPreferences(topics)) {
-      return this;
-    }
-
     _enqueueOperation(ProfileDataOperationKind.addToTopicPreferences, {
       "value": topics,
     });
@@ -190,10 +152,6 @@ class BatchProfileAttributeEditorImpl implements BatchProfileAttributeEditor {
 
   @override
   BatchProfileAttributeEditor removeFromTopicPreferences(List<String> topics) {
-    if (!_ensureValidTopicPreferences(topics)) {
-      return this;
-    }
-
     _enqueueOperation(ProfileDataOperationKind.removeFromTopicPreferences, {
       "value": topics,
     });
@@ -202,14 +160,6 @@ class BatchProfileAttributeEditorImpl implements BatchProfileAttributeEditor {
 
   @override
   BatchProfileAttributeEditor addToArray(String key, String value) {
-    if (!_ensureValidAttributeKey(key)) {
-      return this;
-    }
-
-    if (!_ensureValidStringItem(value)) {
-      return this;
-    }
-
     _enqueueOperation(ProfileDataOperationKind.addToArray, {
       "key": key,
       "value": value,
@@ -220,14 +170,6 @@ class BatchProfileAttributeEditorImpl implements BatchProfileAttributeEditor {
 
   @override
   BatchProfileAttributeEditor removeFromArray(String key, String value) {
-    if (!_ensureValidAttributeKey(key)) {
-      return this;
-    }
-
-    if (!_ensureValidStringItem(value)) {
-      return this;
-    }
-
     _enqueueOperation(ProfileDataOperationKind.removeFromArray, {
       "key": key,
       "value": value,
@@ -238,10 +180,6 @@ class BatchProfileAttributeEditorImpl implements BatchProfileAttributeEditor {
 
   @override
   BatchProfileAttributeEditor setBooleanAttribute(String key, bool value) {
-    if (!_ensureValidAttributeKey(key)) {
-      return this;
-    }
-
     _enqueueOperation(ProfileDataOperationKind.setAttribute, {
       "key": key,
       "type": "boolean",
@@ -253,88 +191,46 @@ class BatchProfileAttributeEditorImpl implements BatchProfileAttributeEditor {
 
   @override
   BatchProfileAttributeEditor setDateTimeAttribute(String key, DateTime value) {
-    if (!_ensureValidAttributeKey(key)) {
-      return this;
-    }
-
     _enqueueOperation(ProfileDataOperationKind.setAttribute, {
       "key": key,
       "type": "date",
       "value": value.toUtc().millisecondsSinceEpoch,
     });
-
     return this;
   }
 
   @override
   BatchProfileAttributeEditor setDoubleAttribute(String key, double value) {
-    if (!_ensureValidAttributeKey(key)) {
-      return this;
-    }
-
     _enqueueOperation(ProfileDataOperationKind.setAttribute, {
       "key": key,
       "type": "float",
       "value": value,
     });
-
     return this;
   }
 
   @override
   BatchProfileAttributeEditor setIntegerAttribute(String key, int value) {
-    if (!_ensureValidAttributeKey(key)) {
-      return this;
-    }
-
     _enqueueOperation(ProfileDataOperationKind.setAttribute, {
       "key": key,
       "type": "integer",
       "value": value,
     });
-
     return this;
   }
 
   @override
   BatchProfileAttributeEditor setStringAttribute(String key, String value) {
-    if (!_ensureValidAttributeKey(key)) {
-      return this;
-    }
-
-    if (value.length <= _maxStringLength) {
-      _enqueueOperation(ProfileDataOperationKind.setAttribute, {
-        "key": key,
-        "type": "string",
-        "value": value,
-      });
-    } else {
-      BatchLogger.public("BatchProfileAttributeEditor - Invalid attribute string value. String " +
-          "attributes cannot be longer than 64 characters (bytes). " +
-          "Ignoring attribute '$key'.");
-    }
-
+    _enqueueOperation(ProfileDataOperationKind.setAttribute, {
+      "key": key,
+      "type": "string",
+      "value": value,
+    });
     return this;
   }
 
   @override
   BatchProfileAttributeEditor setStringListAttribute(String key, List<String> value) {
-    if (!_ensureValidAttributeKey(key)) {
-      return this;
-    }
-    if (value.length > _maxStringArrayLength) {
-      BatchLogger.public(
-          "BatchProfileAttributeEditor - List of string attributes must not be longer than 25 items. " +
-              "Ignoring attribute '$key'.");
-    }
-    for (String item in value) {
-      if (!_ensureValidStringItem(item)) {
-        BatchLogger.public(
-            "BatchProfileAttributeEditor - List of string attributes must respect the string attribute limitations. " +
-                "Ignoring attribute '$key'.");
-        return this;
-      }
-    }
     _enqueueOperation(ProfileDataOperationKind.setAttribute, {
       "key": key,
       "type": "array",
@@ -345,25 +241,16 @@ class BatchProfileAttributeEditorImpl implements BatchProfileAttributeEditor {
 
   @override
   BatchProfileAttributeEditor setUrlAttribute(String key, Uri value) {
-    if (!_ensureValidAttributeKey(key)) {
-      return this;
-    }
-
     _enqueueOperation(ProfileDataOperationKind.setAttribute, {
       "key": key,
       "type": "url",
       "value": value.toString(),
     });
-
     return this;
   }
 
   @override
   BatchProfileAttributeEditor removeAttribute(String key) {
-    if (!_ensureValidAttributeKey(key)) {
-      return this;
-    }
-
     _enqueueOperation(ProfileDataOperationKind.removeAttribute, {
       "key": key,
     });
@@ -378,49 +265,6 @@ class BatchProfileAttributeEditorImpl implements BatchProfileAttributeEditor {
     };
     _operationQueue.clear();
     _userMethodChannel.invokeMethod("profile.edit", bridgeOperations);
-  }
-
-  bool _ensureValidAttributeKey(String key) {
-    if (!_attributeKeyRegexp.hasMatch(key)) {
-      BatchLogger.public(
-          "BatchProfileAttributeEditor - Invalid attribute key. Please make sure that " +
-              "the key is made of letters, underscores and numbers only " +
-              "(a-zA-Z0-9_). It also can't be longer than 30 characters. " +
-              "Ignoring attribute '$key'.");
-      return false;
-    }
-    return true;
-  }
-
-  bool _ensureValidStringItem(String item) {
-    if (item.length == 0 || item.length > _maxStringLength) {
-      BatchLogger.public(
-          "BatchProfileAttributeEditor - Invalid string item. String items are not allowed to " +
-              "be longer than 64 characters (bytes) and must not be empty. " +
-              "Ignoring operation on string '$item'.");
-      return false;
-    }
-    return true;
-  }
-
-  bool _ensureValidTopicPreferences(List<String> topics) {
-    if (topics.length > _maxTopicPreferencesLength) {
-      BatchLogger.public(
-          "BatchProfileAttributeEditor - Topic preferences cannot contain more than 25 items. " +
-              "Ignoring operation.");
-      return false;
-    }
-
-    for (String topic in topics) {
-      if (!_topicPreferenceRegexp.hasMatch(topic)) {
-        BatchLogger.public("BatchProfileAttributeEditor - Invalid topic preference '$topic'. " +
-            "Topic preferences must only contain lowercase letters, numbers or underscores " +
-            "and be 300 characters or less. Ignoring operation.");
-        return false;
-      }
-    }
-
-    return true;
   }
 
   void _enqueueOperation(ProfileDataOperationKind kind, Map<String, dynamic> arguments) {

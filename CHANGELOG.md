@@ -7,6 +7,8 @@
 - Added `setTopicPreferences(List<String>? topics)` to `BatchProfileAttributeEditor` class to set or reset the profile topic preferences.
 - Added `addToTopicPreferences(List<String> topics)` to `BatchProfileAttributeEditor` class to add topics to the profile topic preferences.
 - Added `removeFromTopicPreferences(List<String> topics)` to `BatchProfileAttributeEditor` class to remove topics from the profile topic preferences.
+- Profile string attributes now support up to 300 characters for the Customer Engagement Platform (CEP). The limit for the Mobile Engagement Platform (MEP) remains 64 characters. Attributes set via `BatchProfileAttributeEditor.setStringAttribute()` longer than 64 characters will only be applied to the CEP.
+- Event string attributes now support up to 300 characters for the Customer Engagement Platform (CEP). The limit for the Mobile Engagement Platform (MEP) remains 200 characters. Attributes set via `BatchEventAttributes.putString()` longer than 200 characters will only be applied to the CEP.
 
 **Push**
 - Added `requestNotificationAuthorizationAsync()`to request notification authorization and return a promise that resolve with the authorization result.
