@@ -38,6 +38,11 @@ flutter:
   # the material Icons class.
   uses-material-design: true
 
+  # The example integrates the plugin through CocoaPods (see ios/Podfile) to run
+  # its unit tests, which conflicts with the Swift Package Manager integration.
+  config:
+    enable-swift-package-manager: false
+
   assets:
      - assets/articles/
 
