@@ -1,9 +1,9 @@
 PODS:
   - Batch (3.4.0)
-  - batch_flutter (3.1.0):
+  - batch_flutter (3.2.0):
     - Batch (~> 3.4.0)
     - Flutter
-  - batch_flutter/Tests (3.1.0):
+  - batch_flutter/Tests (3.2.0):
     - Batch (~> 3.4.0)
     - Flutter
   - BatchExtension (4.0.0)
@@ -34,7 +34,7 @@ EXTERNAL SOURCES:
 
 SPEC CHECKSUMS:
   Batch: 73a1ce4ec6ae3bd05a0a38b1941aecf8bb7966a7
-  batch_flutter: 53ad21161276542c42b3f2e0d28bce9d30df4fb1
+  batch_flutter: 8623968796a329c3bc101881df8e2b9bb936d525
   BatchExtension: ee10c31cc737d66a9c339a1e70e7c787b5988676
   Flutter: cabc95a1d2626b1b06e7179b784ebcf0c0cde467
   shared_preferences_foundation: 9e1978ff2562383bd5676f64ec4e9aa8fa06a6f7
