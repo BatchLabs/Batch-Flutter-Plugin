@@ -1,3 +1,8 @@
+## 3.2.0
+
+**Plugin**
+- Updated Batch to 3.4
+
 ## 3.1.0
 
 **Plugin**
