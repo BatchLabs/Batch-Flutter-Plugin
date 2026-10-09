@@ -12,7 +12,7 @@ let package = Package(
         .library(name: "batch-flutter", targets: ["batch_flutter"]),
     ],
     dependencies: [
-        .package(url: "https://github.com/BatchLabs/Batch-iOS-SDK", from: "3.4.0"),
+        .package(url: "https://github.com/BatchLabs/Batch-iOS-SDK", .upToNextMinor(from: "3.4.0")),
     ],
     targets: [
         .target(
